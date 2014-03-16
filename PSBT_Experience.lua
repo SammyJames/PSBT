@@ -25,7 +25,7 @@ function PSBT_Experience:OnXPUpdated( tag, exp, maxExp, reason  )
     self._currentExperience = xp
 
     if ( gain <= 0 ) then return end
-    self:NewEvent( PSBT_AREAS.INCOMING, false, nil, '+' .. tostring( gain ) .. ' XP' )
+    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, nil, '+' .. tostring( gain ) .. ' XP' )
 end
 
 

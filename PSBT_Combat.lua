@@ -319,9 +319,9 @@ local combat_events =
 function PSBT_Combat:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
 
-    self._buffer = ZO_CircularBuffer:New( DEFAULT_MAX_BUFFERED_EVENTS )
-    self._index = 1
-    self._free = nil
+    self._buffer    = ZO_CircularBuffer:New( DEFAULT_MAX_BUFFERED_EVENTS )
+    self._index     = 1
+    self._free      = nil
 
     for i=1,GetNumAbilities() do
         local name, icon = GetAbilityInfoByIndex( i )
@@ -339,15 +339,13 @@ function PSBT_Combat:OnCombatEvent( ... )
 
     -- did we get hit or do something?
     if ( IsPlayer( select( 7, ... ), select( 6, ... ) ) or IsPlayer( select( 9, ... ), select( 8, ... ) ) ) then
-
         if ( self._free ) then
             local argCount = select( "#", ... )
-            for i = 1,argCount do
+            for i = 1, argCount do
                 self._free[ i ] = select( i, ... )
             end
             
-            --clear any additional arguments
-            for i=#self._free,argCount+1,-1 do
+            for i = #self._free,argCount + 1, -1 do
                 self._free[ i ] = nil
             end
             
@@ -364,18 +362,20 @@ function PSBT_Combat:OnUpdate( frameTime )
     if ( self._index <= 0 ) then
         self._index = 1
     end
-    
-    local size = self._buffer:Size()
-    local stop = zo_min( self._index + MAX_EVENTS, size )
-    for i=self._index,stop do
-        local iterator = self._buffer:At( i )
-        if ( iterator ) then
-            self:DispatchEvent( unpack( iterator ) )
-        end
-    end
 
-    if ( stop <= size ) then
-        self._index = stop + 1
+    local bufferSize = self._buffer:Size()
+    local endPoint = zo_min( self._index + MAX_EVENTS, bufferSize )
+    for i = self._index, endPoint do
+        local entry = self._buffer:At( i )
+        if ( entry ) then
+            self:DispatchEvent( unpack( entry ) )
+        end
+    end 
+
+    if ( endPoint >= bufferSize ) then
+        self._buffer:Clear()
+    else
+        self._index = endPoint + 1
     end
 end
 

@@ -14,45 +14,59 @@ function PSBT_Label:Initialize( objectPool )
     self.control = CreateControlFromVirtual( 'PSBT_Label', self.objectPool.control, 'PSBT_Label', self.objectPool:GetNextControlId() )
     self.label   = self.control:GetNamedChild( '_Name' )
     self.icon    = self.control:GetNamedChild( '_Icon' )
+    self.expire  = 0
+    self.moving  = false
+
+    self.control:SetAlpha( 0.0 )
+end
+
+function PSBT_Label:SetMoving( set )
+    self.moving = set
+end
+
+function PSBT_Label:IsMoving()
+    return self.moving
+end
+
+function PSBT_Label:SetExpire( expire )
+    self.expire = expire
+end
+
+function PSBT_Label:WillExpire( frameTime )
+    return frameTime > self.expire
+end
+
+function PSBT_Label:IsExpired( frameTime )
+    if ( self.expire == -1 ) then
+        return false
+    end
+
+    if ( self.moving ) then
+        return false
+    end
+
+    return frameTime > self.expire
 end
 
 function PSBT_Label:Finalize()
-    self.label:SetText( '' )
-    self.icon:SetTexture( 0 )
-    self.control:SetHidden( true )
+    self:SetText( '' )
+    self:SetTexture( 0 )
+    self:SetExpire( 0 )
+    self:SetMoving( false )
 end
 
 function PSBT_Label:SetText( text )
     self.label:SetText( text )
+
+    local textWidth = self.label:GetTextDimensions()
+    self.icon:SetAnchor( CENTER, self.control, CENTER, ( textWidth * -0.45 ) - self.icon:GetWidth(), 0 )
 end
 
 function PSBT_Label:SetTexture( texture )
     if ( type( texture ) == 'string' ) then
-        self.icon:SetWidth( self.control:GetHeight() )
+        self.icon:SetHidden( false )
         self.icon:SetTexture( texture )
     else
-        self.icon:SetWidth( 0 )
+        self.icon:SetHidden( true )
     end
-end
-
-function PSBT_Label:IsVisible()
-    return self.control:GetAlpha() > 0.001
-end
-
-function PSBT_Label:Play( height, duration )
-    self.control:SetHidden( false )
-    self.control:SetAlpha( 0.01 )
-
-    local enter = LibAnim:New( self.control )
-    enter:AlphaTo( 1.0, 500, nil, nil, ZO_LinearEase )
-    enter:InsertCallback( function() self:OnEnterComplete( height, duration ) end, 500 )
-    enter:Play()
-end
-
-function PSBT_Label:OnEnterComplete( height, duration ) 
-    local leave = LibAnim:New( self.control )
-    leave:AlphaTo( 0.0, duration, nil, nil, ZO_EaseOutCubic )
-    leave:TranslateTo( 0, height, duration, nil, nil, ZO_EaseOutCubic )
-    
-    leave:Play()
 end

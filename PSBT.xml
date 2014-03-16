@@ -4,16 +4,13 @@
             <Dimensions x="300" y="24" />
 
             <Controls>
-                <Texture name="$(parent)_Icon" layer="OVERLAY">
-                    <Dimensions x="24" />
-                    <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" />
-                    <Anchor point="BOTTOMLEFT" relativeTo="$(parent)" relativePoint="BOTTOMLEFT" />
-                </Texture>
-
-                <Label name="$(parent)_Name" font="ZoFontGameBold" horizontalAlignment="LEFT" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
-                    <Anchor point="TOPLEFT" relativeTo="$(parent)_Icon" relativePoint="TOPRIGHT" offsetX="2" offsetY="2" />
-                    <Anchor point="BOTTOMRIGHT" relativeTo="$(parent)" relativePoint="BOTTOMRIGHT" offsetX="-2" offsetY="-2" /> 
+                <Label name="$(parent)_Name" font="ZoFontGameBold" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
+                    <AnchorFill/>
                 </Label>
+
+                <Texture name="$(parent)_Icon" layer="OVERLAY" visible="false">
+                    <Dimensions x="24" y="24" />
+                </Texture>
             </Controls>
         </Control>
 
@@ -27,6 +24,7 @@
                     <Dimensions x="500" y="60" />
                     <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="450" />
                     <Controls>
+                        <!--<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip" />-->
                     </Controls>
                 </Control> 
 
@@ -34,6 +32,7 @@
                     <Dimensions x="500" y="60" />
                     <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="-300" />
                     <Controls>
+                        <!--<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip" />-->
                     </Controls>
                 </Control> 
 
@@ -41,6 +40,7 @@
                     <Dimensions x="300" y="450" />
                     <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="CENTER" offsetX="-300" offsetY="150" />
                     <Controls>
+                        <!--<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip" />-->
                     </Controls>
                 </Control> 
 
@@ -48,6 +48,7 @@
                     <Dimensions x="300" y="450" />
                     <Anchor point="LEFT" relativeTo="$(parent)" relativePoint="CENTER" offsetX="300" offsetY="150" />
                     <Controls>
+                        <!--<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip" />-->
                     </Controls>
                 </Control> 
             </Controls>

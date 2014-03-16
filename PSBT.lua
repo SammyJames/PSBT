@@ -41,6 +41,12 @@ end
 
 function PSBT:Initialize( control )
     self.control = control
+
+    self._areas[ PSBT_AREAS.INCOMING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.INCOMING,     BOTTOM )
+    self._areas[ PSBT_AREAS.OUTGOING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.OUTGOING,     TOP )
+    self._areas[ PSBT_AREAS.STATIC ]       = PSBT_ScrollArea:New( self.control, PSBT_AREAS.STATIC,       BOTTOM )
+    self._areas[ PSBT_AREAS.NOTIFICATION ] = PSBT_ScrollArea:New( self.control, PSBT_AREAS.NOTIFICATION, TOP )
+
     self.control:RegisterForEvent( EVENT_ADD_ON_LOADED, function( _, addon ) self:OnLoaded( addon ) end )
 end
 
@@ -50,33 +56,20 @@ function PSBT:OnLoaded( addon )
     end
 
     print( 'Loading PSBT' )
-
-
-    self._areas[ PSBT_AREAS.INCOMING ]     = self.control:GetNamedChild( PSBT_AREAS.INCOMING )
-    self._areas[ PSBT_AREAS.OUTGOING ]     = self.control:GetNamedChild( PSBT_AREAS.OUTGOING )
-    self._areas[ PSBT_AREAS.STATIC ]       = self.control:GetNamedChild( PSBT_AREAS.STATIC )
-    self._areas[ PSBT_AREAS.NOTIFICATION ] = self.control:GetNamedChild( PSBT_AREAS.NOTIFICATION )
-
-    print( self._areas )
-    for k,v in pairs( self._areas ) do
-        print( tostring( k ) .. ' = ' ..tostring( v ) )
-    end
-
-
     CBM:FireCallbacks( PSBT_EVENTS.LOADED, self )
 
     self.control:SetHandler( 'OnUpdate', function( _, frameTime ) self:OnUpdate( frameTime ) end )
 end
 
 function PSBT:OnUpdate( frameTime )
-    for k,v in pairs( self._modules ) do
-        v:OnUpdate( frameTime )
-    end
-
     for k,label in pairs( self:GetActiveObjects() ) do
-        if ( not label:IsVisible() ) then
+        if ( label:IsExpired( frameTime ) ) then
             self:ReleaseObject( k )
         end
+    end
+
+    for k,v in pairs( self._modules ) do
+        v:OnUpdate( frameTime )
     end
 end
 
@@ -125,33 +118,16 @@ end
 
 function PSBT:NewEvent( scrollArea, sticky, icon, text )
     local entry = self:AcquireObject()
-
     local area = self._areas[ scrollArea ]
-
-    local height        = area:GetHeight()
-    local duration      = 1
-    local relativePoint = nil
-    if ( scrollArea == PSBT_AREAS.NOTIFICATION ) then
-        relativePoint = TOP
-        duration = height * 20
-    elseif ( scrollArea == PSBT_AREAS.INCOMING ) then
-        relativePoint = BOTTOM
-        duration = height * 10
-        height = height * -1
-    elseif ( scrollArea == PSBT_AREAS.OUTGOING ) then
-        relativePoint = TOP
-        duration = height * 10
-    elseif ( scrollArea == PSBT_AREAS.STATIC ) then
-        relativePoint = BOTTOM
-        duration = height * 50
-        height = height * -1
+    if ( not area ) then 
+        return
     end
 
-    entry.control:SetAnchor( CENTER, area, relativePoint )
-
+    entry:SetExpire( -1 ) --pending
     entry:SetText( text ) 
     entry:SetTexture( icon )
-    entry:Play( height, duration )
+
+    area:Push( entry, sticky )
 end
 
 -- LEAVE ME THE FUARK ALONE

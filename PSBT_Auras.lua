@@ -22,11 +22,11 @@ function PSBT_Auras:OnEffectChanged( changeType, effectSlot, effectName, unitTag
 end
 
 function PSBT_Auras:Add( name, iconName )
-    self:NewEvent( PSBT_AREAS.NOTIFICATION, false, iconName, name .. ' Gained' )
+    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, iconName, name .. ' Gained' )
 end
 
 function PSBT_Auras:Remove( name, iconName )
-    self:NewEvent( PSBT_AREAS.NOTIFICATION, false, iconName, name .. ' Fades' )
+    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, iconName, name .. ' Fades' )
 end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 

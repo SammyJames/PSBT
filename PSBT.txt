@@ -23,6 +23,8 @@ PSBT_Experience.lua
 PSBT_LowSomething.lua
 
 ## core
+PSBT_Fifo.lua
 PSBT_Label.lua
+PSBT_ScrollArea.lua
 PSBT.lua
 PSBT.xml

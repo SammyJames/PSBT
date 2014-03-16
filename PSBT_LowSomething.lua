@@ -51,7 +51,7 @@ function PSBT_LowSomething:OnPowerUpdate( unit, powerPoolIndex, powerType, power
         string = 'Mount Stamina Low! (|c0CF2B9' .. powerPool .. '|r)'
     end
 
-    self:NewEvent( PSBT_AREAS.STATIC, false, nil, string )
+    self:NewEvent( PSBT_AREAS.STATIC, true, nil, string )
 end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
