@@ -19,6 +19,8 @@ PSBT_Options.lua
 PSBT_Combat.lua
 PSBT_Cooldowns.lua
 PSBT_Auras.lua
+PSBT_Experience.lua
+PSBT_LowSomething.lua
 
 ## core
 PSBT_Label.lua

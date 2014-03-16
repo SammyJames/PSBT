@@ -4,7 +4,9 @@ PSBT_MODULES =
     OPTIONS  = 'options',  -- options panel
     COOLDOWNS = 'cooldowns',
     COMBAT = 'combat',
-    AURAS = 'auras'
+    AURAS = 'auras',
+    XP = 'experience',
+    LOW = 'lowsomething'
 }
 
 PSBT_AREAS = 

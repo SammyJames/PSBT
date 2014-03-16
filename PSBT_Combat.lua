@@ -91,7 +91,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '<<1>> [<<2>>]!', hitValue, name ), area, true
+        return zo_strformat( '+<<1>> [|c080C3F2<<2>>|r]!', hitValue, name ), area, true
     end,
     [ ACTION_RESULT_DAMAGE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
         local area = nil
@@ -154,7 +154,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '<<1>> [<<2>>]' , hitValue, name ), area, false
+        return zo_strformat( '+<<1>> [|c80C3F2<<2>>|r]' , hitValue, name ), area, false
     end,
     [ ACTION_RESULT_HOT_TICK ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local area = nil
@@ -167,7 +167,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '<<1>> [<<2>>]', hitValue, name ), area, false
+        return zo_strformat( '+<<1>> [|c80C3F2<<2>>|r]', hitValue, name ), area, false
     end,
     [ ACTION_RESULT_HOT_TICK_CRITICAL ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local area = nil
@@ -180,7 +180,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '<<1>> [<<2>>]!', hitValue, name ), area, true
+        return zo_strformat( '+<<1>> [|c80C3F2<<2>>|r]!', hitValue, name ), area, true
     end,
     [ ACTION_RESULT_DODGED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local area = nil
@@ -240,7 +240,7 @@ local combat_events =
             return nil, nil, false
         end
 
-        return zo_strformat( '<<1>> falling', hitValue ), area, false
+        return zo_strformat( '-<<1>> falling', hitValue ), area, false
     end,
     [ ACTION_RESULT_KILLING_BLOW ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType )
         if ( IsPlayer( targetType, targetName ) ) then
@@ -252,21 +252,42 @@ local combat_events =
         return nil, nil, false
     end,
     [ EVENT_ALLIANCE_POINT_UPDATE ] = function(value, sound, diff)
-        return zo_strformat( '<<1>> AP', diff ), PSBT_AREAS.STATIC, false
+        local area = nil
+        if ( diff > 0 ) then
+            area = PSBT_AREAS.INCOMING
+        else
+            area = PSBT_AREAS.OUTGOING
+        end
+
+        return zo_strformat( '<<1>> AP', diff ), area, false
     end,
     [ EVENT_RANK_POINT_UPDATE ] = function( tag , value, diff )
         if (tag == "player") then
-            return zo_strformat( '<<1>> RP', diff ), PSBT_AREAS.STATIC, false
+            local area = nil
+            if ( diff > 0 ) then
+                area = PSBT_AREAS.INCOMING
+            else
+                area = PSBT_AREAS.OUTGOING
+            end
+
+            return zo_strformat( '<<1>> RP', diff ), area, false
         end
     end,
     [ EVENT_BATTLE_TOKEN_UPDATE ] = function( value, sound, diff )
-        return zo_strformat( '<<1>> BT', diff ), PSBT_AREAS.STATIC, false
+        local area = nil
+        if ( diff > 0 ) then
+            area = PSBT_AREAS.INCOMING
+        else
+            area = PSBT_AREAS.OUTGOING
+        end
+
+        return zo_strformat( '<<1>> BT', diff ), area, false
     end,
     [ EVENT_EXPERIENCE_GAIN ] = function( value )
-        return zo_strformat( '<<1>> XP', value ), PSBT_AREAS.STATIC, false
+        return zo_strformat( '+<<1>> XP', value ), PSBT_AREAS.INCOMING, false
     end,
     [ EVENT_EXPERIENCE_GAIN_DISCOVERY ] = function( areaName, value )
-        return zo_strformat( '<<1>> XP', value ), PSBT_AREAS.STATIC, false 
+        return zo_strformat( '+<<1>> XP', value ), PSBT_AREAS.INCOMING, false 
     end,
 
     [ ACTION_RESULT_POWER_DRAIN ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
