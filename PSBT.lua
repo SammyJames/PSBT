@@ -31,7 +31,11 @@ local PSBT = ZO_ObjectPool:Subclass()
 PSBT._modules  = {}
 PSBT._areas    = {}
 
-local CBM = CALLBACK_MANAGER
+local CBM               = CALLBACK_MANAGER
+local PSBT_ScrollArea   = PSBT_ScrollArea
+local PSBT_AREAS        = PSBT_AREAS
+local PSBT_EVENTS       = PSBT_EVENTS
+local PSBT_MODULES      = PSBT_MODULES
 
 function PSBT:New( ... )
     local result = ZO_ObjectPool.New( self, PSBT.CreateLabel, function( ... ) self:ResetLabel( ... ) end )

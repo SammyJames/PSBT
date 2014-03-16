@@ -1,5 +1,11 @@
+local PSBT_Module   = PSBT_Module
 local PSBT_Settings = PSBT_Module:Subclass()
-local CBM = CALLBACK_MANAGER
+local CBM           = CALLBACK_MANAGER
+
+local PSBT_MODULES  = PSBT_MODULES
+local PSBT_EVENTS   = PSBT_EVENTS
+
+local ZO_SavedVars  = ZO_SavedVars
 
 local defaults = 
 {
@@ -10,7 +16,7 @@ function PSBT_Settings:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
 
     self.db = ZO_SavedVars:New( 'PSBT_DB', 1.0, nil, defaults )
-    self.profile = self.db:GetInterfaceForCharacter( GetDisplayName(), GetUnitName('player') )
+    self.profile = self.db:GetInterfaceForCharacter( GetDisplayName(), GetUnitName( 'player' ) )
 end
 
 function PSBT_Settings:GetSetting( identity )

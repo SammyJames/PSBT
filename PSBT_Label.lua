@@ -1,7 +1,6 @@
 PSBT_Label = ZO_Object:Subclass()
 
-local LibAnim = LibStub( 'LibAnimation-1.0' )
-if ( not LibAnim ) then return end
+local CENTER = CENTER
 
 function PSBT_Label:New( ... )
     local result = ZO_Object.New( self )

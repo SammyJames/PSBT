@@ -1,11 +1,21 @@
-local PSBT_Combat = PSBT_Module:Subclass()
-PSBT_Combat._iconRegistry = setmetatable( {}, { __mode = 'kv' } )
+local PSBT_Module           = PSBT_Module
+local PSBT_Combat           = PSBT_Module:Subclass()
+PSBT_Combat._iconRegistry   = setmetatable( {}, { __mode = 'kv' } )
+local CBM                   = CALLBACK_MANAGER
 
-local CBM = CALLBACK_MANAGER
-local MAX_EVENTS = 15
+local MAX_EVENTS            = 15
+local PlayerName            = GetUnitName( 'player' )
+local PlayerNameRaw         = GetRawUnitName( 'player' )
+local COMBAT_UNIT_TYPE_PLAYER       = COMBAT_UNIT_TYPE_PLAYER
+local COMBAT_UNIT_TYPE_PLAYER_PET   = COMBAT_UNIT_TYPE_PLAYER_PET
+local COMBAT_UNIT_TYPE_NONE         = COMBAT_UNIT_TYPE_NONE
 
-local PlayerName = GetUnitName( 'player' )
-local PlayerNameRaw = GetRawUnitName( 'player' )
+local PSBT_AREAS            = PSBT_AREAS
+local PSBT_EVENTS           = PSBT_EVENTS
+
+local zo_strformat          = zo_strformat
+local GetString             = GetString
+local select                = select          
 
 local function IsPlayerType( targetType )
     return targetType == COMBAT_UNIT_TYPE_PLAYER or
@@ -23,7 +33,6 @@ local function IsPlayer( targetType, targetName )
 
     return false
 end
-
 
 local combat_events =
 {

@@ -4,8 +4,12 @@ if ( not LAM ) then return end
 local LMP = LibStub( 'LibMediaProvider-1.0' )
 if ( not LMP ) then return end
 
+local PSBT_Module       = PSBT_Module
 local PSBT_Options      = PSBT_Module:Subclass()
-local CBM = CALLBACK_MANAGER
+local CBM               = CALLBACK_MANAGER
+
+local PSBT_MODULES      = PSBT_MODULES
+local PSBT_EVENTS       = PSBT_EVENTS
 
 local decorations = { 'none', 'soft-shadow-thin', 'soft-shadow-thick', 'shadow' }
 

@@ -1,6 +1,13 @@
-local PSBT_Experience = PSBT_Module:Subclass()
-local CBM = CALLBACK_MANAGER
+local PSBT_Module       = PSBT_Module
+local PSBT_Experience   = PSBT_Module:Subclass()
+local CBM               = CALLBACK_MANAGER
 
+local zo_min            = zo_min
+local tostring          = tostring
+
+local PSBT_AREAS        = PSBT_AREAS
+local PSBT_EVENTS       = PSBT_EVENTS
+local PSBT_MODULES      = PSBT_MODULES
 
 function PSBT_Experience:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
@@ -24,7 +31,10 @@ function PSBT_Experience:OnXPUpdated( tag, exp, maxExp, reason  )
     local gain = xp - self._currentExperience
     self._currentExperience = xp
 
-    if ( gain <= 0 ) then return end
+    if ( gain <= 0 ) then
+        return
+    end
+
     self:NewEvent( PSBT_AREAS.NOTIFICATION, true, nil, '+' .. tostring( gain ) .. ' XP' )
 end
 

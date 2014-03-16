@@ -1,5 +1,13 @@
-local PSBT_Auras = PSBT_Module:Subclass()
-local CBM = CALLBACK_MANAGER
+local PSBT_Module   = PSBT_Module
+local PSBT_Auras    = PSBT_Module:Subclass()
+local CBM           = CALLBACK_MANAGER
+
+local EFFECT_RESULT_FADED   = EFFECT_RESULT_FADED
+local EFFECT_RESULT_GAINED  = EFFECT_RESULT_GAINED
+
+local PSBT_EVENTS   = PSBT_EVENTS
+local PSBT_AREAS    = PSBT_AREAS
+local PSBT_MODULES  = PSBT_MODULES
 
 function PSBT_Auras:Initialize( ... )  
     PSBT_Module.Initialize( self, ... )

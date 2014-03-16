@@ -1,8 +1,18 @@
+local PSBT_Module           = PSBT_Module
 local PSBT_LowSomething     = PSBT_Module:Subclass()
 PSBT_LowSomething._pools    = {}
 local CBM                   = CALLBACK_MANAGER
 
-local threshold = 0.33
+local threshold             = 0.33
+
+local PSBT_AREAS            = PSBT_AREAS
+local PSBT_MODULES          = PSBT_MODULES
+local PSBT_EVENTS           = PSBT_EVENTS
+
+local POWERTYPE_HEALTH      = POWERTYPE_HEALTH
+local POWERTYPE_MAGICKA     = POWERTYPE_MAGICKA
+local POWERTYPE_STAMINA     = POWERTYPE_STAMINA
+local POWERTYPE_MOUNT_STAMINA = POWERTYPE_MOUNT_STAMINA
 
 function PSBT_LowSomething:Initialize( ... )
     PSBT_Module.Initialize( self, ... )

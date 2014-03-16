@@ -1,12 +1,13 @@
-local tinsert = table.insert
-local tremove = table.remove
-
-PSBT_ScrollArea                 = ZO_Object:Subclass()
-
 local LibAnim = LibStub( 'LibAnimation-1.0' )
 if ( not LibAnim ) then return end 
 
-local NUM_STICKY = 4
+PSBT_ScrollArea     = ZO_Object:Subclass()
+local tinsert       = table.insert
+local tremove       = table.remove
+local NUM_STICKY    = 4
+
+local PSBT_Fifo     = PSBT_Fifo
+local CENTER        = CENTER
 
 function PSBT_ScrollArea:New( ... )
     local result = ZO_Object.New( self )
