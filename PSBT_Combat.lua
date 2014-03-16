@@ -91,7 +91,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>> [|c080C3F2<<2>>|r]!', hitValue, name ), area, true
+        return zo_strformat( '+<<1>> [|c80C3F2<<2>>|r]!', hitValue, name ), area, true
     end,
     [ ACTION_RESULT_DAMAGE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
         local area = nil

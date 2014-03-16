@@ -4,7 +4,7 @@
             <Dimensions x="300" y="24" />
 
             <Controls>
-                <Label name="$(parent)_Name" font="ZoFontGameBold" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
+                <Label name="$(parent)_Name" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
                     <AnchorFill/>
                 </Label>
 

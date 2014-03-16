@@ -50,6 +50,17 @@ function PSBT:Initialize( control )
     self.control:RegisterForEvent( EVENT_ADD_ON_LOADED, function( _, addon ) self:OnLoaded( addon ) end )
 end
 
+
+function PSBT:FormatFont( fontObject )
+    local path, size, decoration = fontObject:GetFontInfo()
+    local fmt = '%s|%d'
+    if ( decoration ) then
+        fmt = fmt .. '|%s'
+    end
+
+    return fmt:format( path, size, decoration ) 
+end
+
 function PSBT:OnLoaded( addon )
     if ( addon ~= 'PSBT' ) then
         return
@@ -121,6 +132,14 @@ function PSBT:NewEvent( scrollArea, sticky, icon, text )
     local area = self._areas[ scrollArea ]
     if ( not area ) then 
         return
+    end
+
+    if ( sticky ) then
+        entry.label:SetFont( self:FormatFont( ZoFontCallout ) )
+        entry.control:SetDrawTier( DT_HIGH )
+    else
+        entry.label:SetFont( self:FormatFont( ZoFontGameBold ) )
+        entry.control:SetDrawTier( DT_LOW )
     end
 
     entry:SetExpire( -1 ) --pending
