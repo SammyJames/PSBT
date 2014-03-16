@@ -128,17 +128,19 @@ function PSBT:NewEvent( scrollArea, sticky, icon, text )
 
     local area = self._areas[ scrollArea ]
 
-    local height = area:GetHeight()
-    local duration = 1
+    local height        = area:GetHeight()
+    local duration      = 1
     local relativePoint = nil
     if ( scrollArea == PSBT_AREAS.NOTIFICATION ) then
         relativePoint = TOP
         duration = height * 20
     elseif ( scrollArea == PSBT_AREAS.INCOMING ) then
         relativePoint = BOTTOM
+        duration = height * 10
         height = height * -1
     elseif ( scrollArea == PSBT_AREAS.OUTGOING ) then
         relativePoint = TOP
+        duration = height * 10
     elseif ( scrollArea == PSBT_AREAS.STATIC ) then
         relativePoint = BOTTOM
         duration = height * 50

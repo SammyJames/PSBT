@@ -1,11 +1,11 @@
 <GuiXml>
     <Controls>
          <Control name="PSBT_Label" virtual="true">
-            <Dimensions x="202" y="44" />
+            <Dimensions x="300" y="24" />
 
             <Controls>
                 <Texture name="$(parent)_Icon" layer="OVERLAY">
-                    <Dimensions x="40" />
+                    <Dimensions x="24" />
                     <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" />
                     <Anchor point="BOTTOMLEFT" relativeTo="$(parent)" relativePoint="BOTTOMLEFT" />
                 </Texture>
@@ -39,14 +39,14 @@
 
                 <Control name="$(parent)_Incoming">
                     <Dimensions x="300" y="450" />
-                    <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="CENTER" offsetX="-300" offsetY="0" />
+                    <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="CENTER" offsetX="-300" offsetY="150" />
                     <Controls>
                     </Controls>
                 </Control> 
 
                 <Control name="$(parent)_Outgoing">
                     <Dimensions x="300" y="450" />
-                    <Anchor point="LEFT" relativeTo="$(parent)" relativePoint="CENTER" offsetX="300" offsetY="0" />
+                    <Anchor point="LEFT" relativeTo="$(parent)" relativePoint="CENTER" offsetX="300" offsetY="150" />
                     <Controls>
                     </Controls>
                 </Control> 

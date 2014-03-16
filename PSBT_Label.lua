@@ -28,9 +28,10 @@ end
 
 function PSBT_Label:SetTexture( texture )
     if ( type( texture ) == 'string' ) then
+        self.icon:SetWidth( self.control:GetHeight() )
         self.icon:SetTexture( texture )
     else
-        print( 'SetTexture( %d )', texture )
+        self.icon:SetWidth( 0 )
     end
 end
 
@@ -39,12 +40,19 @@ function PSBT_Label:IsVisible()
 end
 
 function PSBT_Label:Play( height, duration )
-    self.control:SetAlpha( 1.0 )
     self.control:SetHidden( false )
+    self.control:SetAlpha( 0.01 )
 
-    local animation = LibAnim:New( self.control )
-    animation:AlphaTo( 0.0, duration )
-    animation:TranslateTo( 0, height, duration )
+    local enter = LibAnim:New( self.control )
+    enter:AlphaTo( 1.0, 500, nil, nil, ZO_LinearEase )
+    enter:InsertCallback( function() self:OnEnterComplete( height, duration ) end, 500 )
+    enter:Play()
+end
+
+function PSBT_Label:OnEnterComplete( height, duration ) 
+    local leave = LibAnim:New( self.control )
+    leave:AlphaTo( 0.0, duration, nil, nil, ZO_EaseOutCubic )
+    leave:TranslateTo( 0, height, duration, nil, nil, ZO_EaseOutCubic )
     
-    animation:Play()
+    leave:Play()
 end
