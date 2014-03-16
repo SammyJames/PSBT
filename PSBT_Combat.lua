@@ -346,21 +346,25 @@ function PSBT_Combat:OnCombatEvent( ... )
         return
     end
 
+    local args = { ... }
+
     -- did we get hit or do something?
-    if ( IsPlayer( select( 7, ... ), select( 6, ... ) ) or IsPlayer( select( 9, ... ), select( 8, ... ) ) ) then
+    if ( IsPlayer( args[ 7 ], args[ 6 ] ) 
+      or IsPlayer( args[ 9 ], args[ 8 ] ) ) then
+    
         if ( self._free ) then
-            local argCount = select( "#", ... )
+            local argCount = #args
             for i = 1, argCount do
-                self._free[ i ] = select( i, ... )
+                self._free[ i ] = args[ i ]
             end
             
-            for i = #self._free,argCount + 1, -1 do
+            for i = #self._free, argCount + 1, -1 do
                 self._free[ i ] = nil
             end
             
             self._free = self._buffer:Add( self._free )
         else
-            self._free = self._buffer:Add( { ... } )
+            self._free = self._buffer:Add( args )
         end
 
         self._index = self._index - 1
