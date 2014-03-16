@@ -61,6 +61,7 @@ function PSBT_LowSomething:OnPowerUpdate( unit, powerPoolIndex, powerType, power
         string = 'Mount Stamina Low! (|c0CF2B9' .. powerPool .. '|r)'
     end
 
+    PlaySound( 'Quest_StepFailed' )
     self:NewEvent( PSBT_AREAS.STATIC, true, nil, string )
 end
 
