@@ -4,18 +4,26 @@ local CBM           = CALLBACK_MANAGER
 
 local PSBT_MODULES  = PSBT_MODULES
 local PSBT_EVENTS   = PSBT_EVENTS
+local PSBT_AREAS    = PSBT_AREAS
 
 local ZO_SavedVars  = ZO_SavedVars
 
+local RIGHT = RIGHT
+local LEFT = LEFT
+local CENTER = CENTER
+
 local defaults = 
 {
-
+    [ PSBT_AREAS.INCOMING       ] = { RIGHT,  CENTER, -300,  150   },
+    [ PSBT_AREAS.OUTGOING       ] = { LEFT,   CENTER, 300,   150   },
+    [ PSBT_AREAS.STATIC         ] = { CENTER, CENTER, 0,     -300  },
+    [ PSBT_AREAS.NOTIFICATION   ] = { CENTER, CENTER, 0,     450   }
 }
 
 function PSBT_Settings:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
 
-    self.db = ZO_SavedVars:New( 'PSBT_DB', 1.0, nil, defaults )
+    self.db = ZO_SavedVars:New( 'PSBT_DB', 1.5, nil, defaults )
     self.profile = self.db:GetInterfaceForCharacter( GetDisplayName(), GetUnitName( 'player' ) )
 end
 

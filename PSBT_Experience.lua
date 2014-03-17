@@ -39,7 +39,6 @@ function PSBT_Experience:OnXPUpdated( tag, exp, maxExp, reason  )
 end
 
 
-
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
         psbt:RegisterModule( PSBT_MODULES.XP, PSBT_Experience:New( psbt ) )

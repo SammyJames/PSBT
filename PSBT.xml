@@ -24,7 +24,10 @@
                     <Dimensions x="500" y="60" />
                     <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="450" />
                     <Controls>
-                        <!--<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip" />-->
+                        <Texture name="$(parent)_BG" inherits="ZO_ThinListBgStrip" />
+                        <Label name="$(parent)_Name" inherits="ZO_WindowTitle" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS" text="Notifications" >
+                            <AnchorFill/>
+                        </Label>
                     </Controls>
                 </Control> 
 
@@ -32,7 +35,10 @@
                     <Dimensions x="500" y="60" />
                     <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="-300" />
                     <Controls>
-                        <!--<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip" />-->
+                        <Texture name="$(parent)_BG" inherits="ZO_ThinListBgStrip" />
+                        <Label name="$(parent)_Name" inherits="ZO_WindowTitle" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS" text="Static" >
+                            <AnchorFill/>
+                        </Label>
                     </Controls>
                 </Control> 
 
@@ -40,7 +46,10 @@
                     <Dimensions x="300" y="450" />
                     <Anchor point="RIGHT" relativeTo="$(parent)" relativePoint="CENTER" offsetX="-300" offsetY="150" />
                     <Controls>
-                        <!--<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip" />-->
+                        <Texture name="$(parent)_BG" inherits="ZO_ThinListBgStrip" />
+                        <Label name="$(parent)_Name" inherits="ZO_WindowTitle" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS" text="Incoming" >
+                            <AnchorFill/>
+                        </Label>
                     </Controls>
                 </Control> 
 
@@ -48,7 +57,10 @@
                     <Dimensions x="300" y="450" />
                     <Anchor point="LEFT" relativeTo="$(parent)" relativePoint="CENTER" offsetX="300" offsetY="150" />
                     <Controls>
-                        <!--<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip" />-->
+                        <Texture name="$(parent)_BG" inherits="ZO_ThinListBgStrip" />
+                        <Label name="$(parent)_Name" inherits="ZO_WindowTitle" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS" text="Outgoing" >
+                            <AnchorFill/>
+                        </Label>
                     </Controls>
                 </Control> 
             </Controls>

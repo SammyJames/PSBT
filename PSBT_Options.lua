@@ -20,6 +20,13 @@ end
 
 function PSBT_Options:InitialzeControlPanel()
     self.config_panel = LAM:CreateControlPanel( '_psbt', 'PSBT' )
+    self.config_mode = false
+
+    LAM:AddButton( self.config_panel, '_psbt_editlayout_btn', 'Edit Layout', '', 
+        function() 
+            CBM:FireCallbacks( PSBT_EVENTS.CONFIG, not self.config_mode )
+            self.config_mode = not self.config_mode
+        end )
 end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 

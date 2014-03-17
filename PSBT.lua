@@ -45,15 +45,8 @@ end
 
 function PSBT:Initialize( control )
     self.control = control
-
-    self._areas[ PSBT_AREAS.INCOMING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.INCOMING,     BOTTOM )
-    self._areas[ PSBT_AREAS.OUTGOING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.OUTGOING,     TOP )
-    self._areas[ PSBT_AREAS.STATIC ]       = PSBT_ScrollArea:New( self.control, PSBT_AREAS.STATIC,       BOTTOM )
-    self._areas[ PSBT_AREAS.NOTIFICATION ] = PSBT_ScrollArea:New( self.control, PSBT_AREAS.NOTIFICATION, TOP )
-
     self.control:RegisterForEvent( EVENT_ADD_ON_LOADED, function( _, addon ) self:OnLoaded( addon ) end )
 end
-
 
 function PSBT:FormatFont( fontObject )
     local path, size, decoration = fontObject:GetFontInfo()
@@ -73,6 +66,12 @@ function PSBT:OnLoaded( addon )
     print( 'Loading PSBT' )
     CBM:FireCallbacks( PSBT_EVENTS.LOADED, self )
 
+    self._areas[ PSBT_AREAS.INCOMING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.INCOMING,     BOTTOM, self:GetSetting( PSBT_AREAS.INCOMING ) )
+    self._areas[ PSBT_AREAS.OUTGOING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.OUTGOING,     TOP, self:GetSetting( PSBT_AREAS.OUTGOING ) )
+    self._areas[ PSBT_AREAS.STATIC ]       = PSBT_ScrollArea:New( self.control, PSBT_AREAS.STATIC,       BOTTOM, self:GetSetting( PSBT_AREAS.STATIC ) )
+    self._areas[ PSBT_AREAS.NOTIFICATION ] = PSBT_ScrollArea:New( self.control, PSBT_AREAS.NOTIFICATION, TOP, self:GetSetting( PSBT_AREAS.NOTIFICATION ) )
+
+    CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
     self.control:SetHandler( 'OnUpdate', function( _, frameTime ) self:OnUpdate( frameTime ) end )
 end
 
@@ -94,6 +93,14 @@ end
 
 function PSBT:ResetLabel( label )
     label:Finalize()
+end
+
+function PSBT:SetConfigurationMode( mode )
+    if ( not mode ) then
+        for k,v in pairs( self._areas ) do
+            self:SetSetting( k, { v:GetAnchorOffsets() } )
+        end
+    end
 end
 
 function PSBT:RegisterModule( identity, class )

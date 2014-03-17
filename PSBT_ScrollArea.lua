@@ -2,6 +2,7 @@ local LibAnim = LibStub( 'LibAnimation-1.0' )
 if ( not LibAnim ) then return end 
 
 PSBT_ScrollArea     = ZO_Object:Subclass()
+local CBM           = CALLBACK_MANAGER
 local tinsert       = table.insert
 local tremove       = table.remove
 local NUM_STICKY    = 4
@@ -9,14 +10,19 @@ local NUM_STICKY    = 4
 local PSBT_Fifo     = PSBT_Fifo
 local CENTER        = CENTER
 
+local PSBT_EVENTS   = PSBT_EVENTS
+
 function PSBT_ScrollArea:New( ... )
     local result = ZO_Object.New( self )
     result:Initialize( ... )
     return result
 end
 
-function PSBT_ScrollArea:Initialize( super, areaName, anchor )
+function PSBT_ScrollArea:Initialize( super, areaName, anchor, position )
+    self.name           = areaName
     self.control        = super:GetNamedChild( areaName )
+    self.background     = self.control:GetNamedChild( '_BG' )
+    self.label          = self.control:GetNamedChild( '_Name' )
     self._anchor        = anchor
     self._animHeight    = nil
     self._newSticky     = false
@@ -30,8 +36,35 @@ function PSBT_ScrollArea:Initialize( super, areaName, anchor )
     else
         self._animHeight = -1 * self.control:GetHeight()
     end
-
+    self:Position( unpack( position ) )
+    self:SetConfigurationMode( false )
     self.control:SetHandler( 'OnUpdate', function( event, ... ) self:OnUpdate( ... ) end )
+
+    CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
+end
+
+function PSBT_ScrollArea:SetConfigurationMode( enable )
+    self.control:SetMovable( enable )
+    self.control:SetMouseEnabled( enable )
+    self.label:SetHidden( not enable )
+    if ( enable ) then
+        local enter = LibAnim:New( self.background )
+        enter:AlphaTo( 1.0, 500 )
+        enter:Play() 
+    else
+        local exit = LibAnim:New( self.background )
+        exit:AlphaTo( 0.0, 500 )
+        exit:Play() 
+    end
+end
+
+function PSBT_ScrollArea:Position( point, relPoint, x, y )
+    self.control:SetAnchor( point, self.control:GetParent(), relPoint, x, y )
+end
+
+function PSBT_ScrollArea:GetAnchorOffsets()
+    local _, point, _, relPoint, offsX, offsY = self.control:GetAnchor( 0 )
+    return point, relPoint, offsX, offsY
 end
 
 function PSBT_ScrollArea:Push( entry, sticky )
