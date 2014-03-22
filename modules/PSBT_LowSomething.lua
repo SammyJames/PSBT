@@ -14,6 +14,8 @@ local POWERTYPE_MAGICKA     = POWERTYPE_MAGICKA
 local POWERTYPE_STAMINA     = POWERTYPE_STAMINA
 local POWERTYPE_MOUNT_STAMINA = POWERTYPE_MOUNT_STAMINA
 
+local kVersion              = 1.0
+
 function PSBT_LowSomething:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
 
@@ -67,5 +69,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.LOW, PSBT_LowSomething:New( psbt ) )
+        psbt:RegisterModule( PSBT_MODULES.LOW, PSBT_LowSomething:New( psbt ), kVersion )
     end)

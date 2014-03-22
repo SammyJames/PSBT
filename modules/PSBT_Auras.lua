@@ -1,6 +1,7 @@
 local PSBT_Module           = PSBT_Module
 local PSBT_Auras            = PSBT_Module:Subclass()
 local CBM                   = CALLBACK_MANAGER
+local kVerison = 1.0
 
 local EFFECT_RESULT_FADED   = EFFECT_RESULT_FADED
 local EFFECT_RESULT_GAINED  = EFFECT_RESULT_GAINED
@@ -41,5 +42,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.AURAS, PSBT_Auras:New( psbt ) )
+        psbt:RegisterModule( PSBT_MODULES.AURAS, PSBT_Auras:New( psbt ), kVerison )
     end)

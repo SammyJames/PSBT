@@ -13,6 +13,8 @@ local PSBT_EVENTS       = PSBT_EVENTS
 local PSBT_SETTINGS     = PSBT_SETTINGS
 local PSBT_ICON_SIDE    = PSBT_ICON_SIDE
 
+local kVersion          = 1.0
+
 local decorations = { 'none', 'soft-shadow-thin', 'soft-shadow-thick', 'shadow' }
 local iconside = { PSBT_ICON_SIDE.NONE, PSBT_ICON_SIDE.LEFT, PSBT_ICON_SIDE.RIGHT }
 local direction = { PSBT_SCROLL_DIRECTIONS.UP, PSBT_SCROLL_DIRECTIONS.DOWN }
@@ -189,5 +191,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.OPTIONS, PSBT_Options:New( psbt ) )
+        psbt:RegisterModule( PSBT_MODULES.OPTIONS, PSBT_Options:New( psbt ), kVersion )
     end)

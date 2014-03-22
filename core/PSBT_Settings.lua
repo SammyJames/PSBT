@@ -14,6 +14,8 @@ local RIGHT                  = RIGHT
 local LEFT                   = LEFT
 local CENTER                 = CENTER
 
+local kVersion               = 2.5        
+
 local defaults = 
 {
     normal_font = 
@@ -74,7 +76,7 @@ local defaults =
 function PSBT_Settings:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
 
-    self.db      = ZO_SavedVars:New( 'PSBT_DB', 2.5, nil, defaults )
+    self.db      = ZO_SavedVars:New( 'PSBT_DB', kVersion, nil, defaults )
     self.profile = self.db:GetInterfaceForCharacter( GetDisplayName(), GetUnitName( 'player' ) )
 end
 
@@ -92,5 +94,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.SETTINGS, PSBT_Settings:New( psbt ) )
+        psbt:RegisterModule( PSBT_MODULES.SETTINGS, PSBT_Settings:New( psbt ), kVersion )
     end)

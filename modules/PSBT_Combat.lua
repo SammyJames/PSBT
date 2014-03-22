@@ -16,6 +16,7 @@ local PSBT_EVENTS           = PSBT_EVENTS
 local zo_strformat          = zo_strformat
 local GetString             = GetString
 local select                = select          
+local kVerison              = 1.0
 
 local function IsPlayerType( targetType )
     return targetType == COMBAT_UNIT_TYPE_PLAYER or
@@ -375,5 +376,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.COMBAT, PSBT_Combat:New( psbt ) )
+        psbt:RegisterModule( PSBT_MODULES.COMBAT, PSBT_Combat:New( psbt ), kVerison )
     end)

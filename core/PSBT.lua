@@ -113,13 +113,19 @@ function PSBT:SetConfigurationMode( mode )
     end
 end
 
-function PSBT:RegisterModule( identity, class )
-    if ( self._modules[ identity ] ) then
+function PSBT:RegisterModule( identity, class, version )
+    if ( not version ) then
+        version = -1
+    end
+
+    if ( self._modules[ identity ] and ( version < self._modules[ identity ].__version or 0 ) ) then
         return
     end
 
-    print ( 'PSBT:RegisterModule %s', identity )
+    print( 'PSBT module registered: ' .. identity .. ' @ ' .. version )
+
     self._modules[ identity ] = class
+    self._modules[ identity ].__version = version
 end
 
 function PSBT:GetModule( identity )

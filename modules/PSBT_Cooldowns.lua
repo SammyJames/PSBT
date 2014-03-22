@@ -5,6 +5,8 @@ local CBM                   = CALLBACK_MANAGER
 local PSBT_EVENTS           = PSBT_EVENTS
 local PSBT_MODULES          = PSBT_MODULES
 
+local kVerison              = 1.0
+
 function PSBT_Cooldowns:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
 
@@ -20,5 +22,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.COOLDOWNS, PSBT_Cooldowns:New( psbt ) )
+        psbt:RegisterModule( PSBT_MODULES.COOLDOWNS, PSBT_Cooldowns:New( psbt ), kVerison )
     end )
