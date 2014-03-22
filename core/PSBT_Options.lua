@@ -19,10 +19,10 @@ local direction = { PSBT_SCROLL_DIRECTIONS.UP, PSBT_SCROLL_DIRECTIONS.DOWN }
 
 function PSBT_Options:Initialize( root )
     PSBT_Module.Initialize( self, root ) 
-    self:InitialzeControlPanel()
+    self:InitializeControlPanel()
 end
 
-function PSBT_Options:InitialzeControlPanel()
+function PSBT_Options:InitializeControlPanel()
     self.config_panel = LAM:CreateControlPanel( '_psbt', 'PSBT' )
     self.config_mode = false
 
