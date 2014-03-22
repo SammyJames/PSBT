@@ -17,12 +17,12 @@ local POWERTYPE_MOUNT_STAMINA = POWERTYPE_MOUNT_STAMINA
 function PSBT_LowSomething:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
 
-    self._pools[POWERTYPE_HEALTH]        = 0
-    self._pools[POWERTYPE_MAGICKA]       = 0
-    self._pools[POWERTYPE_STAMINA]       = 0
-    self._pools[POWERTYPE_MOUNT_STAMINA] = 0
+    self._pools[ POWERTYPE_HEALTH ]        = 0
+    self._pools[ POWERTYPE_MAGICKA ]       = 0
+    self._pools[ POWERTYPE_STAMINA ]       = 0
+    self._pools[ POWERTYPE_MOUNT_STAMINA ] = 0
 
-    self:RegisterForEvent( EVENT_POWER_UPDATE, function( event, ... ) self:OnPowerUpdate( ... ) end )
+    self:RegisterForEvent( EVENT_POWER_UPDATE, function( ... ) self:OnPowerUpdate( ... ) end )
 end
 
 function PSBT_LowSomething:OnPowerUpdate( unit, powerPoolIndex, powerType, powerPool, powerPoolMax )

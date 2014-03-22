@@ -14,7 +14,7 @@ function PSBT_Experience:Initialize( ... )
 
     self._currentExperience = GetUnitXP( 'player' )
 
-    self:RegisterForEvent( EVENT_EXPERIENCE_UPDATE, function( event, ... ) self:OnXPUpdated( ... ) end )
+    self:RegisterForEvent( EVENT_EXPERIENCE_UPDATE, function( ... ) self:OnXPUpdated( ... ) end )
 end
 
 function PSBT_Experience:OnXPUpdated( tag, exp, maxExp, reason  )

@@ -12,7 +12,7 @@ local PSBT_MODULES          = PSBT_MODULES
 function PSBT_Auras:Initialize( ... )  
     PSBT_Module.Initialize( self, ... )
 
-    self:RegisterForEvent( EVENT_EFFECT_CHANGED, function( eventCode, ... ) self:OnEffectChanged( ... ) end )
+    self:RegisterForEvent( EVENT_EFFECT_CHANGED, function( ... ) self:OnEffectChanged( ... ) end )
 end
 
 function PSBT_Auras:OnEffectChanged( changeType, effectSlot, effectName, unitTag, beginTime, endTime, stackCount, iconName, buffType, effectType, abilityType, statusEffectType )
@@ -20,7 +20,9 @@ function PSBT_Auras:OnEffectChanged( changeType, effectSlot, effectName, unitTag
         return
     end
 
-    print( 'OnEffectChanged' )
+    if ( iconName == '/esoui/art/icons/ability_warrior_008.dds') then
+        return
+    end
 
     if ( changeType == EFFECT_RESULT_FADED ) then
         self:Remove( effectName, iconName )

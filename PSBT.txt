@@ -26,6 +26,7 @@ modules/PSBT_Combat.lua
 modules/PSBT_Cooldowns.lua
 modules/PSBT_Experience.lua
 modules/PSBT_LowSomething.lua
+modules/PSBT_Ultimate.lua
 
 ## core
 core/PSBT_Fifo.lua

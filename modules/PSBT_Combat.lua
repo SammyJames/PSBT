@@ -297,12 +297,18 @@ function PSBT_Combat:Initialize( ... )
     self._index     = 1
     self._free      = nil
 
+    self:RegisterForEvent( EVENT_COMBAT_EVENT,          function( ... ) self:OnCombatEvent( ... )    end )
+    self:RegisterForEvent( EVENT_SKILLS_FULL_UPDATE,    function() self:RefreshAbilityIcons()        end )
+    self:RegisterForEvent( EVENT_SKILL_POINTS_CHANGED,  function() self:RefreshAbilityIcons()        end )
+
+    self:RefreshAbilityIcons()
+end
+
+function PSBT_Combat:RefreshAbilityIcons()
     for i=1,GetNumAbilities() do
         local name, icon = GetAbilityInfoByIndex( i )
         self._iconRegistry[ name ] = icon
     end
-
-    self:RegisterForEvent( EVENT_COMBAT_EVENT, function( event, ... ) self:OnCombatEvent( ... ) end )
 end
 
 function PSBT_Combat:OnCombatEvent( ... )

@@ -7,6 +7,7 @@ PSBT_MODULES =
     AURAS               = 'auras',
     XP                  = 'experience',
     LOW                 = 'lowsomething',
+    ULTIMATE            = 'ultimate',
 }
 
 PSBT_AREAS = 

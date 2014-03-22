@@ -33,6 +33,7 @@ if ( not LMP ) then return end
 local PSBT = ZO_ObjectPool:Subclass()
 PSBT._modules  = {}
 PSBT._areas    = {}
+PSBT._events   = {}
 
 local CBM               = CALLBACK_MANAGER
 local PSBT_ScrollArea   = PSBT_ScrollArea
@@ -40,6 +41,11 @@ local PSBT_AREAS        = PSBT_AREAS
 local PSBT_EVENTS       = PSBT_EVENTS
 local PSBT_MODULES      = PSBT_MODULES
 local PSBT_SETTINGS     = PSBT_SETTINGS
+
+local tinsert = table.insert
+local tremove = table.remove
+
+local _
 
 function PSBT:New( ... )
     local result = ZO_ObjectPool.New( self, PSBT.CreateLabel, function( ... ) self:ResetLabel( ... ) end )
@@ -143,11 +149,44 @@ function PSBT:SetSetting( name, value )
 end
 
 function PSBT:RegisterForEvent( event, callback )
-    self.control:RegisterForEvent( event, callback )
+    if ( not self._events[ event ] ) then
+        self._events[ event ] = {}
+    end
+
+    tinsert( self._events[ event ], callback )
+
+    self.control:RegisterForEvent( event, function( ... ) self:OnEvent( ... ) end )
+end
+
+function PSBT:OnEvent( event, ... ) 
+    if ( not self._events[ event ] ) then
+        return
+    end
+
+    local callbacks = self._events[ event ]
+    for _,v in pairs( callbacks ) do
+        v( ... )
+    end
 end
 
 function PSBT:UnregisterForEvent( event, callback )
-    self.control:UnregisterForEvent( event, callback )
+    if ( not self._events[ event ] ) then
+        return
+    end
+
+    local callbacks = self._events[ event ]
+    local i = 1
+    while( i <= #callbacks ) do
+        if ( callbacks[ i ] == callback ) then
+            tremove( callbacks, i )
+        else
+            i = i + 1
+        end
+    end
+
+    if ( #callbacks == 0 ) then
+        self.control:UnregisterForEvent( event, function( ... ) self:OnEvent( ... ) end )
+    end
 end
 
 function PSBT:NewEvent( scrollArea, sticky, icon, text )
