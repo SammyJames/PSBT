@@ -121,7 +121,15 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
         if ( entry and entry:WillExpire( frameTime + 2 ) ) then
             local anim = LibAnim:New( entry.control )
             anim:AlphaTo( 0.0, 200 )
-            anim:TranslateTo( 0, -100, 200 )
+
+            local ypos = 0
+            if ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) then
+                ypos = -100
+            elseif ( self._direction == PSBT_SCROLL_DIRECTIONS.DOWN ) then
+                ypos = 100
+            end
+
+            anim:TranslateTo( 0, ypos, 200 )
             anim:Play()
 
             entry:SetMoving( false )

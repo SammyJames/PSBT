@@ -1,18 +1,18 @@
-local PSBT_Module   = PSBT_Module
-local PSBT_Settings = PSBT_Module:Subclass()
-local CBM           = CALLBACK_MANAGER
+local PSBT_Module            = PSBT_Module
+local PSBT_Settings          = PSBT_Module:Subclass()
+local CBM                    = CALLBACK_MANAGER
 
-local PSBT_MODULES  = PSBT_MODULES
-local PSBT_EVENTS   = PSBT_EVENTS
-local PSBT_AREAS    = PSBT_AREAS
-local PSBT_ICON_SIDE= PSBT_ICON_SIDE
+local PSBT_MODULES           = PSBT_MODULES
+local PSBT_EVENTS            = PSBT_EVENTS
+local PSBT_AREAS             = PSBT_AREAS
+local PSBT_ICON_SIDE         = PSBT_ICON_SIDE
 local PSBT_SCROLL_DIRECTIONS = PSBT_SCROLL_DIRECTIONS
 
-local ZO_SavedVars  = ZO_SavedVars
+local ZO_SavedVars           = ZO_SavedVars
 
-local RIGHT = RIGHT
-local LEFT = LEFT
-local CENTER = CENTER
+local RIGHT                  = RIGHT
+local LEFT                   = LEFT
+local CENTER                 = CENTER
 
 local defaults = 
 {
@@ -74,7 +74,7 @@ local defaults =
 function PSBT_Settings:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
 
-    self.db = ZO_SavedVars:New( 'PSBT_DB', 2.5, nil, defaults )
+    self.db      = ZO_SavedVars:New( 'PSBT_DB', 2.5, nil, defaults )
     self.profile = self.db:GetInterfaceForCharacter( GetDisplayName(), GetUnitName( 'player' ) )
 end
 
