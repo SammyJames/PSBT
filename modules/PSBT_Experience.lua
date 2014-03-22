@@ -14,7 +14,7 @@ function PSBT_Experience:Initialize( ... )
 
     self._currentExperience = GetUnitXP( 'player' )
 
-    self:RegisterForEvent( EVENT_EXPERIENCE_UPDATE, function( event, ... ) self:OnXPUpdated( ... )     end )
+    self:RegisterForEvent( EVENT_EXPERIENCE_UPDATE, function( event, ... ) self:OnXPUpdated( ... ) end )
 end
 
 function PSBT_Experience:OnXPUpdated( tag, exp, maxExp, reason  )
@@ -34,7 +34,6 @@ function PSBT_Experience:OnXPUpdated( tag, exp, maxExp, reason  )
     if ( gain <= 0 ) then
         return
     end
-
     self:NewEvent( PSBT_AREAS.NOTIFICATION, true, nil, '+' .. tostring( gain ) .. ' XP' )
 end
 

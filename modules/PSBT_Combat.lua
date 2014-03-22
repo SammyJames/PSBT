@@ -91,26 +91,25 @@ local combat_events =
     end,
     [ ACTION_RESULT_CRITICAL_HEAL ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local area = nil
-        local name = nil
         if ( IsPlayer( targetType, targetName ) ) then
-            name = sourceName
             area = PSBT_AREAS.INCOMING
         elseif ( IsPlayer( sourceType, sourceName ) ) then
-            name = targetName
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>> [|c80C3F2<<2>>|r]!', hitValue, name ), area, true
+        return zo_strformat( '+<<1>>!', hitValue ), area, true
     end,
     [ ACTION_RESULT_DAMAGE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
         local area = nil
+        local format = '<<1>>'
         if ( IsPlayer( targetType, targetName ) ) then
             area = PSBT_AREAS.INCOMING
+            format = '-' .. format
         elseif ( IsPlayer( sourceType, sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( "<<1>>", hitValue ), area, false
+        return zo_strformat( format, hitValue ), area, false
     end,
     [ ACTION_RESULT_DAMAGE_SHIELDED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
         local area = nil
@@ -134,62 +133,57 @@ local combat_events =
     end,
     [ ACTION_RESULT_DOT_TICK ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
         local area = nil
+        local format = '<<1>>'
         if ( IsPlayer( targetType, targetName ) ) then
             area = PSBT_AREAS.INCOMING
+            format = '-' .. format
         elseif ( IsPlayer( sourceType, sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '<<1>>', hitValue ), area, false
+        return zo_strformat( format, hitValue ), area, false
     end,
     [ ACTION_RESULT_DOT_TICK_CRITICAL ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
         local area = nil
+        local format = '<<1>>!'
         if ( IsPlayer( targetType, targetName ) ) then
             area = PSBT_AREAS.INCOMING
+            format = '-' .. format
         elseif ( IsPlayer( sourceType, sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '<<1>>!', hitValue ), area, true
+        return zo_strformat( format, hitValue ), area, true
     end,
     [ ACTION_RESULT_HEAL ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local area = nil
-        local name = nil
         if ( IsPlayer( targetType, targetName ) ) then
-            name = sourceName
             area = PSBT_AREAS.INCOMING
         elseif ( IsPlayer( sourceType, sourceName ) ) then
-            name = targetName
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>> [|c80C3F2<<2>>|r]' , hitValue, name ), area, false
+        return zo_strformat( '+<<1>>' , hitValue ), area, false
     end,
     [ ACTION_RESULT_HOT_TICK ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local area = nil
-        local name = nil
         if ( IsPlayer( targetType, targetName ) ) then
-            name = sourceName
             area = PSBT_AREAS.INCOMING
         elseif ( IsPlayer( sourceType, sourceName ) ) then
-            name = targetName
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>> [|c80C3F2<<2>>|r]', hitValue, name ), area, false
+        return zo_strformat( '+<<1>>', hitValue ), area, false
     end,
     [ ACTION_RESULT_HOT_TICK_CRITICAL ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local area = nil
-        local name = nil
         if ( IsPlayer( targetType, targetName ) ) then
-            name = sourceName
             area = PSBT_AREAS.INCOMING
         elseif ( IsPlayer( sourceType, sourceName ) ) then
-            name = targetName
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>> [|c80C3F2<<2>>|r]!', hitValue, name ), area, true
+        return zo_strformat( '+<<1>>!', hitValue ), area, true
     end,
     [ ACTION_RESULT_DODGED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local area = nil
@@ -219,7 +213,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Parried <<1>>', abilityName ), area, false
+        return zo_strformat( 'Parried <<1>>!', abilityName ), area, false
     end,
     [ ACTION_RESULT_RESIST ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local area = nil
@@ -253,56 +247,27 @@ local combat_events =
     end,
     [ ACTION_RESULT_KILLING_BLOW ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType )
         if ( IsPlayer( targetType, targetName ) ) then
-            return zo_strformat( '<<1>> Kill You.', sourceName ), PSBT_AREAS.STATIC, true
+            return zo_strformat( '<<1>> Killed You.', sourceName ), PSBT_AREAS.STATIC, true
         elseif ( IsPlayer( sourceType, sourceName ) ) then
             return zo_strformat( 'Killing Blow <<1>>!', targetName ), PSBT_AREAS.STATIC, true
         end
 
         return nil, nil, false
     end,
-    [ EVENT_ALLIANCE_POINT_UPDATE ] = function(value, sound, diff)
-        local area = nil
-        if ( diff > 0 ) then
-            area = PSBT_AREAS.INCOMING
-        else
-            area = PSBT_AREAS.OUTGOING
-        end
-
-        return zo_strformat( '<<1>> AP', diff ), area, false
-    end,
-    [ EVENT_RANK_POINT_UPDATE ] = function( tag , value, diff )
-        if (tag == "player") then
-            local area = nil
-            if ( diff > 0 ) then
-                area = PSBT_AREAS.INCOMING
-            else
-                area = PSBT_AREAS.OUTGOING
-            end
-
-            return zo_strformat( '<<1>> RP', diff ), area, false
-        end
-    end,
-    [ EVENT_BATTLE_TOKEN_UPDATE ] = function( value, sound, diff )
-        local area = nil
-        if ( diff > 0 ) then
-            area = PSBT_AREAS.INCOMING
-        else
-            area = PSBT_AREAS.OUTGOING
-        end
-
-        return zo_strformat( '<<1>> BT', diff ), area, false
-    end,
-    [ EVENT_EXPERIENCE_GAIN ] = function( value )
-        return zo_strformat( '+<<1>> XP', value ), PSBT_AREAS.INCOMING, false
-    end,
-    [ EVENT_EXPERIENCE_GAIN_DISCOVERY ] = function( areaName, value )
-        return zo_strformat( '+<<1>> XP', value ), PSBT_AREAS.INCOMING, false 
-    end,
 
     [ ACTION_RESULT_POWER_DRAIN ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
         local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', mechanicValue )
         return zo_strformat( '-<<1>> (<<2>>)', hitValue, mechanicName ), PSBT_AREAS.OUTGOING, false
     end,
+
+    [ ACTION_RESULT_BAD_TARGET ] = function( ... )
+        return 'Bad Target', PSBT_AREAS.STATIC, false
+    end,
+
+    [ ACTION_RESULT_CANNOT_USE ] = function( ... )
+        return 'Cannot Use', PSBT_AREAS.STATIC, false
+    end,
+
     ---------------------------------------------
     --[[[ ACTION_RESULT_POWER_ENERGIZE ]            = nil,
     [ ACTION_RESULT_EFFECT_GAINED_DURATION ]    = nil,

@@ -9,8 +9,11 @@ local NUM_STICKY    = 4
 
 local PSBT_Fifo     = PSBT_Fifo
 local CENTER        = CENTER
+local BOTTOM        = BOTTOM
+local TOP           = TOP
 
 local PSBT_EVENTS   = PSBT_EVENTS
+local PSBT_SCROLL_DIRECTIONS = PSBT_SCROLL_DIRECTIONS
 
 function PSBT_ScrollArea:New( ... )
     local result = ZO_Object.New( self )
@@ -18,25 +21,21 @@ function PSBT_ScrollArea:New( ... )
     return result
 end
 
-function PSBT_ScrollArea:Initialize( super, areaName, anchor, position )
+function PSBT_ScrollArea:Initialize( super, areaName, settings )
     self.name           = areaName
     self.control        = super:GetNamedChild( areaName )
     self.background     = self.control:GetNamedChild( '_BG' )
     self.label          = self.control:GetNamedChild( '_Name' )
-    self._anchor        = anchor
-    self._animHeight    = nil
     self._newSticky     = false
+    self._height        = self.control:GetHeight()
     self._sticky        = PSBT_Fifo.New()
     self._pendingSticky = PSBT_Fifo.New()
     self._normal        = {}
     self._pendingNormal = PSBT_Fifo.New()
+    self._direction     = settings.dir
+    self._iconSide      = settings.icon
 
-    if ( anchor == TOP ) then
-        self._animHeight = self.control:GetHeight()
-    else
-        self._animHeight = -1 * self.control:GetHeight()
-    end
-    self:Position( unpack( position ) )
+    self:Position( settings )
     self:SetConfigurationMode( false )
     self.control:SetHandler( 'OnUpdate', function( event, ... ) self:OnUpdate( ... ) end )
 
@@ -58,27 +57,53 @@ function PSBT_ScrollArea:SetConfigurationMode( enable )
     end
 end
 
-function PSBT_ScrollArea:Position( point, relPoint, x, y )
-    self.control:SetAnchor( point, self.control:GetParent(), relPoint, x, y )
+function PSBT_ScrollArea:Position( settings )
+    self.control:SetAnchor( settings.to, self.control:GetParent(), settings.from, settings.x, settings.y )
 end
 
 function PSBT_ScrollArea:GetAnchorOffsets()
     local _, point, _, relPoint, offsX, offsY = self.control:GetAnchor( 0 )
-    return point, relPoint, offsX, offsY
+    return { to = point, from = relPoint, x = offsX, y = offsY }
+end
+
+function PSBT_ScrollArea:AnchorChild( label, sticky )
+    local relativeTo = CENTER
+    if ( not sticky ) then
+        if ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) then
+            relativeTo = BOTTOM
+        elseif ( self._direction == PSBT_SCROLL_DIRECTIONS.DOWN ) then
+            relativeTo = TOP
+        end
+    end
+
+    label.control:SetAnchor( CENTER, self.control, relativeTo, 0, 0 )
 end
 
 function PSBT_ScrollArea:Push( entry, sticky )
-    if ( sticky ) then
-        entry.control:SetAnchor( CENTER, self.control, CENTER, 0, self.control:GetHeight() )
-        self._pendingSticky:Push( entry )
-        return
-    end
+    self:AnchorChild( entry, sticky )
 
-    entry.control:SetAnchor( CENTER, self.control, self._anchor, 0, 0 )
-    self._pendingNormal:Push( entry )
+    entry:SetIconPosition( self._iconSide )
+
+    if ( sticky ) then
+        self._pendingSticky:Push( entry )
+    else
+        self._pendingNormal:Push( entry )
+    end
+end
+
+function PSBT_ScrollArea:SetSettings( settings )
+    self._iconSide = settings.icon
+    self._direction = settings.dir
 end
 
 function PSBT_ScrollArea:OnUpdate( frameTime ) 
+    if ( not self._sticky:Size() and 
+         not #self._normal and 
+         not self._pendingNormal:Size() and
+         not self._pendingSticky:Size() ) then
+        return
+    end
+
     while ( self._sticky:Size() > NUM_STICKY ) do
         local old = self._sticky:Pop()
         local anim = LibAnim:New( old.control )
@@ -96,7 +121,7 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
         if ( entry and entry:WillExpire( frameTime + 2 ) ) then
             local anim = LibAnim:New( entry.control )
             anim:AlphaTo( 0.0, 200 )
-            anim:TranslateTo( 0, -200, 200 )
+            anim:TranslateTo( 0, -100, 200 )
             anim:Play()
 
             entry:SetMoving( false )
@@ -148,7 +173,16 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
         else
             if ( not entry:IsMoving() ) then
                 local anim = LibAnim:New( entry.control )
-                anim:TranslateTo( 0, self._animHeight, 3000 )
+
+                local targetY = 0
+                if ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) then
+                    targetY = self._height * -1
+                else
+                    targetY = self._height
+                end
+
+
+                anim:TranslateTo( 0, targetY, 3000 )
                 anim:Play()
 
                 entry:SetMoving( true )

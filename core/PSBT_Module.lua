@@ -1,5 +1,4 @@
 PSBT_Module             = ZO_Object:Subclass()
-PSBT_Module._root       = nil 
 
 local CBM = CALLBACK_MANAGER
 

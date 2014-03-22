@@ -1,5 +1,5 @@
 ## Title: PSBT - By Pawkette
-## APIVersion: 100000
+## APIVersion: 100003
 ## OptionalDependsOn: LibStub LibMediaProvider-1.0 LibAddonMenu-1.0 LibAnimation-1.0
 ## SavedVariables: PSBT_DB
 
@@ -9,22 +9,27 @@ libs/libanimation-1.0/libanimation.lua
 libs/libmediaprovider-1.0/libmediaprovider-1.0.lua
 libs/libaddonmenu-1.0/libaddonmenu-1.0.lua
 
-## constants
-PSBT_Constants.lua
+## media
+core/PSBT_Media.lua
 
-## modules
-PSBT_Module.lua
-PSBT_Settings.lua
-PSBT_Options.lua
-PSBT_Combat.lua
-PSBT_Cooldowns.lua
-PSBT_Auras.lua
-PSBT_Experience.lua
-PSBT_LowSomething.lua
+## constants
+core/PSBT_Constants.lua
+
+## core modules
+core/PSBT_Module.lua
+core/PSBT_Settings.lua
+core/PSBT_Options.lua
+
+## extended modules
+modules/PSBT_Auras.lua
+modules/PSBT_Combat.lua
+modules/PSBT_Cooldowns.lua
+modules/PSBT_Experience.lua
+modules/PSBT_LowSomething.lua
 
 ## core
-PSBT_Fifo.lua
-PSBT_Label.lua
-PSBT_ScrollArea.lua
-PSBT.lua
-PSBT.xml
+core/PSBT_Fifo.lua
+core/PSBT_Label.lua
+core/PSBT_ScrollArea.lua
+core/PSBT.lua
+core/PSBT.xml

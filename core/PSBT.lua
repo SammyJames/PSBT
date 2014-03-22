@@ -27,6 +27,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]
 ------------------------------------------------
+local LMP = LibStub( 'LibMediaProvider-1.0' )
+if ( not LMP ) then return end
+
 local PSBT = ZO_ObjectPool:Subclass()
 PSBT._modules  = {}
 PSBT._areas    = {}
@@ -36,6 +39,7 @@ local PSBT_ScrollArea   = PSBT_ScrollArea
 local PSBT_AREAS        = PSBT_AREAS
 local PSBT_EVENTS       = PSBT_EVENTS
 local PSBT_MODULES      = PSBT_MODULES
+local PSBT_SETTINGS     = PSBT_SETTINGS
 
 function PSBT:New( ... )
     local result = ZO_ObjectPool.New( self, PSBT.CreateLabel, function( ... ) self:ResetLabel( ... ) end )
@@ -48,14 +52,14 @@ function PSBT:Initialize( control )
     self.control:RegisterForEvent( EVENT_ADD_ON_LOADED, function( _, addon ) self:OnLoaded( addon ) end )
 end
 
-function PSBT:FormatFont( fontObject )
-    local path, size, decoration = fontObject:GetFontInfo()
+function PSBT:FormatFont( font )
+    local face, size, decoration = font.face, font.size, font.deco
     local fmt = '%s|%d'
-    if ( decoration ) then
+    if ( decoration and decoration ~= 'none' ) then
         fmt = fmt .. '|%s'
     end
 
-    return fmt:format( path, size, decoration ) 
+    return fmt:format( LMP:Fetch( LMP.MediaType.FONT, face ), size, decoration ) 
 end
 
 function PSBT:OnLoaded( addon )
@@ -66,10 +70,10 @@ function PSBT:OnLoaded( addon )
     print( 'Loading PSBT' )
     CBM:FireCallbacks( PSBT_EVENTS.LOADED, self )
 
-    self._areas[ PSBT_AREAS.INCOMING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.INCOMING,     BOTTOM, self:GetSetting( PSBT_AREAS.INCOMING ) )
-    self._areas[ PSBT_AREAS.OUTGOING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.OUTGOING,     TOP, self:GetSetting( PSBT_AREAS.OUTGOING ) )
-    self._areas[ PSBT_AREAS.STATIC ]       = PSBT_ScrollArea:New( self.control, PSBT_AREAS.STATIC,       BOTTOM, self:GetSetting( PSBT_AREAS.STATIC ) )
-    self._areas[ PSBT_AREAS.NOTIFICATION ] = PSBT_ScrollArea:New( self.control, PSBT_AREAS.NOTIFICATION, TOP, self:GetSetting( PSBT_AREAS.NOTIFICATION ) )
+    self._areas[ PSBT_AREAS.INCOMING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.INCOMING,     self:GetSetting( PSBT_AREAS.INCOMING ) )
+    self._areas[ PSBT_AREAS.OUTGOING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.OUTGOING,     self:GetSetting( PSBT_AREAS.OUTGOING ) )
+    self._areas[ PSBT_AREAS.STATIC ]       = PSBT_ScrollArea:New( self.control, PSBT_AREAS.STATIC,       self:GetSetting( PSBT_AREAS.STATIC ) )
+    self._areas[ PSBT_AREAS.NOTIFICATION ] = PSBT_ScrollArea:New( self.control, PSBT_AREAS.NOTIFICATION, self:GetSetting( PSBT_AREAS.NOTIFICATION ) )
 
     CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
     self.control:SetHandler( 'OnUpdate', function( _, frameTime ) self:OnUpdate( frameTime ) end )
@@ -98,7 +102,7 @@ end
 function PSBT:SetConfigurationMode( mode )
     if ( not mode ) then
         for k,v in pairs( self._areas ) do
-            self:SetSetting( k, { v:GetAnchorOffsets() } )
+            self:SetSetting( k, v:GetAnchorOffsets() )
         end
     end
 end
@@ -128,6 +132,14 @@ end
 function PSBT:SetSetting( name, value )
     local settings = self:GetModule( PSBT_MODULES.SETTINGS )
     settings:SetSetting( name, value )
+
+    if ( name == PSBT_AREAS.INCOMING or 
+         name == PSBT_AREAS.OUTGOING or
+         name == PSBT_AREAS.STATIC or 
+         name == PSBT_AREAS.NOTIFICATION ) then
+    
+        self._areas[ name ]:SetSettings( value )    
+    end
 end
 
 function PSBT:RegisterForEvent( event, callback )
@@ -146,18 +158,18 @@ function PSBT:NewEvent( scrollArea, sticky, icon, text )
     end
 
     if ( sticky ) then
-        entry.label:SetFont( self:FormatFont( ZoFontCallout ) )
+        entry.label:SetFont( self:FormatFont( self:GetSetting( PSBT_SETTINGS.sticky_font ) ) )
         entry.control:SetDrawTier( DT_HIGH )
     else
-        entry.label:SetFont( self:FormatFont( ZoFontGameBold ) )
+        entry.label:SetFont( self:FormatFont( self:GetSetting( PSBT_SETTINGS.normal_font ) ) )
         entry.control:SetDrawTier( DT_LOW )
     end
 
-    entry:SetExpire( -1 ) --pending
+    entry:SetExpire( -1 )
     entry:SetText( text ) 
     entry:SetTexture( icon )
 
-    area:Push( entry, sticky )
+    area:Push( entry, sticky, direction )
 end
 
 -- LEAVE ME THE FUARK ALONE
