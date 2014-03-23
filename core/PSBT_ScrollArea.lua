@@ -63,7 +63,7 @@ end
 
 function PSBT_ScrollArea:GetAnchorOffsets()
     local _, point, _, relPoint, offsX, offsY = self.control:GetAnchor( 0 )
-    return { to = point, from = relPoint, x = offsX, y = offsY }
+    return point, relPoint, offsX, offsY
 end
 
 function PSBT_ScrollArea:AnchorChild( label, sticky )

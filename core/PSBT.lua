@@ -108,7 +108,15 @@ end
 function PSBT:SetConfigurationMode( mode )
     if ( not mode ) then
         for k,v in pairs( self._areas ) do
-            self:SetSetting( k, v:GetAnchorOffsets() )
+            local settings = self:GetSetting( k )
+            local point, relPoint, offsX, offsY = v:GetAnchorOffsets()
+
+            settings.to = point
+            settings.from = relPoint
+            settings.x = offsX
+            settings.y = offsY
+
+            self:SetSetting( k, settings )
         end
     end
 end

@@ -106,8 +106,8 @@ function PSBT_Options:InitializeControlPanel()
         end )
 
     -- INCOMMING
-    LAM:AddHeader( self.config_panel, '_psbt_incomming', 'Incomming' )
-    LAM:AddDropdown( self.config_panel, '_psbt_incomming_iconside_dd', 'Icon Side:', '', iconside,
+    LAM:AddHeader( self.config_panel, '_psbt_incoming', 'Incoming' )
+    LAM:AddDropdown( self.config_panel, '_psbt_incoming_iconside_dd', 'Icon Side:', '', iconside,
         function() 
             return self._root:GetSetting( PSBT_AREAS.INCOMING ).icon end,
         function( selection ) 
@@ -116,7 +116,7 @@ function PSBT_Options:InitializeControlPanel()
             self._root:SetSetting( PSBT_AREAS.INCOMING, current )
         end )
 
-    LAM:AddDropdown( self.config_panel, '_psbt_incomming_direction_dd', 'Direction:', '', direction,
+    LAM:AddDropdown( self.config_panel, '_psbt_incoming_direction_dd', 'Direction:', '', direction,
         function() 
             return self._root:GetSetting( PSBT_AREAS.INCOMING ).dir end,
         function( selection ) 

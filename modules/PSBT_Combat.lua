@@ -248,9 +248,9 @@ local combat_events =
     end,
     [ ACTION_RESULT_KILLING_BLOW ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType )
         if ( IsPlayer( targetType, targetName ) ) then
-            return zo_strformat( '<<1>> Killed You.', sourceName ), PSBT_AREAS.STATIC, true
+            return 'Looks like you\'re dead.', PSBT_AREAS.STATIC, true
         elseif ( IsPlayer( sourceType, sourceName ) ) then
-            return zo_strformat( 'Killing Blow <<1>>!', targetName ), PSBT_AREAS.STATIC, true
+            return zo_strformat( 'Killing Blow |cCC7D5E<<1>>|r!', targetName ), PSBT_AREAS.STATIC, true
         end
 
         return nil, nil, false
@@ -261,33 +261,131 @@ local combat_events =
         return zo_strformat( '-<<1>> (<<2>>)', hitValue, mechanicName ), PSBT_AREAS.OUTGOING, false
     end,
 
+    [ ACTION_RESULT_POWER_ENERGIZE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+        local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', mechanicValue )
+        return zo_strformat( '+<<1>> (<<2>>)', hitValue, mechanicName ), PSBT_AREAS.INCOMING, false
+    end,
+
     [ ACTION_RESULT_BAD_TARGET ] = function( ... )
-        return 'Bad Target', PSBT_AREAS.STATIC, false
+        return 'Bad Target', PSBT_AREAS.STATIC, true
     end,
 
     [ ACTION_RESULT_CANNOT_USE ] = function( ... )
-        return 'Cannot Use', PSBT_AREAS.STATIC, false
+        return 'Cannot Use', PSBT_AREAS.STATIC, true
     end,
 
-    ---------------------------------------------
-    --[[[ ACTION_RESULT_POWER_ENERGIZE ]            = nil,
-    [ ACTION_RESULT_EFFECT_GAINED_DURATION ]    = nil,
-    [ ACTION_RESULT_EFFECT_GAINED ]             = nil,
-    [ ACTION_RESULT_EFFECT_FADED ]              = nil,
-    [ ACTION_RESULT_DEBUFF ]                    = nil, 
-    [ ACTION_RESULT_CASTER_DEAD ]               = nil,
-    [ ACTION_RESULT_COMPLETE ]                  = nil,
-    [ ACTION_RESULT_BUFF ]                      = nil,
-    [ ACTION_RESULT_BUSY ]                      = nil,
-    [ ACTION_RESULT_CANNOT_USE ]                = nil,
-    [ ACTION_RESULT_BEGIN_CHANNEL ]             = nil,
-    [ ACTION_RESULT_BAD_TARGET ]                = nil,
-    [ ACTION_RESULT_ABILITY_ON_COOLDOWN ]       = nil,
-    [ ACTION_RESULT_BEGIN ]                     = nil,
-    [ ACTION_RESULT_POWER_DRAIN ]               = nil,
-    [ ACTION_RESULT_RESURRECT ]                 = nil,
-    [ ACTION_RESULT_DIED ]                      = nil,
-    [ ACTION_RESULT_DIED_XP ]                   = nil,]]
+    [ ACTION_RESULT_BUSY ] = function( ... )
+        return 'Busy', PSBT_AREAS.STATIC, true
+    end,   
+
+    [ ACTION_RESULT_FALLING ] = function( ... )
+        return 'You\'re falling', PSBT_AREAS.STATIC, true
+    end,
+
+    [ ACTION_RESULT_DISORIENTED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+        if ( IsPlayer( targetType, targetName ) ) then
+            return 'Disoriented!', PSBT_AREAS.INCOMING, true
+        elseif ( IsPlayer( sourceType, sourceName ) ) then
+            return 'Disoriented!', PSBT_AREAS.OUTGOING, true
+        end
+        return nil, nil, false
+    end,
+
+    [ ACTION_RESULT_DISARMED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+        if ( IsPlayer( targetType, targetName ) ) then
+            return 'Disarmed!', PSBT_AREAS.OUTGOING, true
+        elseif ( IsPlayer( sourceType, sourceName ) ) then
+            return 'Disarmed!', PSBT_AREAS.INCOMING, true
+        end
+        return nil, nil, false
+    end,
+
+    [ ACTION_RESULT_FEARED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+         if ( IsPlayer( targetType, targetName ) ) then
+            return 'Feared!', PSBT_AREAS.INCOMING, true
+        elseif ( IsPlayer( sourceType, sourceName ) ) then
+            return 'Feared!', PSBT_AREAS.OUTGOING, true
+        end
+        return nil, nil, false
+    end,
+
+    [ ACTION_RESULT_IMMUNE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+        if ( IsPlayer( targetType, targetName ) ) then
+            return 'Immune!', PSBT_AREAS.INCOMING, true
+        elseif ( IsPlayer( sourceType, sourceName ) ) then
+            return 'Immune!', PSBT_AREAS.OUTGOING, true
+        end
+        return nil, nil, false
+    end,
+
+    [ ACTION_RESULT_INTERRUPT ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue ) 
+        if ( IsPlayer( targetType, targetName ) ) then
+            return 'Interrupt!', PSBT_AREAS.INCOMING, true
+        elseif ( IsPlayer( sourceType, sourceName ) ) then
+            return 'Interrupt!', PSBT_AREAS.OUTGOING, true
+        end
+        return nil, nil, false
+    end,
+
+    --ACTION_RESULT_BEGIN
+    --ACTION_RESULT_ABILITY_ON_COOLDOWN
+    --ACTION_RESULT_BEGIN_CHANNEL
+    --ACTION_RESULT_CASTER_DEAD
+    --ACTION_RESULT_COMPLETE
+    --ACTION_RESULT_DEBUFF
+    --ACTION_RESULT_DIED
+    --ACTION_RESULT_DIED_XP
+    --ACTION_RESULT_EFFECT_FADED
+    --ACTION_RESULT_EFFECT_GAINED
+    --ACTION_RESULT_EFFECT_GAINED_DURATION
+    --ACTION_RESULT_FAILED
+    --ACTION_RESULT_FAILED_REQUIREMENTS
+    --ACTION_RESULT_FAILED_SIEGE_CREATION_REQUIREMENTS
+    --ACTION_RESULT_GRAVEYARD_DISALLOWED_IN_INSTANCE
+    --ACTION_RESULT_GRAVEYARD_TOO_CLOSE
+    --ACTION_RESULT_INSUFFICIENT_RESOURCE
+    --ACTION_RESULT_INTERCEPTED
+    --ACTION_RESULT_INTERRUPT
+    --ACTION_RESULT_INVALID
+    --ACTION_RESULT_INVALID_FIXTURE
+    --ACTION_RESULT_INVALID_TERRAIN
+    --ACTION_RESULT_IN_AIR
+    --ACTION_RESULT_IN_COMBAT
+    --ACTION_RESULT_IN_ENEMY_KEEP
+    --ACTION_RESULT_LEVITATED
+    --ACTION_RESULT_LINKED_CAST
+    --ACTION_RESULT_MISSING_EMPTY_SOUL_GEM
+    --ACTION_RESULT_MISSING_FILLED_SOUL_GEM
+    --ACTION_RESULT_MOUNTED
+    --ACTION_RESULT_MUST_BE_IN_OWN_KEEP
+    --ACTION_RESULT_NOT_ENOUGH_INVENTORY_SPACE
+    --ACTION_RESULT_NOT_ENOUGH_SPACE_FOR_SIEGE
+    --ACTION_RESULT_NO_LOCATION_FOUND
+    --ACTION_RESULT_NO_RAM_ATTACKABLE_TARGET_WITHIN_RANGE
+    --ACTION_RESULT_NPC_TOO_CLOSE
+    --ACTION_RESULT_OFFBALANCE
+    --ACTION_RESULT_PACIFIED        
+    --ACTION_RESULT_PRECISE_DAMAGE
+    --ACTION_RESULT_QUEUED
+    --ACTION_RESULT_RAM_ATTACKABLE_TARGETS_ALL_DESTROYED
+    --ACTION_RESULT_RAM_ATTACKABLE_TARGETS_ALL_OCCUPIED
+    --ACTION_RESULT_REFLECTED
+    --ACTION_RESULT_REINCARNATING
+    --ACTION_RESULT_ROOTED
+    --ACTION_RESULT_SIEGE_LIMIT
+    --ACTION_RESULT_SIEGE_TOO_CLOSE
+    --ACTION_RESULT_STAGGERED
+    --ACTION_RESULT_STUNNED
+    --ACTION_RESULT_SWIMMING
+    --ACTION_RESULT_TARGET_DEAD
+    --ACTION_RESULT_TARGET_NOT_IN_VIEW
+    --ACTION_RESULT_TARGET_NOT_PVP_FLAGGED
+    --ACTION_RESULT_TARGET_OUT_OF_RANGE
+    --ACTION_RESULT_TARGET_TOO_CLOSE
+    --ACTION_RESULT_UNEVEN_TERRAIN
+    --ACTION_RESULT_WEAPONSWAP
+    --ACTION_RESULT_WRECKING_DAMAGE
+    --ACTION_RESULT_WRONG_WEAPON2
 }
 
 
