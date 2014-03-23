@@ -14,14 +14,14 @@ local RIGHT                  = RIGHT
 local LEFT                   = LEFT
 local CENTER                 = CENTER
 
-local kVersion               = 2.5        
+local kVersion               = 3.0  
 
 local defaults = 
 {
     normal_font = 
     {
         face = 'Cooline',
-        size = 14,
+        size = 14, 
         deco = 'shadow'
     },
 
@@ -39,7 +39,8 @@ local defaults =
         x       = -300,  
         y       = 150,
         icon    = PSBT_ICON_SIDE.LEFT,
-        dir     = PSBT_SCROLL_DIRECTIONS.UP
+        dir     = PSBT_SCROLL_DIRECTIONS.UP,
+        arc     = 150
     },
     
     [ PSBT_AREAS.OUTGOING ] = 
@@ -49,7 +50,8 @@ local defaults =
         x       = 300,   
         y       = 150,
         icon    = PSBT_ICON_SIDE.LEFT,
-        dir     = PSBT_SCROLL_DIRECTIONS.DOWN
+        dir     = PSBT_SCROLL_DIRECTIONS.DOWN,
+        arc     = -150
     },
 
     [ PSBT_AREAS.STATIC ] = 
@@ -59,7 +61,8 @@ local defaults =
         x       = 0,
         y       = -300,
         icon    = PSBT_ICON_SIDE.LEFT,
-        dir     = PSBT_SCROLL_DIRECTIONS.DOWN
+        dir     = PSBT_SCROLL_DIRECTIONS.DOWN,
+        arc     = 0
     },
 
     [ PSBT_AREAS.NOTIFICATION ] = 
@@ -69,7 +72,8 @@ local defaults =
         x       = 0,
         y       = 450,
         icon    = PSBT_ICON_SIDE.LEFT,
-        dir     = PSBT_SCROLL_DIRECTIONS.UP
+        dir     = PSBT_SCROLL_DIRECTIONS.UP,
+        arc     = 0
     }
 }
 

@@ -78,7 +78,7 @@ local combat_events =
         return zo_strformat( 'Blocked <<1>>', hitValue ), area, false
     end,
     [ ACTION_RESULT_CANT_SEE_TARGET ] = function( ... )
-        return 'Can\'t See Target!', PSBT_AREAS.STATIC, false
+        return 'Can\'t See Target!', PSBT_AREAS.STATIC, true
     end,
     [ ACTION_RESULT_CRITICAL_DAMAGE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
         local area = nil

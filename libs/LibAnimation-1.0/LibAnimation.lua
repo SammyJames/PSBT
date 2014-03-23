@@ -30,12 +30,18 @@ THE SOFTWARE.
 ----------------------------------------------------
 if ( not LibStub ) then return end
 
-local kName, kVersion = 'LibAnimation-1.0', 1.1
+local kName, kVersion = 'LibAnimation-1.0', 2.0
 local LibAnimation = LibStub:NewLibrary( kName, kVersion )
 if ( not LibAnimation ) then return end
 
-local AnimationMgr = ANIMATION_MANAGER
-local defaultEase = ZO_LinearEase
+local AnimationMgr          = ANIMATION_MANAGER
+local defaultEase           = ZO_LinearEase
+
+local ANIMATION_SIZE        = ANIMATION_SIZE
+local ANIMATION_TRANSLATE   = ANIMATION_TRANSLATE
+local ANIMATION_SCALE       = ANIMATION_SCALE
+local ANIMATION_ALPHA       = ANIMATION_ALPHA
+local _
 
 --- Create a new animation for control
 -- @tparam table control the gui element to animate
@@ -107,8 +113,33 @@ end
 -- @tparam number animType
 -- @tparam number delay (optional)
 -- @tresult animation
-function LibAnimation:Insert( animType, delay )
-    return self.timeline:InsertAnimation( animType, self.control, delay or 0 )
+function LibAnimation:Insert( animType, duration, delay, anchorIndex, fn )
+    local anim = self.timeline:InsertAnimation( animType, self.control, delay or 0 )
+    anim:SetDuration( duration or 1 )
+    anim:SetEasingFunction( fn or defaultEase )
+
+    if ( animType == ANIMATION_TRANSLATE ) then
+        anim:SetAnchorIndex( anchorIndex or 0 )
+    end
+    return anim
+end
+
+--- Create new translate animation
+-- @tparam number xorigin
+-- @tparam number yorigin
+-- @tparam number xoffset
+-- @tparam number yoffset
+-- @tparam number duration
+-- @tparam number delay (optional)
+-- @tparam number anchorIndex (optional)
+-- @tparam function fn easing function (optional)
+function LibAnimation:TranslateToFrom( xorigin, yorigin, xoffset, yoffset, duration, delay, anchorIndex, fn )
+    self:Stop()
+    local anim = self:Insert( ANIMATION_TRANSLATE, duration, delay, anchorIndex, fn )
+    anim:SetStartOffsetX( xorigin )
+    anim:SetStartOffsetY( yorigin )
+    anim:SetEndOffsetX( xoffset )
+    anim:SetEndOffsetY( yoffset )
 end
 
 --- Create new translate animation
@@ -119,18 +150,23 @@ end
 -- @tparam number anchorIndex (optional)
 -- @tparam function fn easing function (optional)
 function LibAnimation:TranslateTo( xoffset, yoffset, duration, delay, anchorIndex, fn )
-    self:Stop()
-
-    local anim = self:Insert( ANIMATION_TRANSLATE, delay )
     local _, _, _, _, offsX, offsY = self.control:GetAnchor( anchorIndex or 0 )
+    self:TranslateToFrom( offsX, offsY, xoffset, yoffset, duration, delay, anchorIndex, fn )
+end
 
-    anim:SetDuration( duration or 1 )
-    anim:SetEasingFunction( fn or defaultEase )
-    anim:SetStartOffsetX( offsX )
-    anim:SetStartOffsetY( offsY )
-    anim:SetEndOffsetX( xoffset )
-    anim:SetEndOffsetY( yoffset )
-    anim:SetAnchorIndex( anchorIndex or 0 )
+--- Create a new size animation
+-- @tparam number startWidth
+-- @tparam number startHeight
+-- @tparam number width target width
+-- @tparam number height target height
+-- @tparam number duration 
+-- @tparam number delay (optional)
+-- @tparam function fn easing function (optional)
+function LibAnimation:ResizeToFrom( startWidth, startHeight, width, height, duration, delay, fn )
+    self:Stop()
+    local anim = self:Insert( ANIMATION_SIZE, duration, delay, nil, fn )
+    anim:SetHeightStartAndEnd( startHeight, height )
+    anim:SetWidthStartAndEnd( startWidth, width )
 end
 
 --- Create a new size animation
@@ -140,14 +176,20 @@ end
 -- @tparam number delay (optional)
 -- @tparam function fn easing function (optional)
 function LibAnimation:ResizeTo( width, height, duration, delay, fn )
+    self:ResizeToFrom( self.control:GetWidth(), self.control:GetHeight(), width, height, duration, delay, fn )
+end
+
+
+--- Create a new scale animation
+-- @tparam number startScale
+-- @tparam number scale
+-- @tparam number duration
+-- @tparam number delay (optional)
+-- @tparam function fn easing function (optional)
+function LibAnimation:ScaleToFrom( startScale, scale, duration, delay, fn )
     self:Stop()
-
-    local anim = self:Insert( ANIMATION_SIZE, delay )
-
-    anim:SetDuration( duration or 1 )
-    anim:SetEasingFunction( fn or defaultEase )
-    anim:SetHeightStartAndEnd( self.control:GetHeight(), height )
-    anim:SetWidthStartAndEnd( self.control:GetWidth(), width )
+    local anim = self:Insert( ANIMATION_SCALE, duration, delay, nil, fn )
+    anim:SetScaleValues( startScale, scale )
 end
 
 --- Create a new scale animation
@@ -156,13 +198,14 @@ end
 -- @tparam number delay (optional)
 -- @tparam function fn easing function (optional)
 function LibAnimation:ScaleTo( scale, duration, delay, fn )
+    self:ScaleToFrom( self.control:GetScale(), scale, duration, delay, fn )
+end
+
+
+function LibAnimation:AlphaToFrom( startAlpha, alpha, duration, delay, fn )
     self:Stop()
-
-    local anim = self:Insert( ANIMATION_SCALE, delay )
-
-    anim:SetDuration( duration or 1 )
-    anim:SetEasingFunction( fn or defaultEase )
-    anim:SetScaleValues( self.control:GetScale(), scale )
+    local anim = self:Insert( ANIMATION_ALPHA, duration, delay, nil, fn )
+    anim:SetAlphaValues( startAlpha, alpha )
 end
 
 --- Create a new alpha animation
@@ -171,13 +214,7 @@ end
 -- @tparam number delay (optional)
 -- @tparam function fn easing function (optional)
 function LibAnimation:AlphaTo( alpha, duration, delay, fn )
-    self:Stop()
-
-    local anim = self:Insert( ANIMATION_ALPHA, delay )
-
-    anim:SetDuration( duration or 1 )
-    anim:SetEasingFunction( fn or defaultEase )
-    anim:SetAlphaValues( self.control:GetAlpha(), alpha )
+    self:AlphaToFrom( self.control:GetAlpha(), alpha, duration, delay, fn )
 end
 
 --- Create a new scroll animation

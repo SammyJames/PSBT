@@ -60,6 +60,7 @@ function PSBT_Label:Finalize()
     self:SetTexture( 0 )
     self:SetExpire( 0 )
     self:SetMoving( false )
+    self.control:ClearAnchors()
 end
 
 function PSBT_Label:SetText( text )

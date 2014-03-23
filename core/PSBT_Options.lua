@@ -105,8 +105,20 @@ function PSBT_Options:InitializeControlPanel()
             sticky_font:SetFont( self._root:FormatFont( current ) )
         end )
 
-    -- INCOMMING
+    -- INCOMING
     LAM:AddHeader( self.config_panel, '_psbt_incoming', 'Incoming' )
+
+    LAM:AddSlider( self.config_panel, '_psbt_incoming_arc_slider', 'Arc: ', 'How much should the text curve?', 
+        -300, 300, 5, 
+        function() 
+            return self._root:GetSetting( PSBT_AREAS.INCOMING ).arc 
+        end,
+        function( selection )
+            local current = self._root:GetSetting( PSBT_AREAS.INCOMING )
+            current.arc = selection
+            self._root:SetSetting( PSBT_AREAS.INCOMING, current )
+        end )
+
     LAM:AddDropdown( self.config_panel, '_psbt_incoming_iconside_dd', 'Icon Side:', '', iconside,
         function() 
             return self._root:GetSetting( PSBT_AREAS.INCOMING ).icon end,
@@ -127,6 +139,18 @@ function PSBT_Options:InitializeControlPanel()
 
     -- OUTGOING
     LAM:AddHeader( self.config_panel, '_psbt_outgoing', 'Outgoing' )
+
+    LAM:AddSlider( self.config_panel, '_psbt_outgoing_arc_slider', 'Arc: ', 'How much should the text curve?', 
+        -300, 300, 5, 
+        function() 
+            return self._root:GetSetting( PSBT_AREAS.OUTGOING ).arc 
+        end,
+        function( selection )
+            local current = self._root:GetSetting( PSBT_AREAS.OUTGOING )
+            current.arc = selection
+            self._root:SetSetting( PSBT_AREAS.OUTGOING, current )
+        end )
+    
     LAM:AddDropdown( self.config_panel, '_psbt_outgoing_iconside_dd', 'Icon Side:', '', iconside,
         function() 
             return self._root:GetSetting( PSBT_AREAS.OUTGOING ).icon end,

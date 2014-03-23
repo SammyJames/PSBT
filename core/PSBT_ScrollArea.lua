@@ -35,11 +35,33 @@ function PSBT_ScrollArea:Initialize( super, areaName, settings )
     self._direction     = settings.dir
     self._iconSide      = settings.icon
 
+    self._parabolaPoints = PSBT_Parabola:Calculate( self.control:GetHeight(), settings.arc, 50, self._direction )
+
     self:Position( settings )
     self:SetConfigurationMode( false )
     self.control:SetHandler( 'OnUpdate', function( event, ... ) self:OnUpdate( ... ) end )
 
     CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
+end
+
+function PSBT_ScrollArea:InitParabolaAnim( control )
+    local anim = LibAnim:New( control )
+
+    local points = self._parabolaPoints
+    local x, y = points[1].x, points[1].y
+    local point = nil
+
+    local duration = 3000 / #points
+
+    for i=1,#points do 
+        point = points[ i ]
+        anim:TranslateToFrom( x, y, point.x, point.y, duration, (i - 1) * duration )
+
+        x = point.x
+        y = point.y
+    end
+
+    return anim
 end
 
 function PSBT_ScrollArea:SetConfigurationMode( enable )
@@ -66,21 +88,17 @@ function PSBT_ScrollArea:GetAnchorOffsets()
     return point, relPoint, offsX, offsY
 end
 
-function PSBT_ScrollArea:AnchorChild( label, sticky )
-    local relativeTo = CENTER
+function PSBT_ScrollArea:AnchorChild( control, sticky )
+    local rel = CENTER
+    local from = CENTER
     if ( not sticky ) then
-        if ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) then
-            relativeTo = BOTTOM
-        elseif ( self._direction == PSBT_SCROLL_DIRECTIONS.DOWN ) then
-            relativeTo = TOP
-        end
+        rel = TOP
     end
-
-    label.control:SetAnchor( CENTER, self.control, relativeTo, 0, 0 )
+    control:SetAnchor( from, self.control, rel, 0, 0 )
 end
 
 function PSBT_ScrollArea:Push( entry, sticky )
-    self:AnchorChild( entry, sticky )
+    self:AnchorChild( entry.control, sticky )
 
     entry:SetIconPosition( self._iconSide )
 
@@ -94,6 +112,7 @@ end
 function PSBT_ScrollArea:SetSettings( settings )
     self._iconSide = settings.icon
     self._direction = settings.dir
+    self._parabolaPoints = PSBT_Parabola:Calculate( self.control:GetHeight(), settings.arc, 50, self._direction )
 end
 
 function PSBT_ScrollArea:OnUpdate( frameTime ) 
@@ -144,11 +163,7 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
         local newEntry = self._pendingNormal:Pop()
         if ( newEntry ) then
             newEntry:SetExpire( frameTime + 5 )
-
-            newEntry.control:SetScale( 0.5 )
-
             local anim = LibAnim:New( newEntry.control )
-            anim:ScaleTo( 1.0, 200 )
             anim:AlphaTo( 1.0, 200 )
             anim:Play()
 
@@ -177,9 +192,9 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
     while ( i <= #self._normal ) do
         local entry = self._normal[ i ]
 
-        if ( entry:WillExpire( frameTime + 3 ) ) then
+        if ( entry:WillExpire( frameTime + 2 ) ) then
             local anim = LibAnim:New( entry.control )
-            anim:AlphaTo( 0.0, 300, nil, nil, ZO_EaseInOutQuadratic )
+            anim:AlphaTo( 0.0, 200, nil, nil, ZO_EaseInOutQuadratic )
             anim:Play()
 
             entry:SetMoving( false )
@@ -187,17 +202,9 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
             tremove( self._normal, i )
         else
             if ( not entry:IsMoving() ) then
-                local anim = LibAnim:New( entry.control )
-
-                local targetY = 0
-                if ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) then
-                    targetY = self._height * -1
-                else
-                    targetY = self._height
-                end
-
-
-                anim:TranslateTo( 0, targetY, 3000, nil, nil, ZO_EaseInOutQuadratic )
+                local anim = self:InitParabolaAnim( entry.control )
+                anim:ScaleTo( 1.25, 1500 )
+                anim:ScaleToFrom( 1.25, 1.0, 1500, 1500 )
                 anim:Play()
 
                 entry:SetMoving( true )

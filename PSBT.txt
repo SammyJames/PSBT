@@ -15,6 +15,9 @@ core/PSBT_Media.lua
 ## constants
 core/PSBT_Constants.lua
 
+## helpers
+helpers/PSBT_Parabola.lua
+
 ## core modules
 core/PSBT_Module.lua
 core/PSBT_Settings.lua
