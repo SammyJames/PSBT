@@ -130,6 +130,7 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
             end
 
             anim:TranslateTo( 0, ypos, 200 )
+            anim:ScaleTo( 0.5, 200 )
             anim:Play()
 
             entry:SetMoving( false )
@@ -144,7 +145,10 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
         if ( newEntry ) then
             newEntry:SetExpire( frameTime + 5 )
 
+            newEntry.control:SetScale( 0.5 )
+
             local anim = LibAnim:New( newEntry.control )
+            anim:ScaleTo( 1.0, 200 )
             anim:AlphaTo( 1.0, 200 )
             anim:Play()
 
@@ -157,8 +161,11 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
         if ( newEntry ) then
             newEntry:SetExpire( frameTime + 5 )
 
+            newEntry.control:SetScale( 0.5 )
+
             local anim = LibAnim:New( newEntry.control )
             anim:AlphaTo( 1.0, 200 )
+            anim:ScaleTo( 1.0, 200 )
             anim:Play()
 
             self._sticky:Push( newEntry )
@@ -170,9 +177,9 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
     while ( i <= #self._normal ) do
         local entry = self._normal[ i ]
 
-        if ( entry:WillExpire( frameTime + 2 ) ) then
+        if ( entry:WillExpire( frameTime + 3 ) ) then
             local anim = LibAnim:New( entry.control )
-            anim:AlphaTo( 0.0, 200 )
+            anim:AlphaTo( 0.0, 300, nil, nil, ZO_EaseInOutQuadratic )
             anim:Play()
 
             entry:SetMoving( false )
@@ -190,7 +197,7 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
                 end
 
 
-                anim:TranslateTo( 0, targetY, 3000 )
+                anim:TranslateTo( 0, targetY, 3000, nil, nil, ZO_EaseInOutQuadratic )
                 anim:Play()
 
                 entry:SetMoving( true )
@@ -208,7 +215,7 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
 
             entry:SetMoving( true )
 
-            top = top + entry.control:GetHeight()
+            top = top + entry:GetHeight()
         end
     end
 

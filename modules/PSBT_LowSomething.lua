@@ -54,13 +54,13 @@ function PSBT_LowSomething:OnPowerUpdate( unit, powerPoolIndex, powerType, power
 
     local string = nil
     if ( powerType == POWERTYPE_HEALTH ) then
-        string = 'Health Low! (|cF2920C' .. powerPool .. '|r)'
+        string = 'Health Low! (|cD8594B' .. powerPool .. '|r)'
     elseif ( powerType == POWERTYPE_MAGICKA ) then
-        string = 'Magicka Low! (|cCC0CF2' .. powerPool .. '|r)'
+        string = 'Magicka Low! (|c92CEF8' .. powerPool .. '|r)'
     elseif ( powerType == POWERTYPE_STAMINA ) then
-        string = 'Stamina Low! (|c0CF2B9' .. powerPool .. '|r)'
+        string = 'Stamina Low! (|c5C9D8E' .. powerPool .. '|r)'
     elseif ( powerType == POWERTYPE_MOUNT_STAMINA ) then
-        string = 'Mount Stamina Low! (|c0CF2B9' .. powerPool .. '|r)'
+        string = 'Mount Stamina Low! (|c5C9D8E' .. powerPool .. '|r)'
     end
 
     PlaySound( 'Quest_StepFailed' )

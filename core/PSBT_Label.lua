@@ -70,15 +70,15 @@ function PSBT_Label:SetIconPosition( side )
     self.iconPos = side
 
     if ( side ~= PSBT_ICON_SIDE.NONE ) then
-        local textWidth, textHeight = self.label:GetTextDimensions()
-        self.icon:SetWidth( textHeight )
-        self.icon:SetHeight( textHeight )
+        local height = self:GetHeight()
+        self.icon:SetWidth( height )
+        self.icon:SetHeight( height )
 
         local xpos = 0
         if ( side == PSBT_ICON_SIDE.LEFT ) then
-            xpos = ( textWidth * -0.5 ) - self.icon:GetWidth()
+            xpos = ( self:GetWidth() * -0.5 ) - self.icon:GetWidth()
         else
-            xpos = ( textWidth * 0.5 ) + self.icon:GetWidth()
+            xpos = ( self:GetWidth() * 0.5 ) + self.icon:GetWidth()
         end
 
         self.icon:SetAnchor( CENTER, self.control, CENTER, xpos, 0 )
@@ -94,4 +94,14 @@ function PSBT_Label:SetTexture( texture )
     else
         self.icon:SetHidden( true )
     end
+end
+
+function PSBT_Label:GetWidth()
+    local textWidth = self.label:GetTextDimensions()
+    return textWidth
+end
+
+function PSBT_Label:GetHeight()
+    local _, textHeight = self.label:GetTextDimensions()
+    return textHeight
 end

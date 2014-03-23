@@ -266,9 +266,9 @@ local combat_events =
         return zo_strformat( '+<<1>> (<<2>>)', hitValue, mechanicName ), PSBT_AREAS.INCOMING, false
     end,
 
-    [ ACTION_RESULT_BAD_TARGET ] = function( ... )
+    --[[[ ACTION_RESULT_BAD_TARGET ] = function( ... )
         return 'Bad Target', PSBT_AREAS.STATIC, true
-    end,
+    end,]]
 
     [ ACTION_RESULT_CANNOT_USE ] = function( ... )
         return 'Cannot Use', PSBT_AREAS.STATIC, true
