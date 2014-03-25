@@ -1,19 +1,15 @@
-local LibAnim = LibStub( 'LibAnimation-1.0' )
-if ( not LibAnim ) then return end 
-
 PSBT_ScrollArea     = ZO_Object:Subclass()
+
 local CBM           = CALLBACK_MANAGER
 local tinsert       = table.insert
 local tremove       = table.remove
 local NUM_STICKY    = 4
-
-local PSBT_Fifo     = PSBT_Fifo
 local CENTER        = CENTER
 local BOTTOM        = BOTTOM
 local TOP           = TOP
-
 local PSBT_EVENTS   = PSBT_EVENTS
 local PSBT_SCROLL_DIRECTIONS = PSBT_SCROLL_DIRECTIONS
+local PSBT_Parabola = PSBT_Parabola
 
 function PSBT_ScrollArea:New( ... )
     local result = ZO_Object.New( self )
@@ -21,47 +17,25 @@ function PSBT_ScrollArea:New( ... )
     return result
 end
 
-function PSBT_ScrollArea:Initialize( super, areaName, settings )
+function PSBT_ScrollArea:Initialize( super, areaName, settings, fadeIn, fadeOut )
     self.name           = areaName
     self.control        = super:GetNamedChild( areaName )
     self.background     = self.control:GetNamedChild( '_BG' )
     self.label          = self.control:GetNamedChild( '_Name' )
     self._newSticky     = false
     self._height        = self.control:GetHeight()
-    self._sticky        = PSBT_Fifo.New()
-    self._pendingSticky = PSBT_Fifo.New()
+    self._sticky        = {}
+    self._pendingSticky = {}
     self._normal        = {}
-    self._pendingNormal = PSBT_Fifo.New()
-    self._direction     = settings.dir
-    self._iconSide      = settings.icon
+    self._pendingNormal = {}
+    self._fadeIn        = fadeIn
+    self._fadeOut       = fadeOut
 
-    self._parabolaPoints = PSBT_Parabola:Calculate( self.control:GetHeight(), settings.arc, 50, self._direction )
-
-    self:Position( settings )
+    self:SetSettings( settings )
     self:SetConfigurationMode( false )
     self.control:SetHandler( 'OnUpdate', function( event, ... ) self:OnUpdate( ... ) end )
 
     CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
-end
-
-function PSBT_ScrollArea:InitParabolaAnim( control )
-    local anim = LibAnim:New( control )
-
-    local points = self._parabolaPoints
-    local x, y = points[1].x, points[1].y
-    local point = nil
-
-    local duration = 3000 / #points
-
-    for i=1,#points do 
-        point = points[ i ]
-        anim:TranslateToFrom( x, y, point.x, point.y, duration, (i - 1) * duration )
-
-        x = point.x
-        y = point.y
-    end
-
-    return anim
 end
 
 function PSBT_ScrollArea:SetConfigurationMode( enable )
@@ -69,13 +43,11 @@ function PSBT_ScrollArea:SetConfigurationMode( enable )
     self.control:SetMouseEnabled( enable )
     self.label:SetHidden( not enable )
     if ( enable ) then
-        local enter = LibAnim:New( self.background )
-        enter:AlphaTo( 1.0, 500 )
-        enter:Play() 
+        local anim = self._fadeIn:Apply( self.background )
+        anim:Play()
     else
-        local exit = LibAnim:New( self.background )
-        exit:AlphaTo( 0.0, 500 )
-        exit:Play() 
+        local anim = self._fadeOut:Apply( self.background )
+        anim:Play()
     end
 end
 
@@ -103,126 +75,105 @@ function PSBT_ScrollArea:Push( entry, sticky )
     entry:SetIconPosition( self._iconSide )
 
     if ( sticky ) then
-        self._pendingSticky:Push( entry )
+        tinsert( self._pendingSticky, entry )
     else
-        self._pendingNormal:Push( entry )
+        tinsert( self._pendingNormal, entry )
     end
 end
 
 function PSBT_ScrollArea:SetSettings( settings )
-    self._iconSide = settings.icon
-    self._direction = settings.dir
-    self._parabolaPoints = PSBT_Parabola:Calculate( self.control:GetHeight(), settings.arc, 50, self._direction )
+    self._iconSide       = settings.icon
+    self._direction      = settings.dir
+    self._parabola       = PSBT_Parabola:New( self.control:GetHeight(), settings.arc, 50, self._direction )
+    self:Position( settings )
 end
 
 function PSBT_ScrollArea:OnUpdate( frameTime ) 
-    if ( not self._sticky:Size() and 
+    if ( not #self._sticky and 
          not #self._normal and 
-         not self._pendingNormal:Size() and
-         not self._pendingSticky:Size() ) then
+         not #self._pendingNormal and
+         not #self._pendingSticky ) then
         return
     end
 
-    while ( self._sticky:Size() > NUM_STICKY ) do
-        local old = self._sticky:Pop()
-        local anim = LibAnim:New( old.control )
-        anim:AlphaTo( 0.0, 200 )
-        anim:Play()
-
+    while ( #self._sticky > NUM_STICKY ) do
+        local old = tremove( self._sticky, 1 )
         old:SetMoving( false )
 
         old:SetExpire( frameTime + 2 )
         self._newSticky = true
     end
 
-    repeat 
-        local entry = self._sticky:Peek()
-        if ( entry and entry:WillExpire( frameTime + 2 ) ) then
-            local anim = LibAnim:New( entry.control )
-            anim:AlphaTo( 0.0, 200 )
-
-            local ypos = 0
-            if ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) then
-                ypos = -100
-            elseif ( self._direction == PSBT_SCROLL_DIRECTIONS.DOWN ) then
-                ypos = 100
-            end
-
-            anim:TranslateTo( 0, ypos, 200 )
-            anim:ScaleTo( 0.5, 200 )
-            anim:Play()
-
-            entry:SetMoving( false )
-
-            self._sticky:Pop()
-            self._newSticky = true
-        end
-    until( not entry or not entry:WillExpire( frameTime + 2 )  )
-
-    if ( self._pendingNormal:Size() ) then
-        local newEntry = self._pendingNormal:Pop()
+    if ( #self._pendingNormal ) then
+        local newEntry = tremove( self._pendingNormal, 1 )
         if ( newEntry ) then
-            newEntry:SetExpire( frameTime + 5 )
-            local anim = LibAnim:New( newEntry.control )
-            anim:AlphaTo( 1.0, 200 )
+            newEntry:SetExpire( frameTime + 3 )
+
+            local anim = self._fadeIn:Apply( newEntry.control )
             anim:Play()
 
             tinsert( self._normal, newEntry )
         end
     end
 
-    if ( self._pendingSticky:Size() ) then
-        local newEntry = self._pendingSticky:Pop()
+    if ( #self._pendingSticky ) then
+        local newEntry = tremove( self._pendingSticky, 1 )
         if ( newEntry ) then
             newEntry:SetExpire( frameTime + 5 )
 
-            newEntry.control:SetScale( 0.5 )
-
-            local anim = LibAnim:New( newEntry.control )
-            anim:AlphaTo( 1.0, 200 )
-            anim:ScaleTo( 1.0, 200 )
+            local anim = self._fadeIn:Apply( newEntry.control )
             anim:Play()
 
-            self._sticky:Push( newEntry )
+            tinsert( self._sticky, newEntry )
             self._newSticky = true
         end
     end
 
     local i = 1
-    while ( i <= #self._normal ) do
-        local entry = self._normal[ i ]
+    local entry = nil
 
-        if ( entry:WillExpire( frameTime + 2 ) ) then
-            local anim = LibAnim:New( entry.control )
-            anim:AlphaTo( 0.0, 200, nil, nil, ZO_EaseInOutQuadratic )
+    while ( i <= #self._normal ) do
+        entry = self._normal[ i ]
+
+        if ( entry:WillExpire( frameTime + 0.5 ) ) then
+            local anim = self._fadeOut:Apply( entry.control )
             anim:Play()
 
             entry:SetMoving( false )
-
             tremove( self._normal, i )
         else
             if ( not entry:IsMoving() ) then
-                local anim = self:InitParabolaAnim( entry.control )
-                anim:ScaleTo( 1.25, 1500 )
-                anim:ScaleToFrom( 1.25, 1.0, 1500, 1500 )
+                local anim = self._parabola:Apply( entry.control )
                 anim:Play()
-
                 entry:SetMoving( true )
             end
             i = i + 1
         end
     end
 
-    local top = 0    
-    for i, entry in self._sticky:Iterator() do
-        if ( self._newSticky ) then
-            local anim = LibAnim:New( entry.control )
-            anim:TranslateTo( 0, top, 200 ) 
+      
+    i = 1
+    local top = 0  
+
+    while ( i <= #self._sticky ) do
+        entry = self._sticky[ i ]
+        if ( entry:WillExpire( frameTime + 0.5 ) ) then
+            local anim = self._fadeOut:Apply( entry.control )
             anim:Play()
 
-            entry:SetMoving( true )
+            tremove( self._sticky, i )
+            self._newSticky = true
+        else
+            if ( self._newSticky ) then
+                entry.control:SetAnchor( CENTER, self.control, CENTER, 0, top )
 
-            top = top + entry:GetHeight()
+                if ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) then
+                    top = top - entry:GetHeight()
+                else
+                    top = top + entry:GetHeight()
+                end
+            end
+            i = i + 1
         end
     end
 

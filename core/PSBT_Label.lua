@@ -19,8 +19,6 @@ function PSBT_Label:Initialize( objectPool )
     self.moving  = false
     self.direction = PSBT_SCROLL_DIRECTIONS.UP
     self.iconPos = PSBT_ICON_SIDE.LEFT
-
-    self.control:SetAlpha( 0.0 )
 end
 
 function PSBT_Label:SetMoving( set )
@@ -61,6 +59,7 @@ function PSBT_Label:Finalize()
     self:SetExpire( 0 )
     self:SetMoving( false )
     self.control:ClearAnchors()
+    self.control:SetScale( 1.0 )
 end
 
 function PSBT_Label:SetText( text )

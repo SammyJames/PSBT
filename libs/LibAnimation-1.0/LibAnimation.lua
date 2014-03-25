@@ -30,8 +30,8 @@ THE SOFTWARE.
 ----------------------------------------------------
 if ( not LibStub ) then return end
 
-local kName, kVersion = 'LibAnimation-1.0', 2.0
-local LibAnimation = LibStub:NewLibrary( kName, kVersion )
+local kName, kVersion   = 'LibAnimation-1.0', 2.1
+local LibAnimation      = LibStub:NewLibrary( kName, kVersion )
 if ( not LibAnimation ) then return end
 
 local AnimationMgr          = ANIMATION_MANAGER
@@ -44,7 +44,7 @@ local ANIMATION_ALPHA       = ANIMATION_ALPHA
 local _
 
 --- Create a new animation for control
--- @tparam table control the gui element to animate
+-- @tparam table control (optional)
 -- @tparam number playbackType (optional)
 -- @tparam number loopCount (optional)
 -- @treturn LibAnimation object
@@ -66,13 +66,21 @@ function LibAnimation:New( control, playbackType, loopCount )
 end
 
 --- Animation Constructor
--- @tparam table control
+-- @tparam table control (optional)
 -- @tparam number playbackType (optional)
 -- @tparam number loopCount (optional)
 function LibAnimation:Initialize( control, playbackType, loopCount )
     self.control    = control
     self.timeline   = AnimationMgr:CreateTimeline()
     self.timeline:SetPlaybackType( playbackType, loopCount )
+end
+
+function LibAnimation:Apply( control )
+    self.timeline:ApplyAllAnimationsToControl( control )
+end
+
+function LibAnimation:SetHandler( ... )
+    self.timeline:SetHandler( ... )
 end
 
 --- Allows you to add a callback at a certain point in the timeline
@@ -109,12 +117,21 @@ function LibAnimation:Backward()
     self.timeline:PlayBackward()
 end
 
+function LibAnimation:SetUserData( data )
+    self._udata = data 
+end
+
+function LibAnimation:GetUserData()
+    return self._udata
+end
+
 --- Get's the existing animation or creates a new one
 -- @tparam number animType
 -- @tparam number delay (optional)
 -- @tresult animation
 function LibAnimation:Insert( animType, duration, delay, anchorIndex, fn )
     local anim = self.timeline:InsertAnimation( animType, self.control, delay or 0 )
+
     anim:SetDuration( duration or 1 )
     anim:SetEasingFunction( fn or defaultEase )
 
