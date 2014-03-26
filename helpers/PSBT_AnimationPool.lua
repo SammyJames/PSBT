@@ -3,7 +3,7 @@ local LibAnim = LibStub( 'LibAnimation-1.0' )
 
 PSBT_AnimationPool = ZO_ObjectPool:Subclass()
 
-function PSBT_AnimationPool:New( create, reset )
+function PSBT_AnimationPool:New()
     return ZO_ObjectPool.New( self, self.Create, function( ... ) self:Reset( ... ) end )
 end
 
