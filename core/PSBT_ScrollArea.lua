@@ -99,8 +99,7 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
     while ( #self._sticky > NUM_STICKY ) do
         local old = tremove( self._sticky, 1 )
         old:SetMoving( false )
-
-        old:SetExpire( frameTime + 2 )
+        old:SetExpire( frameTime )
         self._newSticky = true
     end
 
