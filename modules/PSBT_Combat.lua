@@ -6,7 +6,7 @@ PSBT_Combat._stackingOut    = {}
 local CBM                   = CALLBACK_MANAGER
 
 local MAX_EVENTS            = 15
-local STACK_TIME            = 0.45
+local STACK_TIME            = 0.85
 local PlayerName            = GetUnitName( 'player' )
 local PlayerNameRaw         = GetRawUnitName( 'player' )
 
