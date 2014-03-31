@@ -35,6 +35,25 @@ function PSBT_Options:InitializeControlPanel()
             self.config_mode = not self.config_mode
         end )
 
+    LAM:AddHeader( self.config_panel, '_psbt_font_colors', 'Colors' )
+    LAM:AddColorPicker( self.config_panel, '_psbt_font_colors_healing', 'Healing:', '', 
+        function() return unpack( self._root:GetSetting( PSBT_SETTINGS.healing_color ) ) end,
+        function( r, g, b, a )
+            self._root:SetSetting( PSBT_SETTINGS.healing_color, { r,g,b,a } )
+        end )
+
+    LAM:AddColorPicker( self.config_panel, '_psbt_font_colors_damage', 'Damage:', '', 
+        function() return unpack( self._root:GetSetting( PSBT_SETTINGS.damage_color ) ) end,
+        function( r, g, b, a )
+            self._root:SetSetting( PSBT_SETTINGS.damage_color, { r,g,b,a } )
+        end )
+
+    LAM:AddColorPicker( self.config_panel, '_psbt_font_colors_normal', 'Normal:', '', 
+        function() return unpack( self._root:GetSetting( PSBT_SETTINGS.normal_color ) ) end,
+        function( r, g, b, a )
+            self._root:SetSetting( PSBT_SETTINGS.normal_color, { r,g,b,a } )
+        end )
+
     -- normal font
     local normal_font = LAM:AddHeader( self.config_panel, '_psbt_normal_font_header', 'Normal Font' ):GetNamedChild( 'Label' )
     normal_font:SetFont( self._root:FormatFont( self._root:GetSetting( PSBT_SETTINGS.normal_font ) ) )

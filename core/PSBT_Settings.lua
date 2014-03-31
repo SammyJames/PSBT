@@ -14,7 +14,7 @@ local RIGHT                  = RIGHT
 local LEFT                   = LEFT
 local CENTER                 = CENTER
 
-local kVersion               = 3.0  
+local kVersion               = 3.1  
 
 local defaults = 
 {
@@ -30,6 +30,21 @@ local defaults =
         face = 'Adventure',
         size = 18,
         deco = 'shadow'
+    },
+
+    damage_color = 
+    { 
+        255, 255, 255, 1 
+    },
+    
+    healing_color = 
+    { 
+        255, 255, 255, 1 
+    },
+    
+    normal_color = 
+    { 
+        255, 255, 255, 1
     },
 
     [ PSBT_AREAS.INCOMING ] = 

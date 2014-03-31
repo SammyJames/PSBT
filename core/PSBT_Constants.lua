@@ -21,7 +21,10 @@ PSBT_AREAS =
 PSBT_SETTINGS =
 {
     normal_font         = 'normal_font',
-    sticky_font         = 'sticky_font'
+    sticky_font         = 'sticky_font',
+    damage_color        = 'damage_color',
+    healing_color       = 'healing_color',
+    normal_color        = 'normal_color'
 }
 
 PSBT_EVENTS = 

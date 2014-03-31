@@ -24,6 +24,6 @@ function PSBT_Module:OnUpdate( frametime )
     -- stub, implement if needed
 end
 
-function PSBT_Module:NewEvent( scrollArea, sticky, icon, text )
-    self._root:NewEvent( scrollArea, sticky, icon, text )
+function PSBT_Module:NewEvent( scrollArea, sticky, icon, text, color )
+    self._root:NewEvent( scrollArea, sticky, icon, text, color )
 end

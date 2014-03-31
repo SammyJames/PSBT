@@ -3,6 +3,7 @@ PSBT_Label = ZO_Object:Subclass()
 local CENTER = CENTER
 local PSBT_SCROLL_DIRECTIONS = PSBT_SCROLL_DIRECTIONS
 local PSBT_ICON_SIDE = PSBT_ICON_SIDE
+local unpack = unpack
 
 function PSBT_Label:New( ... )
     local result = ZO_Object.New( self )
@@ -64,6 +65,10 @@ end
 
 function PSBT_Label:SetText( text )
     self.label:SetText( text )
+end
+
+function PSBT_Label:SetColor( color )
+    self.label:SetColor( unpack( color ) )
 end
 
 function PSBT_Label:SetIconPosition( side )

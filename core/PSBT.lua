@@ -222,11 +222,15 @@ function PSBT:UnregisterForEvent( event, callback )
     end
 end
 
-function PSBT:NewEvent( scrollArea, sticky, icon, text )
+function PSBT:NewEvent( scrollArea, sticky, icon, text, color )
     local entry = self:AcquireObject()
     local area = self._areas[ scrollArea ]
     if ( not area ) then 
         return
+    end
+
+    if ( not color ) then
+        color = self:GetSetting( PSBT_SETTINGS.normal_color )
     end
 
     if ( sticky ) then
@@ -240,6 +244,7 @@ function PSBT:NewEvent( scrollArea, sticky, icon, text )
     entry:SetExpire( -1 )
     entry:SetText( text ) 
     entry:SetTexture( icon )
+    entry:SetColor( color )
 
     area:Push( entry, sticky, direction )
 end

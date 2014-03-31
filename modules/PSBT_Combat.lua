@@ -50,7 +50,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Absorbed <<1>>', combatEvent.abilityName ), area, false
+        return zo_strformat( 'Absorbed <<1>>', combatEvent.abilityName ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_BLADETURN ] = function( combatEvent )
         local area = nil
@@ -60,7 +60,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Blocked <<1>>', combatEvent.abilityName ), area, false
+        return zo_strformat( 'Blocked <<1>>', combatEvent.abilityName ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_BLOCKED ] = function( combatEvent )
         local area = nil
@@ -70,7 +70,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Blocked <<1>>', combatEvent.abilityName ), area, false
+        return zo_strformat( 'Blocked <<1>>', combatEvent.abilityName ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_BLOCKED_DAMAGE ] = function( combatEvent )
         local area = nil
@@ -80,7 +80,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Blocked <<1>>', combatEvent.hitValue ), area, false
+        return zo_strformat( 'Blocked <<1>>', combatEvent.hitValue ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_CANT_SEE_TARGET ] = function( combatEvent )
         return 'Can\'t See Target!', PSBT_AREAS.STATIC, true
@@ -93,7 +93,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '<<1>>!', combatEvent.hitValue ), area, true
+        return zo_strformat( '<<1>>!', combatEvent.hitValue ), area, true, PSBT_SETTINGS.damage_color
     end,
     [ ACTION_RESULT_CRITICAL_HEAL ] = function( combatEvent )
         local area = nil
@@ -103,7 +103,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>>!', combatEvent.hitValue ), area, true
+        return zo_strformat( '+<<1>>!', combatEvent.hitValue ), area, true, PSBT_SETTINGS.healing_color
     end,
     [ ACTION_RESULT_DAMAGE ] = function( combatEvent )
         local area = nil
@@ -115,7 +115,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( format, combatEvent.hitValue ), area, false
+        return zo_strformat( format, combatEvent.hitValue ), area, false, PSBT_SETTINGS.damage_color
     end,
     [ ACTION_RESULT_DAMAGE_SHIELDED ] = function( combatEvent )
         local area = nil
@@ -125,7 +125,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Shielded <<1>>', combatEvent.hitValue ), area, false
+        return zo_strformat( 'Shielded <<1>>', combatEvent.hitValue ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_DEFENDED ] = function( combatEvent )
         local area = nil
@@ -135,7 +135,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Defended <<1>>', combatEvent.hitValue ), area, false
+        return zo_strformat( 'Defended <<1>>', combatEvent.hitValue ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_DOT_TICK ] = function( combatEvent )
         local area = nil
@@ -147,7 +147,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( format, combatEvent.hitValue ), area, false
+        return zo_strformat( format, combatEvent.hitValue ), area, false, PSBT_SETTINGS.damage_color
     end,
     [ ACTION_RESULT_DOT_TICK_CRITICAL ] = function( combatEvent )
         local area = nil
@@ -159,7 +159,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( format, combatEvent.hitValue ), area, true
+        return zo_strformat( format, combatEvent.hitValue ), area, true, PSBT_SETTINGS.damage_color
     end,
     [ ACTION_RESULT_HEAL ] = function( combatEvent )
         local area = nil
@@ -169,7 +169,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>>' , combatEvent.hitValue ), area, false
+        return zo_strformat( '+<<1>>' , combatEvent.hitValue ), area, false, PSBT_SETTINGS.healing_color
     end,
     [ ACTION_RESULT_HOT_TICK ] = function( combatEvent )
         local area = nil
@@ -179,7 +179,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>>', combatEvent.hitValue ), area, false
+        return zo_strformat( '+<<1>>', combatEvent.hitValue ), area, false, PSBT_SETTINGS.healing_color
     end,
     [ ACTION_RESULT_HOT_TICK_CRITICAL ] = function( combatEvent )
         local area = nil
@@ -189,7 +189,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>>!', combatEvent.hitValue ), area, true
+        return zo_strformat( '+<<1>>!', combatEvent.hitValue ), area, true, PSBT_SETTINGS.healing_color
     end,
     [ ACTION_RESULT_DODGED ] = function( combatEvent )
         local area = nil
@@ -199,7 +199,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Dodged <<1>>', combatEvent.abilityName ), area, false
+        return zo_strformat( 'Dodged <<1>>', combatEvent.abilityName ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_MISS ] = function( combatEvent )
         local area = nil
@@ -209,7 +209,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return 'Miss!', area, false
+        return 'Miss!', area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_PARRIED ] = function( combatEvent )
         local area = nil
@@ -219,7 +219,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Parried <<1>>!', combatEvent.abilityName ), area, false
+        return zo_strformat( 'Parried <<1>>!', combatEvent.abilityName ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_RESIST ] = function( combatEvent )
         local area = nil
@@ -229,7 +229,7 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Resisted <<1>>!', combatEvent.abilityName ), area, false
+        return zo_strformat( 'Resisted <<1>>!', combatEvent.abilityName ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_PARTIAL_RESIST ] = function( combatEvent )
         local area = nil
@@ -239,93 +239,93 @@ local combat_events =
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Partially Resisted <<1>>!', combatEvent.abilityName ), nil, false
+        return zo_strformat( 'Partially Resisted <<1>>!', combatEvent.abilityName ), area, false, PSBT_SETTINGS.normal_color
     end,
     [ ACTION_RESULT_FALL_DAMAGE ] = function( combatEvent )
         local area = nil
         if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
         elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
-            return nil, nil, false
+            return nil, nil, false, PSBT_SETTINGS.normal_color
         end
 
-        return zo_strformat( '-<<1>> falling', combatEvent.hitValue ), area, false
+        return zo_strformat( '-<<1>> falling', combatEvent.hitValue ), area, false, PSBT_SETTINGS.damage_color
     end,
     [ ACTION_RESULT_KILLING_BLOW ] = function( combatEvent )
         if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             return 'Looks like you\'re dead.', PSBT_AREAS.STATIC, true
         elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
-            return zo_strformat( 'Killing Blow |cCC7D5E<<1>>|r!', combatEvent.targetName ), PSBT_AREAS.STATIC, true
+            return zo_strformat( 'Killing Blow |cCC7D5E<<1>>|r!', combatEvent.targetName ), PSBT_AREAS.STATIC, true, PSBT_SETTINGS.normal_color
         end
 
         return nil, nil, false
     end,
 
-    [ ACTION_RESULT_POWER_DRAIN ] = function( combatEvent )
+    --[[[ ACTION_RESULT_POWER_DRAIN ] = function( combatEvent )
         local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', combatEvent.powerType )
-        return zo_strformat( '-<<1>> (<<2>>)', combatEvent.hitValue, mechanicName ), PSBT_AREAS.OUTGOING, false
-    end,
+        return zo_strformat( '-<<1>> (<<2>>)', combatEvent.hitValue, mechanicName ), PSBT_AREAS.INCOMING, false, PSBT_SETTINGS.normal_color
+    end,]]
 
     [ ACTION_RESULT_POWER_ENERGIZE ] = function( combatEvent )
         local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', combatEvent.powerType )
-        return zo_strformat( '+<<1>> (<<2>>)', combatEvent.hitValue, mechanicName ), PSBT_AREAS.INCOMING, false
+        return zo_strformat( '+<<1>> (<<2>>)', combatEvent.hitValue, mechanicName ), PSBT_AREAS.INCOMING, false, PSBT_SETTINGS.normal_color
     end,
 
     [ ACTION_RESULT_CANNOT_USE ] = function( combatEvent )
-        return 'Cannot Use', PSBT_AREAS.STATIC, true
+        return 'Cannot Use', PSBT_AREAS.STATIC, true, PSBT_SETTINGS.normal_color
     end,
 
     [ ACTION_RESULT_BUSY ] = function( combatEvent)
-        return 'Busy', PSBT_AREAS.STATIC, true
+        return 'Busy', PSBT_AREAS.STATIC, true, PSBT_SETTINGS.normal_color
     end,   
 
     [ ACTION_RESULT_FALLING ] = function( combatEvent )
-        return 'You\'re falling', PSBT_AREAS.STATIC, true
+        return 'You\'re falling', PSBT_AREAS.STATIC, true, PSBT_SETTINGS.normal_color
     end,
 
     [ ACTION_RESULT_DISORIENTED ] = function( combatEvent )
         if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
-            return 'Disoriented!', PSBT_AREAS.INCOMING, true
+            return 'Disoriented!', PSBT_AREAS.INCOMING, true, PSBT_SETTINGS.normal_color
         elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
-            return 'Disoriented!', PSBT_AREAS.OUTGOING, true
+            return 'Disoriented!', PSBT_AREAS.OUTGOING, true, PSBT_SETTINGS.normal_color
         end
-        return nil, nil, false
+        return nil, nil, false, PSBT_SETTINGS.normal_color
     end,
 
     [ ACTION_RESULT_DISARMED ] = function( combatEvent )
         if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
-            return 'Disarmed!', PSBT_AREAS.OUTGOING, true
+            return 'Disarmed!', PSBT_AREAS.OUTGOING, true, PSBT_SETTINGS.normal_color
         elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
-            return 'Disarmed!', PSBT_AREAS.INCOMING, true
+            return 'Disarmed!', PSBT_AREAS.INCOMING, true, PSBT_SETTINGS.normal_color
         end
-        return nil, nil, false
+        return nil, nil, false, PSBT_SETTINGS.normal_color
     end,
 
     [ ACTION_RESULT_FEARED ] = function( combatEvent )
          if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
-            return 'Feared!', PSBT_AREAS.INCOMING, true
+            return 'Feared!', PSBT_AREAS.INCOMING, true, PSBT_SETTINGS.normal_color
         elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
-            return 'Feared!', PSBT_AREAS.OUTGOING, true
+            return 'Feared!', PSBT_AREAS.OUTGOING, true, PSBT_SETTINGS.normal_color
         end
-        return nil, nil, false
+        return nil, nil, false, PSBT_SETTINGS.normal_color
     end,
 
     [ ACTION_RESULT_IMMUNE ] = function( combatEvent )
         if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
-            return 'Immune!', PSBT_AREAS.INCOMING, true
+            return 'Immune!', PSBT_AREAS.INCOMING, true, PSBT_SETTINGS.normal_color
         elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
-            return 'Immune!', PSBT_AREAS.OUTGOING, true
+            return 'Immune!', PSBT_AREAS.OUTGOING, true, PSBT_SETTINGS.normal_color
         end
-        return nil, nil, false
+        return nil, nil, false, PSBT_SETTINGS.normal_color
     end,
 
     [ ACTION_RESULT_INTERRUPT ] = function( combatEvent ) 
         if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
-            return 'Interrupt!', PSBT_AREAS.INCOMING, true
+            return 'Interrupt!', PSBT_AREAS.INCOMING, true, PSBT_SETTINGS.normal_color
         elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
-            return 'Interrupt!', PSBT_AREAS.OUTGOING, true
+            return 'Interrupt!', PSBT_AREAS.OUTGOING, true, PSBT_SETTINGS.normal_color
         end
-        return nil, nil, false
+        return nil, nil, false, PSBT_SETTINGS.normal_color
     end,
 
     --ACTION_RESULT_BEGIN
@@ -520,10 +520,10 @@ end
 --integer result, bool isError, string abilityName, integer abilityGraphic, integer abilityActionSlotType, string sourceName, integer sourceType, string targetName, integer targetType, integer hitValue, integer powerType, integer damageType, bool log
 function PSBT_Combat:DispatchEvent( result, combatEvent )
     local func = combat_events[ result ]
-    local text, area, crit = func( combatEvent )
+    local text, area, crit, color = func( combatEvent )
 
     local icon = self._iconRegistry[ combatEvent.abilityName ]
-    self:NewEvent( area, crit, icon, text )
+    self:NewEvent( area, crit, icon, text, self._root:GetSetting( color ) )
 end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
