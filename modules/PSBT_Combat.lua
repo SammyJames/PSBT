@@ -451,8 +451,12 @@ function PSBT_Combat:StackEvent( result, _, abilityName, _, _, sourceName, sourc
         stack = self._stackingOut
     end
 
-    if ( not stack[ abilityName ] ) then
-        stack[ abilityName ] = 
+    if ( not stack[ result ] ) then
+        stack[ result ] = {}
+    end
+
+    if ( not stack[ result ][ abilityName ] ) then
+        stack[result][ abilityName ] = 
         { 
             lastTick    = 0, 
             result      = result,
@@ -467,7 +471,7 @@ function PSBT_Combat:StackEvent( result, _, abilityName, _, _, sourceName, sourc
         }
     end
 
-    local entry     = stack[ abilityName ]
+    local entry     = stack[result][ abilityName ]
     entry.lastTick  = GetFrameTimeMilliseconds()
     entry.hitValue  = entry.hitValue + hitValue
 end
@@ -503,10 +507,12 @@ function PSBT_Combat:OnUpdate()
 end
 
 function PSBT_Combat:ProcessStackedEvents( stacking, frameTime )
-    for name,entry in pairs( stacking ) do
-        if ( frameTime - entry.lastTick > STACK_TIME ) then
-            self:DispatchEvent( entry.result, entry )
-            stacking[ name ] = nil
+    for result,entries in pairs( stacking ) do
+        for k,v in pairs( entries ) do
+            if ( frameTime - v.lastTick > STACK_TIME ) then
+                self:DispatchEvent( result, v )
+                stacking[ result ][ k ] = nil
+            end
         end
     end
 end
