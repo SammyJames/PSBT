@@ -103,7 +103,7 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
         self._newSticky = true
     end
 
-    if ( #self._pendingNormal ) then
+    if ( #self._pendingNormal and #self._normal < 25 ) then
         local newEntry = tremove( self._pendingNormal, 1 )
         if ( newEntry ) then
             newEntry:SetExpire( frameTime + 3 )

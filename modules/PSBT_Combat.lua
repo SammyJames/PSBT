@@ -1,11 +1,15 @@
 local PSBT_Module           = PSBT_Module
 local PSBT_Combat           = PSBT_Module:Subclass()
 PSBT_Combat._iconRegistry   = setmetatable( {}, { __mode = 'kv' } )
+PSBT_Combat._stackingIn     = {}
+PSBT_Combat._stackingOut    = {}
 local CBM                   = CALLBACK_MANAGER
 
 local MAX_EVENTS            = 15
+local STACK_TIME            = 0.45
 local PlayerName            = GetUnitName( 'player' )
 local PlayerNameRaw         = GetRawUnitName( 'player' )
+
 local COMBAT_UNIT_TYPE_PLAYER       = COMBAT_UNIT_TYPE_PLAYER
 local COMBAT_UNIT_TYPE_PLAYER_PET   = COMBAT_UNIT_TYPE_PLAYER_PET
 local COMBAT_UNIT_TYPE_NONE         = COMBAT_UNIT_TYPE_NONE
@@ -17,6 +21,7 @@ local zo_strformat          = zo_strformat
 local GetString             = GetString
 local select                = select          
 local kVerison              = 1.0
+local NonContiguousCount    = NonContiguousCount
 
 local function IsPlayerType( targetType )
     return targetType == COMBAT_UNIT_TYPE_PLAYER or
@@ -37,291 +42,287 @@ end
 
 local combat_events =
 {
-    [ ACTION_RESULT_ABSORBED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_ABSORBED ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Absorbed <<1>>', abilityName ), area, false
+        return zo_strformat( 'Absorbed <<1>>', combatEvent.abilityName ), area, false
     end,
-    [ ACTION_RESULT_BLADETURN ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_BLADETURN ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Blocked <<1>>', abilityName ), area, false
+        return zo_strformat( 'Blocked <<1>>', combatEvent.abilityName ), area, false
     end,
-    [ ACTION_RESULT_BLOCKED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_BLOCKED ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Blocked <<1>>', abilityName ), area, false
+        return zo_strformat( 'Blocked <<1>>', combatEvent.abilityName ), area, false
     end,
-    [ ACTION_RESULT_BLOCKED_DAMAGE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
+    [ ACTION_RESULT_BLOCKED_DAMAGE ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Blocked <<1>>', hitValue ), area, false
+        return zo_strformat( 'Blocked <<1>>', combatEvent.hitValue ), area, false
     end,
-    [ ACTION_RESULT_CANT_SEE_TARGET ] = function( ... )
+    [ ACTION_RESULT_CANT_SEE_TARGET ] = function( combatEvent )
         return 'Can\'t See Target!', PSBT_AREAS.STATIC, true
     end,
-    [ ACTION_RESULT_CRITICAL_DAMAGE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
+    [ ACTION_RESULT_CRITICAL_DAMAGE ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '<<1>>!', hitValue ), area, true
+        return zo_strformat( '<<1>>!', combatEvent.hitValue ), area, true
     end,
-    [ ACTION_RESULT_CRITICAL_HEAL ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_CRITICAL_HEAL ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>>!', hitValue ), area, true
+        return zo_strformat( '+<<1>>!', combatEvent.hitValue ), area, true
     end,
-    [ ACTION_RESULT_DAMAGE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
-        local area = nil
-        local format = '<<1>>'
-        if ( IsPlayer( targetType, targetName ) ) then
-            area = PSBT_AREAS.INCOMING
-            format = '-' .. format
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
-            area = PSBT_AREAS.OUTGOING 
-        end
-
-        return zo_strformat( format, hitValue ), area, false
-    end,
-    [ ACTION_RESULT_DAMAGE_SHIELDED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
-        local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
-            area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
-            area = PSBT_AREAS.OUTGOING 
-        end
-
-        return zo_strformat( 'Shielded <<1>>', hitValue ), area, false
-    end,
-    [ ACTION_RESULT_DEFENDED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
-        local area = nil
-        if ( IsPlayer( targetType ) ) then
-            area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType ) ) then
-            area = PSBT_AREAS.OUTGOING 
-        end
-
-        return zo_strformat( 'Defended <<1>>', hitValue ), area, false
-    end,
-    [ ACTION_RESULT_DOT_TICK ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
+    [ ACTION_RESULT_DAMAGE ] = function( combatEvent )
         local area = nil
         local format = '<<1>>'
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
             format = '-' .. format
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( format, hitValue ), area, false
+        return zo_strformat( format, combatEvent.hitValue ), area, false
     end,
-    [ ACTION_RESULT_DOT_TICK_CRITICAL ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue, damageType )
+    [ ACTION_RESULT_DAMAGE_SHIELDED ] = function( combatEvent )
+        local area = nil
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
+            area = PSBT_AREAS.INCOMING
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
+            area = PSBT_AREAS.OUTGOING 
+        end
+
+        return zo_strformat( 'Shielded <<1>>', combatEvent.hitValue ), area, false
+    end,
+    [ ACTION_RESULT_DEFENDED ] = function( combatEvent )
+        local area = nil
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
+            area = PSBT_AREAS.INCOMING
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
+            area = PSBT_AREAS.OUTGOING 
+        end
+
+        return zo_strformat( 'Defended <<1>>', combatEvent.hitValue ), area, false
+    end,
+    [ ACTION_RESULT_DOT_TICK ] = function( combatEvent )
+        local area = nil
+        local format = '<<1>>'
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
+            area = PSBT_AREAS.INCOMING
+            format = '-' .. format
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
+            area = PSBT_AREAS.OUTGOING 
+        end
+
+        return zo_strformat( format, combatEvent.hitValue ), area, false
+    end,
+    [ ACTION_RESULT_DOT_TICK_CRITICAL ] = function( combatEvent )
         local area = nil
         local format = '<<1>>!'
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
             format = '-' .. format
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( format, hitValue ), area, true
+        return zo_strformat( format, combatEvent.hitValue ), area, true
     end,
-    [ ACTION_RESULT_HEAL ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_HEAL ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>>' , hitValue ), area, false
+        return zo_strformat( '+<<1>>' , combatEvent.hitValue ), area, false
     end,
-    [ ACTION_RESULT_HOT_TICK ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_HOT_TICK ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>>', hitValue ), area, false
+        return zo_strformat( '+<<1>>', combatEvent.hitValue ), area, false
     end,
-    [ ACTION_RESULT_HOT_TICK_CRITICAL ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_HOT_TICK_CRITICAL ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( '+<<1>>!', hitValue ), area, true
+        return zo_strformat( '+<<1>>!', combatEvent.hitValue ), area, true
     end,
-    [ ACTION_RESULT_DODGED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_DODGED ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Dodged <<1>>', abilityName ), area, false
+        return zo_strformat( 'Dodged <<1>>', combatEvent.abilityName ), area, false
     end,
-    [ ACTION_RESULT_MISS ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_MISS ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
         return 'Miss!', area, false
     end,
-    [ ACTION_RESULT_PARRIED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_PARRIED ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Parried <<1>>!', abilityName ), area, false
+        return zo_strformat( 'Parried <<1>>!', combatEvent.abilityName ), area, false
     end,
-    [ ACTION_RESULT_RESIST ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_RESIST ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Resisted <<1>>!', abilityName ), area, false
+        return zo_strformat( 'Resisted <<1>>!', combatEvent.abilityName ), area, false
     end,
-    [ ACTION_RESULT_PARTIAL_RESIST ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_PARTIAL_RESIST ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             area = PSBT_AREAS.OUTGOING 
         end
 
-        return zo_strformat( 'Partially Resisted <<1>>!', abilityName ), nil, false
+        return zo_strformat( 'Partially Resisted <<1>>!', combatEvent.abilityName ), nil, false
     end,
-    [ ACTION_RESULT_FALL_DAMAGE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
+    [ ACTION_RESULT_FALL_DAMAGE ] = function( combatEvent )
         local area = nil
-        if ( IsPlayer( targetType, targetName ) ) then
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             return nil, nil, false
         end
 
-        return zo_strformat( '-<<1>> falling', hitValue ), area, false
+        return zo_strformat( '-<<1>> falling', combatEvent.hitValue ), area, false
     end,
-    [ ACTION_RESULT_KILLING_BLOW ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType )
-        if ( IsPlayer( targetType, targetName ) ) then
+    [ ACTION_RESULT_KILLING_BLOW ] = function( combatEvent )
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             return 'Looks like you\'re dead.', PSBT_AREAS.STATIC, true
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
-            return zo_strformat( 'Killing Blow |cCC7D5E<<1>>|r!', targetName ), PSBT_AREAS.STATIC, true
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
+            return zo_strformat( 'Killing Blow |cCC7D5E<<1>>|r!', combatEvent.targetName ), PSBT_AREAS.STATIC, true
         end
 
         return nil, nil, false
     end,
 
-    [ ACTION_RESULT_POWER_DRAIN ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
-        local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', mechanicValue )
-        return zo_strformat( '-<<1>> (<<2>>)', hitValue, mechanicName ), PSBT_AREAS.OUTGOING, false
+    [ ACTION_RESULT_POWER_DRAIN ] = function( combatEvent )
+        local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', combatEvent.powerType )
+        return zo_strformat( '-<<1>> (<<2>>)', combatEvent.hitValue, mechanicName ), PSBT_AREAS.OUTGOING, false
     end,
 
-    [ ACTION_RESULT_POWER_ENERGIZE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
-        local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', mechanicValue )
-        return zo_strformat( '+<<1>> (<<2>>)', hitValue, mechanicName ), PSBT_AREAS.INCOMING, false
+    [ ACTION_RESULT_POWER_ENERGIZE ] = function( combatEvent )
+        local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', combatEvent.powerType )
+        return zo_strformat( '+<<1>> (<<2>>)', combatEvent.hitValue, mechanicName ), PSBT_AREAS.INCOMING, false
     end,
 
-    --[[[ ACTION_RESULT_BAD_TARGET ] = function( ... )
-        return 'Bad Target', PSBT_AREAS.STATIC, true
-    end,]]
-
-    [ ACTION_RESULT_CANNOT_USE ] = function( ... )
+    [ ACTION_RESULT_CANNOT_USE ] = function( combatEvent )
         return 'Cannot Use', PSBT_AREAS.STATIC, true
     end,
 
-    [ ACTION_RESULT_BUSY ] = function( ... )
+    [ ACTION_RESULT_BUSY ] = function( combatEvent)
         return 'Busy', PSBT_AREAS.STATIC, true
     end,   
 
-    [ ACTION_RESULT_FALLING ] = function( ... )
+    [ ACTION_RESULT_FALLING ] = function( combatEvent )
         return 'You\'re falling', PSBT_AREAS.STATIC, true
     end,
 
-    [ ACTION_RESULT_DISORIENTED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
-        if ( IsPlayer( targetType, targetName ) ) then
+    [ ACTION_RESULT_DISORIENTED ] = function( combatEvent )
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             return 'Disoriented!', PSBT_AREAS.INCOMING, true
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             return 'Disoriented!', PSBT_AREAS.OUTGOING, true
         end
         return nil, nil, false
     end,
 
-    [ ACTION_RESULT_DISARMED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
-        if ( IsPlayer( targetType, targetName ) ) then
+    [ ACTION_RESULT_DISARMED ] = function( combatEvent )
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             return 'Disarmed!', PSBT_AREAS.OUTGOING, true
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             return 'Disarmed!', PSBT_AREAS.INCOMING, true
         end
         return nil, nil, false
     end,
 
-    [ ACTION_RESULT_FEARED ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
-         if ( IsPlayer( targetType, targetName ) ) then
+    [ ACTION_RESULT_FEARED ] = function( combatEvent )
+         if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             return 'Feared!', PSBT_AREAS.INCOMING, true
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             return 'Feared!', PSBT_AREAS.OUTGOING, true
         end
         return nil, nil, false
     end,
 
-    [ ACTION_RESULT_IMMUNE ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue )
-        if ( IsPlayer( targetType, targetName ) ) then
+    [ ACTION_RESULT_IMMUNE ] = function( combatEvent )
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             return 'Immune!', PSBT_AREAS.INCOMING, true
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             return 'Immune!', PSBT_AREAS.OUTGOING, true
         end
         return nil, nil, false
     end,
 
-    [ ACTION_RESULT_INTERRUPT ] = function( abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, mechanicValue ) 
-        if ( IsPlayer( targetType, targetName ) ) then
+    [ ACTION_RESULT_INTERRUPT ] = function( combatEvent ) 
+        if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             return 'Interrupt!', PSBT_AREAS.INCOMING, true
-        elseif ( IsPlayer( sourceType, sourceName ) ) then
+        elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
             return 'Interrupt!', PSBT_AREAS.OUTGOING, true
         end
         return nil, nil, false
@@ -411,7 +412,7 @@ function PSBT_Combat:RefreshAbilityIcons()
 end
 
 function PSBT_Combat:OnCombatEvent( ... )
-    local result        = select( 1, ... )
+    local result = select( 1, ... )
     if ( not combat_events[ result ] ) then 
         return
     end
@@ -441,7 +442,37 @@ function PSBT_Combat:OnCombatEvent( ... )
     end
 end
 
-function PSBT_Combat:OnUpdate( frameTime )
+function PSBT_Combat:StackEvent( result, _, abilityName, _, _, sourceName, sourceType, targetName, targetType, hitValue, powerType, damageType )
+    local stack = nil
+
+    if ( IsPlayer( targetType, targetName ) ) then
+        stack = self._stackingIn
+    elseif ( IsPlayer( sourceType, sourceName ) ) then
+        stack = self._stackingOut
+    end
+
+    if ( not stack[ abilityName ] ) then
+        stack[ abilityName ] = 
+        { 
+            lastTick    = 0, 
+            result      = result,
+            abilityName = abilityName,
+            sourceName  = sourceName, 
+            sourceType  = sourceType, 
+            targetName  = targetName, 
+            targetType  = targetType, 
+            hitValue    = 0, 
+            powerType   = powerType, 
+            damageType  = damageType 
+        }
+    end
+
+    local entry     = stack[ abilityName ]
+    entry.lastTick  = GetFrameTimeMilliseconds()
+    entry.hitValue  = entry.hitValue + hitValue
+end
+
+function PSBT_Combat:OnUpdate()
     if ( self._index <= 0 ) then
         self._index = 1
     end
@@ -451,7 +482,7 @@ function PSBT_Combat:OnUpdate( frameTime )
     for i = self._index, endPoint do
         local entry = self._buffer:At( i )
         if ( entry ) then
-            self:DispatchEvent( unpack( entry ) )
+            self:StackEvent( unpack( entry ) ) 
         end
     end 
 
@@ -460,15 +491,32 @@ function PSBT_Combat:OnUpdate( frameTime )
     else
         self._index = endPoint + 1
     end
+
+    -- Dispatch
+    if ( NonContiguousCount( self._stackingOut ) ) then
+        self:ProcessStackedEvents( self._stackingOut, GetFrameTimeMilliseconds() )
+    end
+
+    if ( NonContiguousCount( self._stackingIn ) ) then
+        self:ProcessStackedEvents( self._stackingIn, GetFrameTimeMilliseconds() )
+    end
+end
+
+function PSBT_Combat:ProcessStackedEvents( stacking, frameTime )
+    for name,entry in pairs( stacking ) do
+        if ( frameTime - entry.lastTick > STACK_TIME ) then
+            self:DispatchEvent( entry.result, entry )
+            stacking[ name ] = nil
+        end
+    end
 end
 
 --integer result, bool isError, string abilityName, integer abilityGraphic, integer abilityActionSlotType, string sourceName, integer sourceType, string targetName, integer targetType, integer hitValue, integer powerType, integer damageType, bool log
-function PSBT_Combat:DispatchEvent( result, _, ... )
+function PSBT_Combat:DispatchEvent( result, combatEvent )
     local func = combat_events[ result ]
-    local text, area, crit = func( ... )
+    local text, area, crit = func( combatEvent )
 
-    local icon = self._iconRegistry[ select( 1, ... ) ]
-
+    local icon = self._iconRegistry[ combatEvent.abilityName ]
     self:NewEvent( area, crit, icon, text )
 end
 
