@@ -36,7 +36,7 @@ function PSBT_Experience:OnXPUpdated( tag, exp, maxExp, reason  )
     if ( gain <= 0 ) then
         return
     end
-    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, nil, '+' .. tostring( gain ) .. ' XP' )
+    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, [[/psbt/textures/exp.dds]], '+' .. tostring( gain ) .. ' XP' )
 end
 
 
