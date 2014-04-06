@@ -9,11 +9,16 @@ local EFFECT_RESULT_GAINED  = EFFECT_RESULT_GAINED
 local PSBT_EVENTS           = PSBT_EVENTS
 local PSBT_AREAS            = PSBT_AREAS
 local PSBT_MODULES          = PSBT_MODULES
+local PSBT_STRINGS          = PSBT_STRINGS
+local zo_strformat          = zo_strformat
 
 function PSBT_Auras:Initialize( ... )  
     PSBT_Module.Initialize( self, ... )
 
     self:RegisterForEvent( EVENT_EFFECT_CHANGED, function( ... ) self:OnEffectChanged( ... ) end )
+
+    self._gained = GetString( _G[ PSBT_STRINGS.AURA_GAINED ] )
+    self._fades = GetString( _G[ PSBT_STRINGS.AURA_FADES ] )
 end
 
 function PSBT_Auras:OnEffectChanged( changeType, effectSlot, effectName, unitTag, beginTime, endTime, stackCount, iconName, buffType, effectType, abilityType, statusEffectType )
@@ -33,11 +38,11 @@ function PSBT_Auras:OnEffectChanged( changeType, effectSlot, effectName, unitTag
 end
 
 function PSBT_Auras:Add( name, iconName )
-    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, iconName, name .. ' Gained' )
+    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, iconName, zo_strformat( self._gained, name ) )
 end
 
 function PSBT_Auras:Remove( name, iconName )
-    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, iconName, name .. ' Fades' )
+    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, iconName, zo_strformat( self._fades, name ) )
 end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 

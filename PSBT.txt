@@ -15,6 +15,9 @@ core/PSBT_Media.lua
 ## constants
 core/PSBT_Constants.lua
 
+## loc
+localization/$(language).lua
+
 ## helpers
 helpers/PSBT_AnimationPool.lua
 helpers/PSBT_Parabola.lua

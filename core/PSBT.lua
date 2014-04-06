@@ -37,6 +37,8 @@ end
 function PSBT:Initialize( control )
     self.control = control
     self.control:RegisterForEvent( EVENT_ADD_ON_LOADED, function( _, addon ) self:OnLoaded( addon ) end )
+
+    CBM:FireCallbacks( PSBT_EVENTS.INITIALIZE )
 end
 
 function PSBT:FormatFont( font )

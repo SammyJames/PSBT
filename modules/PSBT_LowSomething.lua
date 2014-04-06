@@ -1,6 +1,7 @@
 local PSBT_Module           = PSBT_Module
 local PSBT_LowSomething     = PSBT_Module:Subclass()
 PSBT_LowSomething._pools    = {}
+PSBT_LowSomething._colors   = {}
 local CBM                   = CALLBACK_MANAGER
 
 local threshold             = 0.33
@@ -8,6 +9,7 @@ local threshold             = 0.33
 local PSBT_AREAS            = PSBT_AREAS
 local PSBT_MODULES          = PSBT_MODULES
 local PSBT_EVENTS           = PSBT_EVENTS
+local PSBT_STRINGS          = PSBT_STRINGS
 
 local POWERTYPE_HEALTH      = POWERTYPE_HEALTH
 local POWERTYPE_MAGICKA     = POWERTYPE_MAGICKA
@@ -18,6 +20,13 @@ local kVersion              = 1.0
 
 function PSBT_LowSomething:Initialize( ... )
     PSBT_Module.Initialize( self, ... )
+
+    self._lowText = GetString( _G[ PSBT_STRINGS.LOW_SOMETHING ] )
+
+    self._colors[ POWERTYPE_HEALTH ]        = ZO_ColorDef:New( 'D8594B' )
+    self._colors[ POWERTYPE_MAGICKA ]       = ZO_ColorDef:New( '92CEF8' )
+    self._colors[ POWERTYPE_STAMINA ]       = ZO_ColorDef:New( '5C9D8E' )
+    self._colors[ POWERTYPE_MOUNT_STAMINA ] = ZO_ColorDef:New( '5C9D8E' )
 
     self._pools[ POWERTYPE_HEALTH ]        = 0
     self._pools[ POWERTYPE_MAGICKA ]       = 0
@@ -52,16 +61,10 @@ function PSBT_LowSomething:OnPowerUpdate( unit, powerPoolIndex, powerType, power
 
     self._pools[ powerType ] = newValue
 
-    local string = nil
-    if ( powerType == POWERTYPE_HEALTH ) then
-        string = 'Health Low! (|cD8594B' .. powerPool .. '|r)'
-    elseif ( powerType == POWERTYPE_MAGICKA ) then
-        string = 'Magicka Low! (|c92CEF8' .. powerPool .. '|r)'
-    elseif ( powerType == POWERTYPE_STAMINA ) then
-        string = 'Stamina Low! (|c5C9D8E' .. powerPool .. '|r)'
-    elseif ( powerType == POWERTYPE_MOUNT_STAMINA ) then
-        string = 'Mount Stamina Low! (|c5C9D8E' .. powerPool .. '|r)'
-    end
+    local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', powerType )
+    local color = self._colors[ powerType ]
+
+    local string = zo_strformat( self._lowText, mechanicName, color:Colorize( tostring( powerPool ) ) )
 
     PlaySound( 'Quest_StepFailed' )
     self:NewEvent( PSBT_AREAS.STATIC, true, nil, string )
