@@ -49,6 +49,19 @@ local static_events =
     [ ACTION_RESULT_FALLING ] = true,
 }
 
+local critical_events = 
+{
+    [ ACTION_RESULT_DOT_TICK_CRITICAL ] = true,
+    [ ACTION_RESULT_CRITICAL_DAMAGE ] = true,
+    [ ACTION_RESULT_CRITICAL_HEAL ] = true,
+    [ ACTION_RESULT_HOT_TICK_CRITICAL ] = true,
+    [ ACTION_RESULT_INTERRUPT ] = true,
+    [ ACTION_RESULT_BLOCKED ] = true,
+    [ ACTION_RESULT_BLOCKED_DAMAGE ] = true,
+    [ ACTION_RESULT_ABSORBED ] = true,
+    [ ACTION_RESULT_RESIST ] = true,
+}
+
 local damage_events =
 {
     [ ACTION_RESULT_CRITICAL_DAMAGE ] = true,
@@ -241,7 +254,7 @@ function PSBT_Combat:DispatchEvent( result, combatEvent )
     end
 
     local area = PSBT_EVENTS.STATIC
-    local crit = false
+    local crit = critical_events[ result ]
     local icon = self._iconRegistry[ combatEvent.abilityName ]
     local color = PSBT_SETTINGS.normal_color
     local text = ''
