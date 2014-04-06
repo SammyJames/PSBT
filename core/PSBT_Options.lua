@@ -15,7 +15,7 @@ local PSBT_ICON_SIDE    = PSBT_ICON_SIDE
 
 local kVersion          = 1.0
 
-local decorations = { 'none', 'soft-shadow-thin', 'soft-shadow-thick', 'shadow' }
+local decorations = { 'none', 'outline', 'thin-outline', 'thick-outline', 'soft-shadow-thin', 'soft-shadow-thick', 'shadow' }
 local iconside = { PSBT_ICON_SIDE.NONE, PSBT_ICON_SIDE.LEFT, PSBT_ICON_SIDE.RIGHT }
 local direction = { PSBT_SCROLL_DIRECTIONS.UP, PSBT_SCROLL_DIRECTIONS.DOWN }
 
