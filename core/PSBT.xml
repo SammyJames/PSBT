@@ -12,8 +12,8 @@
             </Controls>
         </Control>
 
-        <TopLevelControl name="PSBT" mouseEnabled="false" clampedToScreen="true" movable="false">
-            <OnInitialized>Initialized( self )</OnInitialized>
+        <TopLevelControl name="PSBT_MAIN" mouseEnabled="false" clampedToScreen="true" movable="false">
+            <OnInitialized>PSBT:Initialize( self )</OnInitialized>
             <Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" offsetX="0" offsetY="0"/>
             <Anchor point="BOTTOMRIGHT" relativeTo="GuiRoot" relativePoint="BOTTOMRIGHT" offsetX="0" offsetY="0"/>
 

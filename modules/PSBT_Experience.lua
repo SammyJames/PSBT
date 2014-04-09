@@ -1,5 +1,6 @@
-local PSBT_Module       = PSBT_Module
-local PSBT_Experience   = PSBT_Module:Subclass()
+local PSBT              = PSBT
+local ModuleProto       = PSBT.ModuleProto
+local PSBT_Experience   = ModuleProto:Subclass()
 local CBM               = CALLBACK_MANAGER
 
 local zo_min            = zo_min
@@ -12,7 +13,7 @@ local PSBT_MODULES      = PSBT_MODULES
 local kVersion          = 1.0
 
 function PSBT_Experience:Initialize( ... )
-    PSBT_Module.Initialize( self, ... )
+    ModuleProto.Initialize( self, ... )
 
     self._currentExperience = GetUnitXP( 'player' )
 

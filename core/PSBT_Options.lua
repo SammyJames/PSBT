@@ -4,8 +4,9 @@ if ( not LAM ) then return end
 local LMP = LibStub( 'LibMediaProvider-1.0' )
 if ( not LMP ) then return end
 
-local PSBT_Module       = PSBT_Module
-local PSBT_Options      = PSBT_Module:Subclass()
+local PSBT              = PSBT
+local ModuleProto       = PSBT.ModuleProto
+local PSBT_Options      = ModuleProto:Subclass()
 local CBM               = CALLBACK_MANAGER
 
 local PSBT_MODULES      = PSBT_MODULES
@@ -15,12 +16,12 @@ local PSBT_ICON_SIDE    = PSBT_ICON_SIDE
 
 local kVersion          = 1.0
 
-local decorations = { 'none', 'outline', 'thin-outline', 'thick-outline', 'soft-shadow-thin', 'soft-shadow-thick', 'shadow' }
-local iconside = { PSBT_ICON_SIDE.NONE, PSBT_ICON_SIDE.LEFT, PSBT_ICON_SIDE.RIGHT }
-local direction = { PSBT_SCROLL_DIRECTIONS.UP, PSBT_SCROLL_DIRECTIONS.DOWN }
+local decorations       = { 'none', 'outline', 'thin-outline', 'thick-outline', 'soft-shadow-thin', 'soft-shadow-thick', 'shadow' }
+local iconside          = { PSBT_ICON_SIDE.NONE, PSBT_ICON_SIDE.LEFT, PSBT_ICON_SIDE.RIGHT }
+local direction         = { PSBT_SCROLL_DIRECTIONS.UP, PSBT_SCROLL_DIRECTIONS.DOWN }
 
 function PSBT_Options:Initialize( root )
-    PSBT_Module.Initialize( self, root ) 
+    ModuleProto.Initialize( self, root ) 
     self:InitializeControlPanel()
 end
 

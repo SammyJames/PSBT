@@ -1,21 +1,22 @@
-local PSBT_Module = PSBT_Module
-local PSBT_Ultimate = PSBT_Module:Subclass()
-local CBM = CALLBACK_MANAGER
-local kVerison = 1.0
+local PSBT              = PSBT
+local ModuleProto       = PSBT.ModuleProto
+local PSBT_Ultimate     = ModuleProto:Subclass()
+local CBM               = CALLBACK_MANAGER
+local kVerison          = 1.0
 
-local PSBT_MODULES = PSBT_MODULES
-local PSBT_AREAS   = PSBT_AREAS
-local PSBT_EVENTS  = PSBT_EVENTS
-local PSBT_STRINGS = PSBT_STRINGS
-local zo_strformat = zo_strformat
+local PSBT_MODULES      = PSBT_MODULES
+local PSBT_AREAS        = PSBT_AREAS
+local PSBT_EVENTS       = PSBT_EVENTS
+local PSBT_STRINGS      = PSBT_STRINGS
+local zo_strformat      = zo_strformat
 
-local kVersion     = 1.0
+local kVersion          = 1.0
 
 local POWERTYPE_ULTIMATE                = POWERTYPE_ULTIMATE
 local ACTION_BAR_ULTIMATE_SLOT_INDEX    = ACTION_BAR_ULTIMATE_SLOT_INDEX
 
 function PSBT_Ultimate:Initialize( ... )
-    PSBT_Module.Initialize( self, ... )
+    ModuleProto.Initialize( self, ... )
 
     self._ready   = false
     self._current = 0

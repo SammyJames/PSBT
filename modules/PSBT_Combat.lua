@@ -1,5 +1,6 @@
-local PSBT_Module           = PSBT_Module
-local PSBT_Combat           = PSBT_Module:Subclass()
+local PSBT                  = PSBT
+local ModuleProto           = PSBT.ModuleProto
+local PSBT_Combat           = ModuleProto:Subclass()
 PSBT_Combat._iconRegistry   = setmetatable( {}, { __mode = 'kv' } )
 PSBT_Combat._stackingIn     = {}
 PSBT_Combat._stackingOut    = {}
@@ -7,6 +8,7 @@ local CBM                   = CALLBACK_MANAGER
 
 local MAX_EVENTS            = 15
 local STACK_TIME            = 0.85
+local ZO_CircularBuffer     = ZO_CircularBuffer
 local PlayerName            = GetUnitName( 'player' )
 local PlayerNameRaw         = GetRawUnitName( 'player' )
 
@@ -82,7 +84,7 @@ local healing_events =
 
 
 function PSBT_Combat:Initialize( ... )
-    PSBT_Module.Initialize( self, ... )
+    ModuleProto.Initialize( self, ... )
 
     self._buffer    = ZO_CircularBuffer:New( DEFAULT_MAX_BUFFERED_EVENTS )
     self._index     = 1

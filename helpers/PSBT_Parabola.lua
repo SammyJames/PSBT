@@ -1,5 +1,6 @@
-local PSBT_AnimationPool = PSBT_AnimationPool
-PSBT_Parabola = PSBT_AnimationPool:Subclass()
+local PSBT                  = PSBT
+local AnimationPool         = PSBT.AnimPoolProto
+local Parabola              = AnimationPool:Subclass()
 
 local PSBT_SCROLL_DIRECTIONS = PSBT_SCROLL_DIRECTIONS
 
@@ -11,13 +12,13 @@ local function _UP( height, progress )
     return height - _DOWN( height, progress )
 end
 
-function PSBT_Parabola:New( height, width, points, direction )
-    local result = PSBT_AnimationPool.New( self )
+function Parabola:New( height, width, points, direction )
+    local result = AnimationPool.New( self )
     result:Initialize( height, width, points, direction )
     return result
 end
 
-function PSBT_Parabola:Initialize( height, width, points, direction )
+function Parabola:Initialize( height, width, points, direction )
     self._parabolaPoints = {}
 
     local midpoint = height * 0.5
@@ -38,8 +39,8 @@ function PSBT_Parabola:Initialize( height, width, points, direction )
     end
 end
 
-function PSBT_Parabola:Create()
-    local anim = PSBT_AnimationPool.Create( self )
+function Parabola:Create()
+    local anim = AnimationPool.Create( self )
 
     local points = self._parabolaPoints
     local x, y = points[1].x, points[1].y
@@ -56,3 +57,5 @@ function PSBT_Parabola:Create()
 
     return anim
 end
+
+PSBT.ParabolaProto = Parabola

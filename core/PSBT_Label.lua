@@ -1,19 +1,20 @@
-PSBT_Label = ZO_Object:Subclass()
+local PSBT          = PSBT
+local ZO_Object     = ZO_Object
+local Label         = ZO_Object:Subclass()
 
-local CENTER = CENTER
-local PSBT_SCROLL_DIRECTIONS = PSBT_SCROLL_DIRECTIONS
-local PSBT_ICON_SIDE = PSBT_ICON_SIDE
-local unpack = unpack
+local CENTER                    = CENTER
+local PSBT_SCROLL_DIRECTIONS    = PSBT_SCROLL_DIRECTIONS
+local PSBT_ICON_SIDE            = PSBT_ICON_SIDE
+local unpack                    = unpack
 
-function PSBT_Label:New( ... )
+function Label:New( ... )
     local result = ZO_Object.New( self )
     result:Initialize( ... )
     return result
 end
 
-function PSBT_Label:Initialize( objectPool )
-    self.objectPool = objectPool
-    self.control = CreateControlFromVirtual( 'PSBT_Label', self.objectPool.control, 'PSBT_Label', self.objectPool:GetNextControlId() )
+function Label:Initialize()
+    self.control = CreateControlFromVirtual( 'PSBT_Label', PSBT.control, 'PSBT_Label', PSBT.LabelFactory:GetNextControlId() )
     self.label   = self.control:GetNamedChild( '_Name' )
     self.icon    = self.control:GetNamedChild( '_Icon' )
     self.expire  = 0
@@ -22,27 +23,27 @@ function PSBT_Label:Initialize( objectPool )
     self.iconPos = PSBT_ICON_SIDE.LEFT
 end
 
-function PSBT_Label:SetMoving( set )
+function Label:SetMoving( set )
     self.moving = set
 end
 
-function PSBT_Label:IsMoving()
+function Label:IsMoving()
     return self.moving
 end
 
-function PSBT_Label:SetExpire( expire )
+function Label:SetExpire( expire )
     self.expire = expire
 end
 
-function PSBT_Label:GetExpire()
+function Label:GetExpire()
     return self.expire
 end
 
-function PSBT_Label:WillExpire( frameTime )
+function Label:WillExpire( frameTime )
     return frameTime > self.expire
 end
 
-function PSBT_Label:IsExpired( frameTime )
+function Label:IsExpired( frameTime )
     if ( self.expire == -1 ) then
         return false
     end
@@ -54,7 +55,7 @@ function PSBT_Label:IsExpired( frameTime )
     return frameTime > self.expire
 end
 
-function PSBT_Label:Finalize()
+function Label:Finalize()
     self:SetText( '' )
     self:SetTexture( 0 )
     self:SetExpire( 0 )
@@ -63,15 +64,15 @@ function PSBT_Label:Finalize()
     self.control:SetScale( 1.0 )
 end
 
-function PSBT_Label:SetText( text )
+function Label:SetText( text )
     self.label:SetText( text )
 end
 
-function PSBT_Label:SetColor( color )
+function Label:SetColor( color )
     self.label:SetColor( unpack( color ) )
 end
 
-function PSBT_Label:SetIconPosition( side )
+function Label:SetIconPosition( side )
     self.iconPos = side
 
     if ( side ~= PSBT_ICON_SIDE.NONE ) then
@@ -92,7 +93,7 @@ function PSBT_Label:SetIconPosition( side )
     end
 end
 
-function PSBT_Label:SetTexture( texture )
+function Label:SetTexture( texture )
     if ( type( texture ) == 'string' and not self.iconPos ~= PSBT_ICON_SIDE.NONE ) then
         self.icon:SetHidden( false )
         self.icon:SetTexture( texture )
@@ -101,12 +102,14 @@ function PSBT_Label:SetTexture( texture )
     end
 end
 
-function PSBT_Label:GetWidth()
+function Label:GetWidth()
     local textWidth = self.label:GetTextDimensions()
     return textWidth
 end
 
-function PSBT_Label:GetHeight()
+function Label:GetHeight()
     local _, textHeight = self.label:GetTextDimensions()
     return textHeight
 end
+
+PSBT.LabelProto = Label

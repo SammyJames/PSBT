@@ -1,29 +1,32 @@
-PSBT_Module             = ZO_Object:Subclass()
+local PSBT          = PSBT
+local ZO_Object     = ZO_Object
+local ModuleProto   = ZO_Object:Subclass()
+local CBM           = CALLBACK_MANAGER
 
-local CBM = CALLBACK_MANAGER
-
-function PSBT_Module:New( ... )
+function ModuleProto:New( ... )
     local result = ZO_Object.New( self )
     result:Initialize( ... )
     return result
 end
 
-function PSBT_Module:Initialize( root )
+function ModuleProto:Initialize( root )
     self._root = root
 end
 
-function PSBT_Module:RegisterForEvent( event, callback )
+function ModuleProto:RegisterForEvent( event, callback )
     self._root:RegisterForEvent( event, callback )
 end
 
-function PSBT_Module:UnregisterForEvent( event, callback )
+function ModuleProto:UnregisterForEvent( event, callback )
     self._root:UnregisterForEvent( event, callback )
 end
 
-function PSBT_Module:OnUpdate( frametime )
+function ModuleProto:OnUpdate( frametime )
     -- stub, implement if needed
 end
 
-function PSBT_Module:NewEvent( scrollArea, sticky, icon, text, color )
+function ModuleProto:NewEvent( scrollArea, sticky, icon, text, color )
     self._root:NewEvent( scrollArea, sticky, icon, text, color )
 end
+
+PSBT.ModuleProto = ModuleProto

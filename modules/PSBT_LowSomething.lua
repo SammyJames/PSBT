@@ -1,5 +1,6 @@
-local PSBT_Module           = PSBT_Module
-local PSBT_LowSomething     = PSBT_Module:Subclass()
+local PSBT                  = PSBT
+local ModuleProto           = PSBT.ModuleProto
+local PSBT_LowSomething     = ModuleProto:Subclass()
 PSBT_LowSomething._pools    = {}
 PSBT_LowSomething._colors   = {}
 local CBM                   = CALLBACK_MANAGER
@@ -19,7 +20,7 @@ local POWERTYPE_MOUNT_STAMINA = POWERTYPE_MOUNT_STAMINA
 local kVersion              = 1.0
 
 function PSBT_LowSomething:Initialize( ... )
-    PSBT_Module.Initialize( self, ... )
+    ModuleProto.Initialize( self, ... )
 
     self._lowText = GetString( _G[ PSBT_STRINGS.LOW_SOMETHING ] )
 

@@ -1,4 +1,6 @@
-PSBT_ScrollArea     = ZO_Object:Subclass()
+local PSBT          = PSBT
+local ZO_Object     = ZO_Object
+local ScrollArea    = ZO_Object:Subclass()
 
 local CBM           = CALLBACK_MANAGER
 local tinsert       = table.insert
@@ -7,17 +9,17 @@ local NUM_STICKY    = 4
 local CENTER        = CENTER
 local BOTTOM        = BOTTOM
 local TOP           = TOP
-local PSBT_EVENTS   = PSBT_EVENTS
-local PSBT_SCROLL_DIRECTIONS = PSBT_SCROLL_DIRECTIONS
-local PSBT_Parabola = PSBT_Parabola
+local PSBT_EVENTS               = PSBT_EVENTS
+local PSBT_SCROLL_DIRECTIONS    = PSBT_SCROLL_DIRECTIONS
+local PSBT_Parabola             = PSBT_Parabola
 
-function PSBT_ScrollArea:New( ... )
+function ScrollArea:New( ... )
     local result = ZO_Object.New( self )
     result:Initialize( ... )
     return result
 end
 
-function PSBT_ScrollArea:Initialize( super, areaName, settings, fadeIn, fadeOut )
+function ScrollArea:Initialize( super, areaName, settings, fadeIn, fadeOut )
     self.name           = areaName
     self.control        = super:GetNamedChild( areaName )
     self.background     = self.control:GetNamedChild( '_BG' )
@@ -38,7 +40,7 @@ function PSBT_ScrollArea:Initialize( super, areaName, settings, fadeIn, fadeOut 
     CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
 end
 
-function PSBT_ScrollArea:SetConfigurationMode( enable )
+function ScrollArea:SetConfigurationMode( enable )
     self.control:SetMovable( enable )
     self.control:SetMouseEnabled( enable )
     self.label:SetHidden( not enable )
@@ -51,16 +53,16 @@ function PSBT_ScrollArea:SetConfigurationMode( enable )
     end
 end
 
-function PSBT_ScrollArea:Position( settings )
+function ScrollArea:Position( settings )
     self.control:SetAnchor( settings.to, self.control:GetParent(), settings.from, settings.x, settings.y )
 end
 
-function PSBT_ScrollArea:GetAnchorOffsets()
+function ScrollArea:GetAnchorOffsets()
     local _, point, _, relPoint, offsX, offsY = self.control:GetAnchor( 0 )
     return point, relPoint, offsX, offsY
 end
 
-function PSBT_ScrollArea:AnchorChild( control, sticky )
+function ScrollArea:AnchorChild( control, sticky )
     local rel = CENTER
     local from = CENTER
     if ( not sticky ) then
@@ -69,7 +71,7 @@ function PSBT_ScrollArea:AnchorChild( control, sticky )
     control:SetAnchor( from, self.control, rel, 0, 0 )
 end
 
-function PSBT_ScrollArea:Push( entry, sticky )
+function ScrollArea:Push( entry, sticky )
     self:AnchorChild( entry.control, sticky )
 
     entry:SetIconPosition( self._iconSide )
@@ -81,14 +83,14 @@ function PSBT_ScrollArea:Push( entry, sticky )
     end
 end
 
-function PSBT_ScrollArea:SetSettings( settings )
+function ScrollArea:SetSettings( settings )
     self._iconSide       = settings.icon
     self._direction      = settings.dir
-    self._parabola       = PSBT_Parabola:New( self.control:GetHeight(), settings.arc, 50, self._direction )
+    self._parabola       = PSBT.ParabolaProto:New( self.control:GetHeight(), settings.arc, 50, self._direction )
     self:Position( settings )
 end
 
-function PSBT_ScrollArea:OnUpdate( frameTime ) 
+function ScrollArea:OnUpdate( frameTime ) 
     if ( not #self._sticky and 
          not #self._normal and 
          not #self._pendingNormal and
@@ -178,3 +180,5 @@ function PSBT_ScrollArea:OnUpdate( frameTime )
 
     self._newSticky = false
 end
+
+PSBT.ScrollAreaProto = ScrollArea

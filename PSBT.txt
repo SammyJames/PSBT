@@ -3,6 +3,9 @@
 ## OptionalDependsOn: LibStub LibMediaProvider-1.0 LibAddonMenu-1.0 LibAnimation-1.0
 ## SavedVariables: PSBT_DB
 
+## pre definition
+core/core.lua
+
 ## libraries
 libs/libstub/libstub.lua
 libs/libanimation-1.0/libanimation.lua
@@ -22,6 +25,7 @@ localization/$(language).lua
 helpers/PSBT_AnimationPool.lua
 helpers/PSBT_Parabola.lua
 helpers/PSBT_Fade.lua
+helpers/PSBT_Sticky.lua
 
 ## core modules
 core/PSBT_Module.lua
@@ -38,6 +42,8 @@ modules/PSBT_Ultimate.lua
 
 ## core
 core/PSBT_Label.lua
+core/PSBT_LabelFactory.lua
 core/PSBT_ScrollArea.lua
+
 core/PSBT.lua
 core/PSBT.xml

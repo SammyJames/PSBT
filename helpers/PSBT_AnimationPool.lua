@@ -1,21 +1,22 @@
+local PSBT          = PSBT
 local ZO_ObjectPool = ZO_ObjectPool
-local LibAnim = LibStub( 'LibAnimation-1.0' )
+local LibAnim       = LibStub( 'LibAnimation-1.0' )
 
-PSBT_AnimationPool = ZO_ObjectPool:Subclass()
+local AnimationPool = ZO_ObjectPool:Subclass()
 
-function PSBT_AnimationPool:New()
+function AnimationPool:New()
     return ZO_ObjectPool.New( self, self.Create, function( ... ) self:Reset( ... ) end )
 end
 
-function PSBT_AnimationPool:Create()
+function AnimationPool:Create()
     return LibAnim:New()
 end
 
-function PSBT_AnimationPool:Reset( animation )
+function AnimationPool:Reset( animation )
     animation:Stop()
 end
 
-function PSBT_AnimationPool:Apply( control )
+function AnimationPool:Apply( control )
     local anim, key = self:AcquireObject()
     anim:SetUserData( key )
     anim:Apply( control )
@@ -26,3 +27,5 @@ function PSBT_AnimationPool:Apply( control )
 
     return anim
 end
+
+PSBT.AnimPoolProto = AnimationPool

@@ -1,38 +1,20 @@
 ------------------------------------------------
 -- Pawkette's Scrolling Battle Text
 --
--- @classmod PSBT
 -- @author Pawkette ( pawkette.heals@gmail.com )
 ------------------------------------------------
 local LMP = LibStub( 'LibMediaProvider-1.0' )
 if ( not LMP ) then return end
 
-local PSBT = ZO_ObjectPool:Subclass()
-PSBT._modules  = {}
-PSBT._areas    = {}
-PSBT._events   = {}
-PSBT.__DEBUG_UPDATE = 0
-PSBT.__DEBUG = false
-
-local PSBT_Fade         = PSBT_Fade
-
+local PSBT              = PSBT
 local CBM               = CALLBACK_MANAGER
-local PSBT_ScrollArea   = PSBT_ScrollArea
 local PSBT_AREAS        = PSBT_AREAS
 local PSBT_EVENTS       = PSBT_EVENTS
 local PSBT_MODULES      = PSBT_MODULES
 local PSBT_SETTINGS     = PSBT_SETTINGS
-
-local tinsert = table.insert
-local tremove = table.remove
-
+local tinsert           = table.insert
+local tremove           = table.remove
 local _
-
-function PSBT:New( ... )
-    local result = ZO_ObjectPool.New( self, PSBT.CreateLabel, function( ... ) self:ResetLabel( ... ) end )
-    result:Initialize( ... )
-    return result
-end
 
 function PSBT:Initialize( control )
     self.control = control
@@ -59,48 +41,24 @@ function PSBT:OnLoaded( addon )
     print( 'Loading PSBT' )
     CBM:FireCallbacks( PSBT_EVENTS.LOADED, self )
 
-    self._fadeIn    = PSBT_Fade:New( 1.0, 0.0 )
-    self._fadeOut   = PSBT_Fade:New( 0.0, 1,0 )
+    self._fadeIn    = self.FadeProto:New( 1.0, 0.0 )
+    self._fadeOut   = self.FadeProto:New( 0.0, 1,0 )
 
-    self._areas[ PSBT_AREAS.INCOMING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.INCOMING,     self:GetSetting( PSBT_AREAS.INCOMING ), self._fadeIn, self._fadeOut )
-    self._areas[ PSBT_AREAS.OUTGOING ]     = PSBT_ScrollArea:New( self.control, PSBT_AREAS.OUTGOING,     self:GetSetting( PSBT_AREAS.OUTGOING ), self._fadeIn, self._fadeOut )
-    self._areas[ PSBT_AREAS.STATIC ]       = PSBT_ScrollArea:New( self.control, PSBT_AREAS.STATIC,       self:GetSetting( PSBT_AREAS.STATIC ), self._fadeIn, self._fadeOut )
-    self._areas[ PSBT_AREAS.NOTIFICATION ] = PSBT_ScrollArea:New( self.control, PSBT_AREAS.NOTIFICATION, self:GetSetting( PSBT_AREAS.NOTIFICATION ), self._fadeIn, self._fadeOut )
+    self._areas[ PSBT_AREAS.INCOMING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.INCOMING,     self:GetSetting( PSBT_AREAS.INCOMING ), self._fadeIn, self._fadeOut )
+    self._areas[ PSBT_AREAS.OUTGOING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.OUTGOING,     self:GetSetting( PSBT_AREAS.OUTGOING ), self._fadeIn, self._fadeOut )
+    self._areas[ PSBT_AREAS.STATIC ]       = self.ScrollAreaProto:New( self.control, PSBT_AREAS.STATIC,       self:GetSetting( PSBT_AREAS.STATIC ), self._fadeIn, self._fadeOut )
+    self._areas[ PSBT_AREAS.NOTIFICATION ] = self.ScrollAreaProto:New( self.control, PSBT_AREAS.NOTIFICATION, self:GetSetting( PSBT_AREAS.NOTIFICATION ), self._fadeIn, self._fadeOut )
 
     CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
     self.control:SetHandler( 'OnUpdate', function( _, frameTime ) self:OnUpdate( frameTime ) end )
 end
 
 function PSBT:OnUpdate( frameTime )
-    if ( self.__DEBUG ) then
-        if ( frameTime - self.__DEBUG_UPDATE > 2 ) then
-            self.__DEBUG_UPDATE = frameTime
-            d( '-------------- PSBT_DEBUG_UPDATE --------------')
-            d( 'LABELS total = ' .. self:GetTotalObjectCount() .. ', active = ' .. self:GetActiveObjectCount() .. ', inactive = ' .. self:GetFreeObjectCount() )
-            d( 'FADEIN total = ' .. self._fadeIn:GetTotalObjectCount() .. ', active = ' .. self._fadeIn:GetActiveObjectCount() .. ', inactive = ' .. self._fadeIn:GetFreeObjectCount() )
-            d( 'FADEOUT total = ' .. self._fadeOut:GetTotalObjectCount() .. ', active = ' .. self._fadeOut:GetActiveObjectCount() .. ', inactive = ' .. self._fadeOut:GetFreeObjectCount() )
-            d( 'INCOMING PARABOLAS total = ' .. self._areas[ PSBT_AREAS.INCOMING ]._parabola:GetTotalObjectCount() )
-            d( 'OUTGOING PARABOLAS total = ' .. self._areas[ PSBT_AREAS.OUTGOING ]._parabola:GetTotalObjectCount() )
-        end
-    end
-
-    for k,label in pairs( self:GetActiveObjects() ) do
-        if ( label:IsExpired( frameTime ) ) then
-            self:ReleaseObject( k )
-        end
-    end
+    self.LabelFactory:OnUpdate( frameTime )
 
     for k,v in pairs( self._modules ) do
         v:OnUpdate( frameTime )
     end
-end
-
-function PSBT:CreateLabel()
-    return PSBT_Label:New( self )
-end
-
-function PSBT:ResetLabel( label )
-    label:Finalize()
 end
 
 function PSBT:SetConfigurationMode( mode )
@@ -127,8 +85,6 @@ function PSBT:RegisterModule( identity, class, version )
     if ( self._modules[ identity ] and ( version < self._modules[ identity ].__version or 0 ) ) then
         return
     end
-
-    print( 'PSBT module registered: ' .. identity .. ' @ ' .. version )
 
     self._modules[ identity ] = class
     self._modules[ identity ].__version = version
@@ -202,7 +158,7 @@ function PSBT:UnregisterForEvent( event, callback )
 end
 
 function PSBT:NewEvent( scrollArea, sticky, icon, text, color )
-    local entry = self:AcquireObject()
+    local entry = self.LabelFactory:AcquireObject()
     local area = self._areas[ scrollArea ]
     if ( not area ) then 
         return
@@ -226,11 +182,4 @@ function PSBT:NewEvent( scrollArea, sticky, icon, text, color )
     entry:SetColor( color )
 
     area:Push( entry, sticky, direction )
-end
-
--- LEAVE ME THE FUARK ALONE
-function Initialized( control )
-    _G.PSBT = PSBT:New( control )
-
-    SLASH_COMMANDS['/psbtdebug'] = function() _G.PSBT.__DEBUG = not _G.PSBT.__DEBUG end
 end

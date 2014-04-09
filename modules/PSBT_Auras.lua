@@ -1,5 +1,6 @@
-local PSBT_Module           = PSBT_Module
-local PSBT_Auras            = PSBT_Module:Subclass()
+local PSBT                  = PSBT
+local ModuleProto           = PSBT.ModuleProto
+local PSBT_Auras            = ModuleProto:Subclass()
 local CBM                   = CALLBACK_MANAGER
 local kVerison = 1.0
 
@@ -13,7 +14,7 @@ local PSBT_STRINGS          = PSBT_STRINGS
 local zo_strformat          = zo_strformat
 
 function PSBT_Auras:Initialize( ... )  
-    PSBT_Module.Initialize( self, ... )
+    ModuleProto.Initialize( self, ... )
 
     self:RegisterForEvent( EVENT_EFFECT_CHANGED, function( ... ) self:OnEffectChanged( ... ) end )
 
