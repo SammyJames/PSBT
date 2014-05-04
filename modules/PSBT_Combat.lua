@@ -255,7 +255,7 @@ function PSBT_Combat:DispatchEvent( result, combatEvent )
         return
     end
 
-    local area = PSBT_EVENTS.STATIC
+    local area = PSBT_AREAS.STATIC
     local crit = critical_events[ result ]
     local icon = self._iconRegistry[ combatEvent.abilityName ]
     local color = PSBT_SETTINGS.normal_color
