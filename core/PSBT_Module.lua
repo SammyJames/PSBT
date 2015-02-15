@@ -1,7 +1,6 @@
 local PSBT          = PSBT
 local ZO_Object     = ZO_Object
 local ModuleProto   = ZO_Object:Subclass()
-local CBM           = CALLBACK_MANAGER
 
 function ModuleProto:New( ... )
     local result = ZO_Object.New( self )

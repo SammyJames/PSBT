@@ -236,4 +236,4 @@ end
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
         psbt:RegisterModule( PSBT_MODULES.OPTIONS, PSBT_Options:New( psbt ), kVersion )
-    end)
+    end )
