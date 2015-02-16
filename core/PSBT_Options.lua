@@ -1,4 +1,4 @@
-local LAM = LibStub( 'LibAddonMenu-1.0' )
+local LAM = LibStub( 'LibAddonMenu-2.0' )
 if ( not LAM ) then return end
 
 local LMP = LibStub( 'LibMediaProvider-1.0' )
@@ -26,211 +26,316 @@ function PSBT_Options:Initialize( root )
 end
 
 function PSBT_Options:InitializeControlPanel()
-    self.config_panel = LAM:CreateControlPanel( '_psbt', 'PSBT' )
+
+    LAM:RegisterAddonPanel( 'PSBT_Config', 
+        { 
+            type = 'panel', 
+            name = 'PSBT', 
+            author = '|cFF66CCPawkette|r', 
+            version = '100010', 
+            slashCommand = '/psbt', 
+            registerForRefresh = true,
+            registerForDefaults = true 
+        } )
+
     self.config_mode = false
 
-    LAM:AddHeader( self.config_panel, '_psbt_layout', 'Layout' )
-    LAM:AddButton( self.config_panel, '_psbt_editlayout_btn', 'Edit Layout', '', 
-        function() 
-            CBM:FireCallbacks( PSBT_EVENTS.CONFIG, not self.config_mode )
-            self.config_mode = not self.config_mode
-        end )
+    local options = 
+    {
+        [ 1 ] = 
+        {
+            type = 'header',
+            name = 'Layout',
+            width = 'full',
+        },
+        [ 2 ] = 
+        {
+            type = 'button',
+            name = 'Edit Layout',
+            width = 'full',
+            func = function() 
+                CBM:FireCallbacks( PSBT_EVENTS.CONFIG, not self.config_mode )
+                self.config_mode = not self.config_mode
+                end,
+        },
+        [ 3 ] =
+        {
+            type = 'header',
+            name = 'Colors',
+            width = 'full',
+        },
+        [ 4 ] =
+        {
+            type = 'colorpicker',
+            name = 'Healing',
+            getFunc = function() return unpack( self._root:GetSetting( PSBT_SETTINGS.healing_color ) ) end,
+            setFunc = function( r, g, b, a )
+                self._root:SetSetting( PSBT_SETTINGS.healing_color, { r, g, b, a } )
+                end,
+        },
+        [ 5 ] = 
+        {
+            type = 'colorpicker',
+            name = 'Damage',
+            getFunc = function() return unpack( self._root:GetSetting( PSBT_SETTINGS.damage_color ) ) end,
+            setFunc = function( r, g, b, a ) 
+                self._root:SetSetting( PSBT_SETTINGS.damage_color, { r, g, b, a } )
+                end,
+        },
+        [ 6 ] =
+        {
+            type = 'colorpicker',
+            name = 'Normal',
+            getFunc = function() return unpack( self._root:GetSetting( PSBT_SETTINGS.normal_color ) ) end,
+            setFunc = function( r, g, b, a )
+                self._root:SetSetting( PSBT_SETTINGS.normal_color, { r, g, b, a } )
+                end,
+        },
+        [ 7 ] = 
+        {
+            type = 'header',
+            name = 'Normal Font',
+            width = 'full',
+            reference = 'PSBT_Config_NormalFont',
+        },
+        [ 8 ] =
+        {
+            type = 'dropdown',
+            name = 'Font',
+            choices = LMP:List( LMP.MediaType.FONT ),
+            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.normal_font ).face end,
+            setFunc = function( choice ) 
+                local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
+                current.face = tostring( choice )
+                self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
+                end,
+        },
+        [ 9 ] = 
+        {
+            type = 'editbox',
+            name = 'Size',
+            textType = TEXT_TYPE_NUMERIC,
+            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.normal_font ).size end,
+            setFunc = function( size ) 
+                local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
+                current.size = tonumber( size )
+                self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
+                end,
+        },
+        [ 10 ] =
+        {
+            type = 'dropdown',
+            name = 'Decoration',
+            choices = decorations,
+            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.normal_font ).deco end,
+            setFunc = function( choice ) 
+                local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
+                current.deco = tostring( choice )
+                self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
+                end,
+        },
+        [ 11 ] =
+        {
+            type = 'header',
+            name = 'Sticky Font',
+            width = 'full',
+            reference = 'PSBT_Config_StickyFont',
+        },
+        [ 12 ] =
+        {
+            type = 'dropdown',
+            name = 'Font',
+            choices = LMP:List( LMP.MediaType.FONT ),
+            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).face end,
+            setFunc = function( choice ) 
+                local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
+                current.face = tostring( choice )
+                self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
+                end,
+        },
+        [ 13 ] = 
+        {
+            type = 'editbox',
+            name = 'Size',
+            textType = TEXT_TYPE_NUMERIC,
+            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).size end,
+            setFunc = function( size ) 
+                local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
+                current.size = tonumber( size )
+                self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
+                end,
+        },
+        [ 14 ] =
+        {
+            type = 'dropdown',
+            name = 'Decoration',
+            choices = decorations,
+            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).deco end,
+            setFunc = function( choice ) 
+                local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
+                current.deco = tostring( choice )
+                self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
+                end,
+        },
+        [ 15 ] =
+        {
+            type = 'submenu',
+            name = 'Incoming',
+            controls = 
+            {
+                [ 1 ] = 
+                {
+                    type = 'slider',
+                    name = 'Arc',
+                    min = -300,
+                    max = 300, 
+                    step = 5, 
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.INCOMING ).arc end,
+                    setFunc = function( arc )
+                        local current = self._root:GetSetting( PSBT_AREAS.INCOMING )
+                        current.arc = tonumber( arc )
+                        self._root:SetSetting( PSBT_AREAS.INCOMING, current )
+                        end,
+                },
+                [ 2 ] =
+                {
+                    type = 'dropdown',
+                    name = 'Icon Position',
+                    choices = iconside,
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.INCOMING ).icon end,
+                    setFunc = function( side )
+                        local current = self._root:GetSetting( PSBT_AREAS.INCOMING )
+                        current.icon = tostring( side )
+                        self._root:SetSetting( PSBT_AREAS.INCOMING, current )
+                        end,
+                },
+                [ 3 ] =
+                {
+                    type = 'dropdown',
+                    name = 'Direction',
+                    choices = direction,
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.INCOMING ).dir end,
+                    setFunc = function( direction )
+                        local current = self._root:GetSetting( PSBT_AREAS.INCOMING )
+                        current.dir = tostring( direction )
+                        self._root:SetSetting( PSBT_AREAS.INCOMING, current )
+                        end,
+                },
+            },
+        },
+        [ 16 ] =
+        {
+            type = 'submenu',
+            name = 'Outgoing',
+            controls = 
+            {
+                [ 1 ] = 
+                {
+                    type = 'slider',
+                    name = 'Arc',
+                    min = -300,
+                    max = 300, 
+                    step = 5, 
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.OUTGOING ).arc end,
+                    setFunc = function( arc )
+                        local current = self._root:GetSetting( PSBT_AREAS.OUTGOING )
+                        current.arc = tonumber( arc )
+                        self._root:SetSetting( PSBT_AREAS.OUTGOING, current )
+                        end,
+                },
+                [ 2 ] =
+                {
+                    type = 'dropdown',
+                    name = 'Icon Position',
+                    choices = iconside,
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.OUTGOING ).icon end,
+                    setFunc = function( side )
+                        local current = self._root:GetSetting( PSBT_AREAS.OUTGOING )
+                        current.icon = tostring( side )
+                        self._root:SetSetting( PSBT_AREAS.OUTGOING, current )
+                        end,
+                },
+                [ 3 ] =
+                {
+                    type = 'dropdown',
+                    name = 'Direction',
+                    choices = direction,
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.OUTGOING ).dir end,
+                    setFunc = function( direction )
+                        local current = self._root:GetSetting( PSBT_AREAS.OUTGOING )
+                        current.dir = tostring( direction )
+                        self._root:SetSetting( PSBT_AREAS.OUTGOING, current )
+                        end,
+                },
+            },
+        },
+        [ 17 ] =
+        {
+            type = 'submenu',
+            name = 'Static',
+            controls = 
+            {
+                [ 1 ] =
+                {
+                    type = 'dropdown',
+                    name = 'Icon Position',
+                    choices = iconside,
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.STATIC ).icon end,
+                    setFunc = function( side )
+                        local current = self._root:GetSetting( PSBT_AREAS.STATIC )
+                        current.icon = tostring( side )
+                        self._root:SetSetting( PSBT_AREAS.STATIC, current )
+                        end,
+                },
+                [ 2 ] =
+                {
+                    type = 'dropdown',
+                    name = 'Direction',
+                    choices = direction,
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.STATIC ).dir end,
+                    setFunc = function( direction )
+                        local current = self._root:GetSetting( PSBT_AREAS.STATIC )
+                        current.dir = tostring( direction )
+                        self._root:SetSetting( PSBT_AREAS.STATIC, current )
+                        end,
+                },
+            },
+        },
+        [ 18 ] =
+        {
+            type = 'submenu',
+            name = 'Notification',
+            controls = 
+            {
+                [ 1 ] =
+                {
+                    type = 'dropdown',
+                    name = 'Icon Position',
+                    choices = iconside,
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.NOTIFICATION ).icon end,
+                    setFunc = function( side )
+                        local current = self._root:GetSetting( PSBT_AREAS.NOTIFICATION )
+                        current.icon = tostring( side )
+                        self._root:SetSetting( PSBT_AREAS.NOTIFICATION, current )
+                        end,
+                },
+                [ 2 ] =
+                {
+                    type = 'dropdown',
+                    name = 'Direction',
+                    choices = direction,
+                    getFunc = function() return self._root:GetSetting( PSBT_AREAS.NOTIFICATION ).dir end,
+                    setFunc = function( direction )
+                        local current = self._root:GetSetting( PSBT_AREAS.NOTIFICATION )
+                        current.dir = tostring( direction )
+                        self._root:SetSetting( PSBT_AREAS.NOTIFICATION, current )
+                        end,
+                },
+            },
+        },
+    }   
 
-    LAM:AddHeader( self.config_panel, '_psbt_font_colors', 'Colors' )
-    LAM:AddColorPicker( self.config_panel, '_psbt_font_colors_healing', 'Healing:', '', 
-        function() return unpack( self._root:GetSetting( PSBT_SETTINGS.healing_color ) ) end,
-        function( r, g, b, a )
-            self._root:SetSetting( PSBT_SETTINGS.healing_color, { r,g,b,a } )
-        end )
-
-    LAM:AddColorPicker( self.config_panel, '_psbt_font_colors_damage', 'Damage:', '', 
-        function() return unpack( self._root:GetSetting( PSBT_SETTINGS.damage_color ) ) end,
-        function( r, g, b, a )
-            self._root:SetSetting( PSBT_SETTINGS.damage_color, { r,g,b,a } )
-        end )
-
-    LAM:AddColorPicker( self.config_panel, '_psbt_font_colors_normal', 'Normal:', '', 
-        function() return unpack( self._root:GetSetting( PSBT_SETTINGS.normal_color ) ) end,
-        function( r, g, b, a )
-            self._root:SetSetting( PSBT_SETTINGS.normal_color, { r,g,b,a } )
-        end )
-
-    -- normal font
-    local normal_font = LAM:AddHeader( self.config_panel, '_psbt_normal_font_header', 'Normal Font' ):GetNamedChild( 'Label' )
-    normal_font:SetFont( self._root:FormatFont( self._root:GetSetting( PSBT_SETTINGS.normal_font ) ) )
-    LAM:AddDropdown( self.config_panel, '_psbt_normal_font_dd', 'Font:', '', LMP:List( LMP.MediaType.FONT ), 
-        function() 
-            return self._root:GetSetting( PSBT_SETTINGS.normal_font ).face 
-        end, 
-        function( selection )  
-            local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
-            current.face = selection
-            self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
-            normal_font:SetFont( self._root:FormatFont( current ) )
-        end )
-
-    LAM:AddSlider( self.config_panel, '_psbt_normal_font_slider', 'Size:', '', 5, 50, 1, 
-        function() 
-            return self._root:GetSetting( PSBT_SETTINGS.normal_font ).size
-        end, 
-        function( size ) 
-            local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
-            current.size = size
-            self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
-            normal_font:SetFont( self._root:FormatFont( current ) )
-        end )
-
-    LAM:AddDropdown( self.config_panel, '_psbt_normal_font_deco_dd', 'Decoration:', '', decorations,
-        function() 
-            return self._root:GetSetting( PSBT_SETTINGS.normal_font ).deco end,
-        function( selection ) 
-             local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
-            current.deco = selection
-            self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
-            normal_font:SetFont( self._root:FormatFont( current ) )
-        end )
-
-    -- sticky
-    local sticky_font = LAM:AddHeader( self.config_panel, '_psbt_sticky_font_header', 'Sticky Font' ):GetNamedChild( 'Label' )
-    sticky_font:SetFont( self._root:FormatFont( self._root:GetSetting( PSBT_SETTINGS.sticky_font ) ) )
-    LAM:AddDropdown( self.config_panel, '_psbt_sticky_font_dd', 'Font:', '', LMP:List( LMP.MediaType.FONT ), 
-        function() 
-            return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).face 
-        end, 
-        function( selection )  
-            local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
-            current.face = selection
-            self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
-            sticky_font:SetFont( self._root:FormatFont( current ) )
-        end )
-
-    LAM:AddSlider( self.config_panel, '_psbt_sticky_font_slider', 'Size:', '', 5, 50, 1, 
-        function() 
-            return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).size
-        end, 
-        function( size ) 
-            local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
-            current.size = size
-            self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
-            sticky_font:SetFont( self._root:FormatFont( current ) )
-        end )
-
-    LAM:AddDropdown( self.config_panel, '_psbt_sticky_font_deco_dd', 'Decoration:', '', decorations,
-        function() 
-            return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).deco end,
-        function( selection ) 
-            local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
-            current.deco = selection
-            self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
-            sticky_font:SetFont( self._root:FormatFont( current ) )
-        end )
-
-    -- INCOMING
-    LAM:AddHeader( self.config_panel, '_psbt_incoming', 'Incoming' )
-
-    LAM:AddSlider( self.config_panel, '_psbt_incoming_arc_slider', 'Arc: ', 'How much should the text curve?', 
-        -300, 300, 5, 
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.INCOMING ).arc 
-        end,
-        function( selection )
-            local current = self._root:GetSetting( PSBT_AREAS.INCOMING )
-            current.arc = selection
-            self._root:SetSetting( PSBT_AREAS.INCOMING, current )
-        end )
-
-    LAM:AddDropdown( self.config_panel, '_psbt_incoming_iconside_dd', 'Icon Side:', '', iconside,
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.INCOMING ).icon end,
-        function( selection ) 
-            local current = self._root:GetSetting( PSBT_AREAS.INCOMING )
-            current.icon = selection
-            self._root:SetSetting( PSBT_AREAS.INCOMING, current )
-        end )
-
-    LAM:AddDropdown( self.config_panel, '_psbt_incoming_direction_dd', 'Direction:', '', direction,
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.INCOMING ).dir end,
-        function( selection ) 
-            local current = self._root:GetSetting( PSBT_AREAS.INCOMING )
-            current.dir = selection
-            self._root:SetSetting( PSBT_AREAS.INCOMING, current )
-        end )
-
-    -- OUTGOING
-    LAM:AddHeader( self.config_panel, '_psbt_outgoing', 'Outgoing' )
-
-    LAM:AddSlider( self.config_panel, '_psbt_outgoing_arc_slider', 'Arc: ', 'How much should the text curve?', 
-        -300, 300, 5, 
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.OUTGOING ).arc 
-        end,
-        function( selection )
-            local current = self._root:GetSetting( PSBT_AREAS.OUTGOING )
-            current.arc = selection
-            self._root:SetSetting( PSBT_AREAS.OUTGOING, current )
-        end )
-    
-    LAM:AddDropdown( self.config_panel, '_psbt_outgoing_iconside_dd', 'Icon Side:', '', iconside,
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.OUTGOING ).icon end,
-        function( selection ) 
-            local current = self._root:GetSetting( PSBT_AREAS.OUTGOING )
-            current.icon = selection
-            self._root:SetSetting( PSBT_AREAS.OUTGOING, current )
-        end )
-
-
-    LAM:AddDropdown( self.config_panel, '_psbt_outgoing_direction_dd', 'Direction:', '', direction,
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.OUTGOING ).dir end,
-        function( selection ) 
-            local current = self._root:GetSetting( PSBT_AREAS.OUTGOING )
-            current.dir = selection
-            self._root:SetSetting( PSBT_AREAS.OUTGOING, current )
-        end )
-
-    -- STATIC
-    LAM:AddHeader( self.config_panel, '_psbt_static', 'Static' )
-    LAM:AddDropdown( self.config_panel, '_psbt_static_iconside_dd', 'Icon Side:', '', iconside,
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.STATIC ).icon end,
-        function( selection ) 
-            local current = self._root:GetSetting( PSBT_AREAS.STATIC )
-            current.icon = selection
-            self._root:SetSetting( PSBT_AREAS.STATIC, current )
-        end )
-
-    LAM:AddDropdown( self.config_panel, '_psbt_static_direction_dd', 'Direction:', '', direction,
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.STATIC ).dir end,
-        function( selection ) 
-            local current = self._root:GetSetting( PSBT_AREAS.STATIC )
-            current.dir = selection
-            self._root:SetSetting( PSBT_AREAS.STATIC, current )
-        end )
-
-    -- NOTIFICATIONS
-    LAM:AddHeader( self.config_panel, '_psbt_notifications', 'Notifications' )
-    LAM:AddDropdown( self.config_panel, '_psbt_notifications_iconside_dd', 'Icon Side:', '', iconside,
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.NOTIFICATION ).icon end,
-        function( selection ) 
-            local current = self._root:GetSetting( PSBT_AREAS.NOTIFICATION )
-            current.icon = selection
-            self._root:SetSetting( PSBT_AREAS.NOTIFICATION, current )
-        end )
-
-    LAM:AddDropdown( self.config_panel, '_psbt_notifications_direction_dd', 'Direction:', '', direction,
-        function() 
-            return self._root:GetSetting( PSBT_AREAS.NOTIFICATION ).dir end,
-        function( selection ) 
-            local current = self._root:GetSetting( PSBT_AREAS.NOTIFICATION )
-            current.dir = selection
-            self._root:SetSetting( PSBT_AREAS.NOTIFICATION, current )
-        end )
-
-
+    LAM:RegisterOptionControls( 'PSBT_Config', options )
 end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 

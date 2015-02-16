@@ -1,6 +1,6 @@
 ## Title: PSBT - By Pawkette
-## APIVersion: 100003
-## OptionalDependsOn: LibStub LibMediaProvider-1.0 LibAddonMenu-1.0 LibAnimation-1.0
+## APIVersion: 100010
+## OptionalDependsOn: LibStub LibMediaProvider-1.0 LibAddonMenu-2.0 LibAnimation-1.0
 ## SavedVariables: PSBT_DB
 
 ## pre definition
@@ -10,7 +10,19 @@ core/core.lua
 libs/libstub/libstub.lua
 libs/libanimation-1.0/libanimation.lua
 libs/libmediaprovider-1.0/libmediaprovider-1.0.lua
-libs/libaddonmenu-1.0/libaddonmenu-1.0.lua
+libs/libaddonmenu-2.0/libaddonmenu-2.0.lua
+libs/libaddonmenu-2.0/controls/panel.lua
+libs/libaddonmenu-2.0/controls/submenu.lua
+libs/libaddonmenu-2.0/controls/button.lua
+libs/libaddonmenu-2.0/controls/checkbox.lua
+libs/libaddonmenu-2.0/controls/colorpicker.lua
+libs/libaddonmenu-2.0/controls/custom.lua
+libs/libaddonmenu-2.0/controls/description.lua
+libs/libaddonmenu-2.0/controls/dropdown.lua
+libs/libaddonmenu-2.0/controls/editbox.lua
+libs/libaddonmenu-2.0/controls/header.lua
+libs/libaddonmenu-2.0/controls/slider.lua
+libs/libaddonmenu-2.0/controls/texture.lua
 
 ## media
 core/PSBT_Media.lua
