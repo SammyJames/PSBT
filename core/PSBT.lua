@@ -50,6 +50,7 @@ function PSBT:OnLoaded( addon )
     self._areas[ PSBT_AREAS.NOTIFICATION ] = self.ScrollAreaProto:New( self.control, PSBT_AREAS.NOTIFICATION, self:GetSetting( PSBT_AREAS.NOTIFICATION ), self._fadeIn, self._fadeOut )
 
     CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
+    CBM:RegisterCallback( PSBT_EVENTS.DEMO, function() self:TriggerFakeEvents() end )
     self.control:SetHandler( 'OnUpdate', function( _, frameTime ) self:OnUpdate( frameTime ) end )
 end
 
@@ -114,6 +115,13 @@ function PSBT:SetSetting( name, value )
     
         self._areas[ name ]:SetSettings( value )    
     end
+end
+
+function PSBT:TriggerFakeEvents()
+    self:NewEvent( PSBT_AREAS.INCOMING,     ( math.random( 1, 2 ) == 2 ), [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
+    self:NewEvent( PSBT_AREAS.OUTGOING,     ( math.random( 1, 2) == 2 ), [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
+    self:NewEvent( PSBT_AREAS.STATIC,       true, [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
+    self:NewEvent( PSBT_AREAS.NOTIFICATION, true, [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
 end
 
 function PSBT:RegisterForEvent( event, callback )

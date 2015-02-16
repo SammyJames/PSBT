@@ -10,8 +10,6 @@ local PSBT_EVENTS       = PSBT_EVENTS
 local PSBT_STRINGS      = PSBT_STRINGS
 local zo_strformat      = zo_strformat
 
-local kVersion          = 1.0
-
 local POWERTYPE_ULTIMATE                = POWERTYPE_ULTIMATE
 local ACTION_BAR_ULTIMATE_SLOT_INDEX    = ACTION_BAR_ULTIMATE_SLOT_INDEX
 

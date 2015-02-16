@@ -58,13 +58,22 @@ function PSBT_Options:InitializeControlPanel()
                 self.config_mode = not self.config_mode
                 end,
         },
-        [ 3 ] =
+        [ 3 ] = 
+        {
+            type = 'button',
+            name = 'Demo',
+            width = 'full',
+            func = function()
+                CBM:FireCallbacks( PSBT_EVENTS.DEMO )
+                end,
+        },
+        [ 4 ] =
         {
             type = 'header',
             name = 'Colors',
             width = 'full',
         },
-        [ 4 ] =
+        [ 5 ] =
         {
             type = 'colorpicker',
             name = 'Healing',
@@ -73,7 +82,7 @@ function PSBT_Options:InitializeControlPanel()
                 self._root:SetSetting( PSBT_SETTINGS.healing_color, { r, g, b, a } )
                 end,
         },
-        [ 5 ] = 
+        [ 6 ] = 
         {
             type = 'colorpicker',
             name = 'Damage',
@@ -82,7 +91,7 @@ function PSBT_Options:InitializeControlPanel()
                 self._root:SetSetting( PSBT_SETTINGS.damage_color, { r, g, b, a } )
                 end,
         },
-        [ 6 ] =
+        [ 7 ] =
         {
             type = 'colorpicker',
             name = 'Normal',
@@ -91,14 +100,14 @@ function PSBT_Options:InitializeControlPanel()
                 self._root:SetSetting( PSBT_SETTINGS.normal_color, { r, g, b, a } )
                 end,
         },
-        [ 7 ] = 
+        [ 8 ] = 
         {
             type = 'header',
             name = 'Normal Font',
             width = 'full',
             reference = 'PSBT_Config_NormalFont',
         },
-        [ 8 ] =
+        [ 9 ] =
         {
             type = 'dropdown',
             name = 'Font',
@@ -110,7 +119,7 @@ function PSBT_Options:InitializeControlPanel()
                 self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
                 end,
         },
-        [ 9 ] = 
+        [ 10 ] = 
         {
             type = 'editbox',
             name = 'Size',
@@ -122,7 +131,7 @@ function PSBT_Options:InitializeControlPanel()
                 self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
                 end,
         },
-        [ 10 ] =
+        [ 11 ] =
         {
             type = 'dropdown',
             name = 'Decoration',
@@ -134,14 +143,14 @@ function PSBT_Options:InitializeControlPanel()
                 self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
                 end,
         },
-        [ 11 ] =
+        [ 12 ] =
         {
             type = 'header',
             name = 'Sticky Font',
             width = 'full',
             reference = 'PSBT_Config_StickyFont',
         },
-        [ 12 ] =
+        [ 13 ] =
         {
             type = 'dropdown',
             name = 'Font',
@@ -153,7 +162,7 @@ function PSBT_Options:InitializeControlPanel()
                 self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
                 end,
         },
-        [ 13 ] = 
+        [ 14 ] = 
         {
             type = 'editbox',
             name = 'Size',
@@ -165,7 +174,7 @@ function PSBT_Options:InitializeControlPanel()
                 self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
                 end,
         },
-        [ 14 ] =
+        [ 15 ] =
         {
             type = 'dropdown',
             name = 'Decoration',
@@ -177,7 +186,7 @@ function PSBT_Options:InitializeControlPanel()
                 self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
                 end,
         },
-        [ 15 ] =
+        [ 16 ] =
         {
             type = 'submenu',
             name = 'Incoming',
@@ -223,7 +232,7 @@ function PSBT_Options:InitializeControlPanel()
                 },
             },
         },
-        [ 16 ] =
+        [ 17 ] =
         {
             type = 'submenu',
             name = 'Outgoing',
@@ -269,7 +278,7 @@ function PSBT_Options:InitializeControlPanel()
                 },
             },
         },
-        [ 17 ] =
+        [ 18 ] =
         {
             type = 'submenu',
             name = 'Static',
@@ -301,7 +310,7 @@ function PSBT_Options:InitializeControlPanel()
                 },
             },
         },
-        [ 18 ] =
+        [ 19 ] =
         {
             type = 'submenu',
             name = 'Notification',
