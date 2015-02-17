@@ -13,8 +13,8 @@ function PSBT_Debug:Initialize( ... )
     ModuleProto.Initialize( self, ... )
 end
 
-function PSBT_Debug:OnUpdate( delta )
-    if ( self._root.DebugMode and self._ticker >= 30.0 ) then
+function PSBT_Debug:OnUpdate( tick )
+    if ( self._root.DebugMode and tick - self._ticker >= 5 ) then
         local label_factory     = self._root.LabelFactory
         local incoming          = self._root._areas[ PSBT_AREAS.INCOMING ]
         local outgoing          = self._root._areas[ PSBT_AREAS.OUTGOING ]
@@ -41,9 +41,7 @@ function PSBT_Debug:OnUpdate( delta )
            'Total Labels: ' .. active_labels .. '\n' ..
            'Total: ' .. total_objects .. '\n' )
 
-        self._ticker = 0.0
-    else
-        self._ticker = self._ticker + delta
+        self._ticker = tick
     end
 end
 
