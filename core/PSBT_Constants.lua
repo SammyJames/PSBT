@@ -9,6 +9,7 @@ PSBT_MODULES =
     LOW                 = 'lowsomething',
     ULTIMATE            = 'ultimate',
     LOCALE              = 'locale',
+    DEBUG               = 'debug',
 }
 
 PSBT_AREAS = 

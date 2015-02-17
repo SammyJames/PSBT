@@ -51,6 +51,7 @@ modules/PSBT_Cooldowns.lua
 modules/PSBT_Experience.lua
 modules/PSBT_LowSomething.lua
 modules/PSBT_Ultimate.lua
+modules/PSBT_Debug.lua
 
 ## core
 core/PSBT_Label.lua

@@ -8,6 +8,7 @@ PSBT =
     ScrollAreaProto = nil,
     LabelFactory    = nil,
     ModuleProto     = nil,
+    DebugMode       = false,
     _modules        = {},
     _areas          = {},
     _events         = {},

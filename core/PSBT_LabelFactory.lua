@@ -5,7 +5,12 @@ local ZO_ObjectPool = ZO_ObjectPool
 local LabelFactory  = ZO_ObjectPool:Subclass()
 
 function LabelFactory:New()
-    return ZO_ObjectPool.New( self, function() return self:CreateLabel() end, function( ... ) self:ResetLabel( ... ) end )
+    local result = ZO_ObjectPool.New( self, function() return self:CreateLabel() end, function( ... ) self:ResetLabel( ... ) end )
+    if ( result.m_Free ) then
+        result.m_Free = setmetatable( {}, { __mode = 'v' } ) --cheat the garbage collector :)
+    end
+
+    return result
 end
 
 function LabelFactory:CreateLabel()
