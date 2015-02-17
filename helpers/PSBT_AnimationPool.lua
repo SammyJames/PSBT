@@ -26,8 +26,11 @@ function AnimationPool:Apply( control )
     anim:SetUserData( key )
     anim:Apply( control )
     anim:SetHandler( 'OnStop', 
-        function( ... ) 
-            self:ReleaseObject( anim:GetUserData() ) 
+        function( timeline )
+            if ( timeline:GetProgress() == 1.0 ) then
+                self:ReleaseObject( anim:GetUserData() ) 
+                timeline:SetHandler( 'OnStop', nil )
+            end
         end )
 
     return anim
