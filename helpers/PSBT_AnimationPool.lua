@@ -7,7 +7,7 @@ local AnimationPool = ZO_ObjectPool:Subclass()
 function AnimationPool:New()
     local result = ZO_ObjectPool.New( self, self.Create, function( ... ) self:Reset( ... ) end )
     if ( result.m_Free ) then
-        result.m_Free = setmetatable( {}, { __mode = 'v' } ) --cheat the garbage collector :)
+        result.m_Free = setmetatable( {}, { __mode = 'kv' } ) --cheat the garbage collector :)
     end
 
     return result
@@ -26,7 +26,7 @@ function AnimationPool:Apply( control )
     anim:SetUserData( key )
     anim:Apply( control )
     anim:SetHandler( 'OnStop', 
-        function( animation ) 
+        function( ... ) 
             self:ReleaseObject( anim:GetUserData() ) 
         end )
 

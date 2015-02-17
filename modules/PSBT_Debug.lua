@@ -24,7 +24,7 @@ function PSBT_Debug:OnUpdate( tick )
         local active_labels     = label_factory:GetTotalObjectCount()
         local fade_in_count     = self._root._fadeIn:GetTotalObjectCount()
         local fade_out_count    = self._root._fadeOut:GetTotalObjectCount()
-        
+
         local incoming_count    = incoming._parabola:GetTotalObjectCount()
         local outgoing_count    = outgoing._parabola:GetTotalObjectCount()
         local static_count      = static._parabola:GetTotalObjectCount()
