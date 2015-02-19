@@ -4,10 +4,10 @@ local PSBT_Ultimate     = ModuleProto:Subclass()
 local CBM               = CALLBACK_MANAGER
 local kVerison          = 1.0
 
-local PSBT_MODULES      = PSBT_MODULES
-local PSBT_AREAS        = PSBT_AREAS
-local PSBT_EVENTS       = PSBT_EVENTS
-local PSBT_STRINGS      = PSBT_STRINGS
+local PSBT_MODULES      = PSBT.MODULES
+local PSBT_AREAS        = PSBT.AREAS
+local PSBT_EVENTS       = PSBT.EVENTS
+local PSBT_STRINGS      = PSBT.STRINGS
 local zo_strformat      = zo_strformat
 
 local POWERTYPE_ULTIMATE                = POWERTYPE_ULTIMATE
@@ -21,14 +21,22 @@ function PSBT_Ultimate:Initialize( ... )
     self._needed  = 0
     self._texture = nil
 
-    self:RegisterForEvent( EVENT_POWER_UPDATE,                  function( ... ) self:OnPowerUpdate( ... ) end )
-    self:RegisterForEvent( EVENT_ACTION_SLOTS_FULL_UPDATE,      function( ... ) self:UpdateUltimateMin() end )
-    self:RegisterForEvent( EVENT_ACTION_SLOT_ABILITY_SLOTTED,   function( ... ) self:UpdateUltimateMin() end )
+    self:RegisterForEvent( EVENT_POWER_UPDATE,                  'OnPowerUpdate' )
+    self:RegisterForEvent( EVENT_ACTION_SLOTS_FULL_UPDATE,      'UpdateUltimateMin' )
+    self:RegisterForEvent( EVENT_ACTION_SLOT_ABILITY_SLOTTED,   'UpdateUltimateMin' )
 
     self._ultimateReady = GetString( _G[ PSBT_STRINGS.ULTIMATE_READY ] )
     self._ultimateGain  = GetString( _G[ PSBT_STRINGS.ULTIMATE_GAIN ] )
 
     self:UpdateUltimateMin()
+end
+
+function PSBT_Ultimate:Shutdown()
+    self:UnregisterForEvent( EVENT_POWER_UPDATE,                  'OnPowerUpdate' )
+    self:UnregisterForEvent( EVENT_ACTION_SLOTS_FULL_UPDATE,      'UpdateUltimateMin' )
+    self:UnregisterForEvent( EVENT_ACTION_SLOT_ABILITY_SLOTTED,   'UpdateUltimateMin' )
+
+    ModuleProto.Shutdown( self )
 end
 
 function PSBT_Ultimate:OnPowerUpdate( unit, powerPoolIndex, powerType, powerPool, powerPoolMax )
@@ -66,5 +74,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.ULTIMATE, PSBT_Ultimate:New( psbt ), kVerison )
+        psbt:RegisterModule( PSBT_MODULES.ULTIMATE, PSBT_Ultimate, kVerison )
     end )

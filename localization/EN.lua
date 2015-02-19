@@ -1,7 +1,7 @@
 local CBM           = CALLBACK_MANAGER
 local CreateString  = ZO_CreateStringId
-local PSBT_EVENTS   = PSBT_EVENTS
-local PSBT_STRINGS  = PSBT_STRINGS
+local PSBT_EVENTS   = PSBT.EVENTS
+local PSBT_STRINGS  = PSBT.STRINGS
 
 --[[
 FALL_DAMAGE         = 'SI_PSBT_EVENT_FALL_DAMAGE',
@@ -48,5 +48,48 @@ CreateString( PSBT_STRINGS.AURA_GAINED,     '<<1>> gained' )
 CreateString( PSBT_STRINGS.AURA_FADES,      '<<1>> fades' )
 CreateString( PSBT_STRINGS.ENERGIZE,        '+<<1>> (<<2>>)' )
 CreateString( PSBT_STRINGS.DRAIN,           '-<<1>> (<<2>>)' )
+-- options and stuff
+CreateString( PSBT_STRINGS.HEADER_GENERAL,  'General' )
+CreateString( PSBT_STRINGS.HEADER_MODULES,  'Modules' )
+CreateString( PSBT_STRINGS.HEADER_COLORS,   'Colors' )
+CreateString( PSBT_STRINGS.HEADER_COLORS,   'Colors' )
+CreateString( PSBT_STRINGS.HEADER_NORMAL_FONT, 'Normal Font' )
+CreateString( PSBT_STRINGS.HEADER_STICKY_FONT, 'Sticky Font' )
+
+-- fonts
+CreateString( PSBT_STRINGS.FONT_FACE,       'Face' )
+CreateString( PSBT_STRINGS.FONT_SIZE,       'Size' )
+CreateString( PSBT_STRINGS.FONT_DECORATION, 'Decoration' )
+
+-- colors
+CreateString( PSBT_STRINGS.COLOR_HEALING,   'Healing Color' )
+CreateString( PSBT_STRINGS.COLOR_DAMAGE,    'Damage Color' )
+CreateString( PSBT_STRINGS.COLOR_NORMAL,    'Normal Color' )
+
+-- buttons
+CreateString( PSBT_STRINGS.BTN_EDIT_LAYOUT, 'Edit Layout' )
+CreateString( PSBT_STRINGS.BTN_DEMO,        'Demo' )
+
+-- modules
+CreateString( PSBT_STRINGS.MODULE_DEBUG,    'Debug' )
+CreateString( PSBT_STRINGS.MODULE_COOLDOWNS,'Cooldowns' )
+CreateString( PSBT_STRINGS.MODULE_COMBAT,   'Combat' )
+CreateString( PSBT_STRINGS.MODULE_AURAS,    'Auras' )
+CreateString( PSBT_STRINGS.MODULE_XP,       'Experience' )
+CreateString( PSBT_STRINGS.MODULE_LOW,      'Low Warnings' )
+CreateString( PSBT_STRINGS.MODULE_ULTIMATE, 'Ultimate' )
+
+-- areas
+CreateString( PSBT_STRINGS.AREA_INCOMING,   'Incoming' )
+CreateString( PSBT_STRINGS.AREA_OUTGOING,   'Outgoing' )
+CreateString( PSBT_STRINGS.AREA_STATIC,     'Static' )
+CreateString( PSBT_STRINGS.AREA_NOTIFICATION, 'Notification' )
+
+-- area scroll settings
+CreateString( PSBT_STRINGS.SCROLL_ARC,      'Arc' )
+CreateString( PSBT_STRINGS.SCROLL_ICON_POS, 'Icon Position' )
+CreateString( PSBT_STRINGS.SCROLL_DIRECTION,'Direction' )
+
+
 
 end )

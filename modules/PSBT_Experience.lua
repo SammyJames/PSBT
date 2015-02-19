@@ -6,9 +6,9 @@ local CBM               = CALLBACK_MANAGER
 local zo_min            = zo_min
 local tostring          = tostring
 
-local PSBT_AREAS        = PSBT_AREAS
-local PSBT_EVENTS       = PSBT_EVENTS
-local PSBT_MODULES      = PSBT_MODULES
+local PSBT_AREAS        = PSBT.AREAS
+local PSBT_EVENTS       = PSBT.EVENTS
+local PSBT_MODULES      = PSBT.MODULES
 
 local kVersion          = 1.0
 
@@ -18,6 +18,12 @@ function PSBT_Experience:Initialize( ... )
     self._currentExperience = GetUnitXP( 'player' )
 
     self:RegisterForEvent( EVENT_EXPERIENCE_UPDATE, function( ... ) self:OnXPUpdated( ... ) end )
+end
+
+function PSBT_Experience:Shutdown()
+    self:UnregisterForEvent( EVENT_EXPERIENCE_UPDATE, function( ... ) self:OnXPUpdated( ... ) end )
+
+    ModuleProto.Shutdown( self )
 end
 
 function PSBT_Experience:OnXPUpdated( tag, exp, maxExp, reason  )
@@ -43,5 +49,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.XP, PSBT_Experience:New( psbt ), kVersion )
+        psbt:RegisterModule( PSBT_MODULES.XP, PSBT_Experience, kVersion )
     end)

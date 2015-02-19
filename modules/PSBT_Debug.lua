@@ -5,9 +5,9 @@ PSBT_Debug._ticker          = 0.0
 local CBM                   = CALLBACK_MANAGER
 local kVerison              = 1.0
 
-local PSBT_EVENTS           = PSBT_EVENTS
-local PSBT_AREAS            = PSBT_AREAS
-local PSBT_MODULES          = PSBT_MODULES
+local PSBT_EVENTS           = PSBT.EVENTS
+local PSBT_AREAS            = PSBT.AREAS
+local PSBT_MODULES          = PSBT.MODULES
 
 function PSBT_Debug:Initialize( ... )  
     ModuleProto.Initialize( self, ... )
@@ -47,5 +47,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.DEBUG, PSBT_Debug:New( psbt ), kVerison )
+        psbt:RegisterModule( PSBT_MODULES.DEBUG, PSBT_Debug, kVerison )
     end)

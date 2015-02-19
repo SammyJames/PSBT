@@ -9,10 +9,13 @@ local ModuleProto       = PSBT.ModuleProto
 local PSBT_Options      = ModuleProto:Subclass()
 local CBM               = CALLBACK_MANAGER
 
-local PSBT_MODULES      = PSBT_MODULES
-local PSBT_EVENTS       = PSBT_EVENTS
-local PSBT_SETTINGS     = PSBT_SETTINGS
-local PSBT_ICON_SIDE    = PSBT_ICON_SIDE
+local PSBT_MODULES      = PSBT.MODULES
+local PSBT_STRINGS      = PSBT.STRINGS
+local PSBT_EVENTS       = PSBT.EVENTS
+local PSBT_SETTINGS     = PSBT.SETTINGS
+local PSBT_ICON_SIDE    = PSBT.ICON_SIDE
+local PSBT_AREAS        = PSBT.AREAS
+local PSBT_SCROLL_DIRECTIONS = PSBT.SCROLL_DIRECTIONS
 
 local kVersion          = 1.0
 
@@ -45,13 +48,13 @@ function PSBT_Options:InitializeControlPanel()
         [ 1 ] = 
         {
             type = 'header',
-            name = 'Layout',
+            name = GetString( _G[ PSBT_STRINGS.HEADER_GENERAL ] ),
             width = 'full',
         },
         [ 2 ] = 
         {
             type = 'button',
-            name = 'Edit Layout',
+            name = GetString( _G[ PSBT_STRINGS.BTN_EDIT_LAYOUT ] ),
             width = 'full',
             func = function() 
                 CBM:FireCallbacks( PSBT_EVENTS.CONFIG, not self.config_mode )
@@ -61,7 +64,7 @@ function PSBT_Options:InitializeControlPanel()
         [ 3 ] = 
         {
             type = 'button',
-            name = 'Demo',
+            name = GetString( _G[ PSBT_STRINGS.BTN_DEMO ] ),
             width = 'full',
             func = function()
                 CBM:FireCallbacks( PSBT_EVENTS.DEMO )
@@ -70,141 +73,226 @@ function PSBT_Options:InitializeControlPanel()
         [ 4 ] = 
         {
             type = 'button',
-            name = 'Debug',
+            name = GetString( _G[ PSBT_STRINGS.MODULE_DEBUG ] ),
             width = 'full',
             func = function()
                 self._root.DebugMode = not self._root.DebugMode
                 end,
+            disabled = function() return not self._root:GetSetting( PSBT_MODULES.DEBUG ) end,
         },
-        [ 5 ] =
+        [ 5 ] = 
         {
-            type = 'header',
-            name = 'Colors',
-            width = 'full',
+            type = 'submenu',
+            name = GetString( _G[ PSBT_STRINGS.HEADER_MODULES ] ),
+            controls = 
+            {
+                [ 1 ] = 
+                {
+                    type = 'checkbox',
+                    name = GetString( _G[ PSBT_STRINGS.MODULE_COOLDOWNS ] ),
+                    getFunc = function() return self._root:GetSetting( PSBT_MODULES.COOLDOWNS ) end,
+                    setFunc = function( toggle )
+                        self._root:SetSetting( PSBT_MODULES.COOLDOWNS, toggle )
+                        self._root:ToggleModule( PSBT_MODULES.COOLDOWNS )
+                        end,
+                },
+                [ 2 ] = 
+                {
+                    type = 'checkbox',
+                    name = GetString( _G[ PSBT_STRINGS.MODULE_COMBAT ] ),
+                    getFunc = function() return self._root:GetSetting( PSBT_MODULES.COMBAT ) end,
+                    setFunc = function( toggle ) 
+                        self._root:SetSetting( PSBT_MODULES.COMBAT, toggle )
+                        self._root:ToggleModule( PSBT_MODULES.COMBAT )
+                        end,
+                },
+                [ 3 ] = 
+                {
+                    type = 'checkbox',
+                    name = GetString( _G[ PSBT_STRINGS.MODULE_AURAS ] ),
+                    getFunc = function() return self._root:GetSetting( PSBT_MODULES.AURAS ) end,
+                    setFunc = function( toggle )
+                        self._root:SetSetting( PSBT_MODULES.AURAS, toggle )
+                        self._root:ToggleModule( PSBT_MODULES.AURAS )
+                        end,
+                },
+                [ 4 ] = 
+                {
+                    type = 'checkbox',
+                    name = GetString( _G[ PSBT_STRINGS.MODULE_XP ] ),
+                    getFunc = function() return self._root:GetSetting( PSBT_MODULES.XP ) end,
+                    setFunc = function( toggle )  
+                        self._root:SetSetting( PSBT_MODULES.XP, toggle )
+                        self._root:ToggleModule( PSBT_MODULES.XP )
+                        end,
+                },
+                [ 5 ] = 
+                {
+                    type = 'checkbox',
+                    name = GetString( _G[ PSBT_STRINGS.MODULE_LOW ] ),
+                    getFunc = function() return self._root:GetSetting( PSBT_MODULES.LOW ) end,
+                    setFunc = function( toggle )
+                        self._root:SetSetting( PSBT_MODULES.LOW, toggle )
+                        self._root:ToggleModule( PSBT_MODULES.LOW )
+                        end,
+                },
+                [ 6 ] = 
+                {
+                    type = 'checkbox',
+                    name = GetString( _G[ PSBT_STRINGS.MODULE_ULTIMATE ] ),
+                    getFunc = function() return self._root:GetSetting( PSBT_MODULES.ULTIMATE ) end,
+                    setFunc = function( toggle )
+                        self._root:SetSetting( PSBT_MODULES.ULTIMATE, toggle )
+                        self._root:ToggleModule( PSBT_MODULES.ULTIMATE )
+                        end,
+                },
+                [ 7 ] = 
+                {
+                    type = 'checkbox',
+                    name = GetString( _G[ PSBT_STRINGS.MODULE_DEBUG ] ),
+                    getFunc = function() return self._root:GetSetting( PSBT_MODULES.DEBUG ) end,
+                    setFunc = function( toggle )
+                        self._root:SetSetting( PSBT_MODULES.DEBUG, toggle )
+                        self._root:ToggleModule( PSBT_MODULES.DEBUG )
+                        end,
+                },
+            },
         },
         [ 6 ] =
         {
-            type = 'colorpicker',
-            name = 'Healing',
-            getFunc = function() return unpack( self._root:GetSetting( PSBT_SETTINGS.healing_color ) ) end,
-            setFunc = function( r, g, b, a )
-                self._root:SetSetting( PSBT_SETTINGS.healing_color, { r, g, b, a } )
-                end,
+            type = 'submenu',
+            name = GetString( _G[ PSBT_STRINGS.HEADER_COLORS ] ),
+            controls =
+            {
+                [ 1 ] =
+                {
+                    type = 'colorpicker',
+                    name = GetString( _G[ PSBT_STRINGS.COLOR_HEALING ] ),
+                    getFunc = function() return unpack( self._root:GetSetting( PSBT_SETTINGS.healing_color ) ) end,
+                    setFunc = function( r, g, b, a )
+                        self._root:SetSetting( PSBT_SETTINGS.healing_color, { r, g, b, a } )
+                        end,
+                },
+                [ 2 ] = 
+                {
+                    type = 'colorpicker',
+                    name = GetString( _G[ PSBT_STRINGS.COLOR_DAMAGE ] ),
+                    getFunc = function() return unpack( self._root:GetSetting( PSBT_SETTINGS.damage_color ) ) end,
+                    setFunc = function( r, g, b, a ) 
+                        self._root:SetSetting( PSBT_SETTINGS.damage_color, { r, g, b, a } )
+                        end,
+                },
+                [ 3 ] =
+                {
+                    type = 'colorpicker',
+                    name = GetString( _G[ PSBT_STRINGS.COLOR_NORMAL ] ),
+                    getFunc = function() return unpack( self._root:GetSetting( PSBT_SETTINGS.normal_color ) ) end,
+                    setFunc = function( r, g, b, a )
+                        self._root:SetSetting( PSBT_SETTINGS.normal_color, { r, g, b, a } )
+                        end,
+                },
+            },
         },
         [ 7 ] = 
         {
-            type = 'colorpicker',
-            name = 'Damage',
-            getFunc = function() return unpack( self._root:GetSetting( PSBT_SETTINGS.damage_color ) ) end,
-            setFunc = function( r, g, b, a ) 
-                self._root:SetSetting( PSBT_SETTINGS.damage_color, { r, g, b, a } )
-                end,
+            type = 'submenu',
+            name = GetString( _G[ PSBT_STRINGS.HEADER_NORMAL_FONT ] ),
+            reference = 'PSBT_Config_NormalFont',
+            controls =
+            {
+                [ 1 ] =
+                {
+                    type = 'dropdown',
+                    name = GetString( _G[ PSBT_STRINGS.FONT_FACE ] ),
+                    choices = LMP:List( LMP.MediaType.FONT ),
+                    getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.normal_font ).face end,
+                    setFunc = function( choice ) 
+                        local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
+                        current.face = tostring( choice )
+                        self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
+                        end,
+                },
+                [ 2 ] = 
+                {
+                    type = 'editbox',
+                    name = GetString( _G[ PSBT_STRINGS.FONT_SIZE ] ),
+                    textType = TEXT_TYPE_NUMERIC,
+                    getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.normal_font ).size end,
+                    setFunc = function( size ) 
+                        local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
+                        current.size = tonumber( size )
+                        self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
+                        end,
+                },
+                [ 3 ] =
+                {
+                    type = 'dropdown',
+                    name = GetString( _G[ PSBT_STRINGS.FONT_DECORATION ] ),
+                    choices = decorations,
+                    getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.normal_font ).deco end,
+                    setFunc = function( choice ) 
+                        local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
+                        current.deco = tostring( choice )
+                        self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
+                        end,
+                },
+            },
         },
         [ 8 ] =
         {
-            type = 'colorpicker',
-            name = 'Normal',
-            getFunc = function() return unpack( self._root:GetSetting( PSBT_SETTINGS.normal_color ) ) end,
-            setFunc = function( r, g, b, a )
-                self._root:SetSetting( PSBT_SETTINGS.normal_color, { r, g, b, a } )
-                end,
-        },
-        [ 9 ] = 
-        {
-            type = 'header',
-            name = 'Normal Font',
-            width = 'full',
-            reference = 'PSBT_Config_NormalFont',
-        },
-        [ 10 ] =
-        {
-            type = 'dropdown',
-            name = 'Font',
-            choices = LMP:List( LMP.MediaType.FONT ),
-            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.normal_font ).face end,
-            setFunc = function( choice ) 
-                local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
-                current.face = tostring( choice )
-                self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
-                end,
-        },
-        [ 11 ] = 
-        {
-            type = 'editbox',
-            name = 'Size',
-            textType = TEXT_TYPE_NUMERIC,
-            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.normal_font ).size end,
-            setFunc = function( size ) 
-                local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
-                current.size = tonumber( size )
-                self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
-                end,
-        },
-        [ 12 ] =
-        {
-            type = 'dropdown',
-            name = 'Decoration',
-            choices = decorations,
-            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.normal_font ).deco end,
-            setFunc = function( choice ) 
-                local current = self._root:GetSetting( PSBT_SETTINGS.normal_font )
-                current.deco = tostring( choice )
-                self._root:SetSetting( PSBT_SETTINGS.normal_font, current )
-                end,
-        },
-        [ 13 ] =
-        {
-            type = 'header',
-            name = 'Sticky Font',
-            width = 'full',
+            type = 'submenu',
+            name = GetString( _G[ PSBT_STRINGS.HEADER_STICKY_FONT ] ),
             reference = 'PSBT_Config_StickyFont',
+            controls = 
+            {
+                [ 1 ] =
+                {
+                    type = 'dropdown',
+                    name = GetString( _G[ PSBT_STRINGS.FONT_FACE ] ),
+                    choices = LMP:List( LMP.MediaType.FONT ),
+                    getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).face end,
+                    setFunc = function( choice ) 
+                        local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
+                        current.face = tostring( choice )
+                        self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
+                        end,
+                },
+                [ 2 ] = 
+                {
+                    type = 'editbox',
+                    name = GetString( _G[ PSBT_STRINGS.FONT_SIZE ] ),
+                    textType = TEXT_TYPE_NUMERIC,
+                    getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).size end,
+                    setFunc = function( size ) 
+                        local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
+                        current.size = tonumber( size )
+                        self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
+                        end,
+                },
+                [ 3 ] =
+                {
+                    type = 'dropdown',
+                    name = GetString( _G[ PSBT_STRINGS.FONT_DECORATION ] ),
+                    choices = decorations,
+                    getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).deco end,
+                    setFunc = function( choice ) 
+                        local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
+                        current.deco = tostring( choice )
+                        self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
+                        end,
+                },
+            },
         },
-        [ 14 ] =
-        {
-            type = 'dropdown',
-            name = 'Font',
-            choices = LMP:List( LMP.MediaType.FONT ),
-            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).face end,
-            setFunc = function( choice ) 
-                local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
-                current.face = tostring( choice )
-                self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
-                end,
-        },
-        [ 15 ] = 
-        {
-            type = 'editbox',
-            name = 'Size',
-            textType = TEXT_TYPE_NUMERIC,
-            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).size end,
-            setFunc = function( size ) 
-                local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
-                current.size = tonumber( size )
-                self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
-                end,
-        },
-        [ 16 ] =
-        {
-            type = 'dropdown',
-            name = 'Decoration',
-            choices = decorations,
-            getFunc = function() return self._root:GetSetting( PSBT_SETTINGS.sticky_font ).deco end,
-            setFunc = function( choice ) 
-                local current = self._root:GetSetting( PSBT_SETTINGS.sticky_font )
-                current.deco = tostring( choice )
-                self._root:SetSetting( PSBT_SETTINGS.sticky_font, current )
-                end,
-        },
-        [ 17 ] =
+        [ 9 ] =
         {
             type = 'submenu',
-            name = 'Incoming',
+            name = GetString( _G[ PSBT_STRINGS.AREA_INCOMING ] ),
             controls = 
             {
                 [ 1 ] = 
                 {
                     type = 'slider',
-                    name = 'Arc',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_ARC ] ),
                     min = -300,
                     max = 300, 
                     step = 5, 
@@ -218,7 +306,7 @@ function PSBT_Options:InitializeControlPanel()
                 [ 2 ] =
                 {
                     type = 'dropdown',
-                    name = 'Icon Position',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_ICON_POS ] ),
                     choices = iconside,
                     getFunc = function() return self._root:GetSetting( PSBT_AREAS.INCOMING ).icon end,
                     setFunc = function( side )
@@ -230,7 +318,7 @@ function PSBT_Options:InitializeControlPanel()
                 [ 3 ] =
                 {
                     type = 'dropdown',
-                    name = 'Direction',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_DIRECTION ] ),
                     choices = direction,
                     getFunc = function() return self._root:GetSetting( PSBT_AREAS.INCOMING ).dir end,
                     setFunc = function( direction )
@@ -241,16 +329,16 @@ function PSBT_Options:InitializeControlPanel()
                 },
             },
         },
-        [ 18 ] =
+        [ 10 ] =
         {
             type = 'submenu',
-            name = 'Outgoing',
+            name = GetString( _G[ PSBT_STRINGS.AREA_OUTGOING ] ),
             controls = 
             {
                 [ 1 ] = 
                 {
                     type = 'slider',
-                    name = 'Arc',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_ARC ] ),
                     min = -300,
                     max = 300, 
                     step = 5, 
@@ -264,7 +352,7 @@ function PSBT_Options:InitializeControlPanel()
                 [ 2 ] =
                 {
                     type = 'dropdown',
-                    name = 'Icon Position',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_ICON_POS ] ),
                     choices = iconside,
                     getFunc = function() return self._root:GetSetting( PSBT_AREAS.OUTGOING ).icon end,
                     setFunc = function( side )
@@ -276,7 +364,7 @@ function PSBT_Options:InitializeControlPanel()
                 [ 3 ] =
                 {
                     type = 'dropdown',
-                    name = 'Direction',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_DIRECTION ] ),
                     choices = direction,
                     getFunc = function() return self._root:GetSetting( PSBT_AREAS.OUTGOING ).dir end,
                     setFunc = function( direction )
@@ -287,16 +375,16 @@ function PSBT_Options:InitializeControlPanel()
                 },
             },
         },
-        [ 19 ] =
+        [ 11 ] =
         {
             type = 'submenu',
-            name = 'Static',
+            name = GetString( _G[ PSBT_STRINGS.AREA_STATIC ] ),
             controls = 
             {
                 [ 1 ] =
                 {
                     type = 'dropdown',
-                    name = 'Icon Position',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_ICON_POS ] ),
                     choices = iconside,
                     getFunc = function() return self._root:GetSetting( PSBT_AREAS.STATIC ).icon end,
                     setFunc = function( side )
@@ -308,7 +396,7 @@ function PSBT_Options:InitializeControlPanel()
                 [ 2 ] =
                 {
                     type = 'dropdown',
-                    name = 'Direction',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_DIRECTION ] ),
                     choices = direction,
                     getFunc = function() return self._root:GetSetting( PSBT_AREAS.STATIC ).dir end,
                     setFunc = function( direction )
@@ -319,16 +407,16 @@ function PSBT_Options:InitializeControlPanel()
                 },
             },
         },
-        [ 20 ] =
+        [ 12 ] =
         {
             type = 'submenu',
-            name = 'Notification',
+            name = GetString( _G[ PSBT_STRINGS.AREA_NOTIFICATION ] ),
             controls = 
             {
                 [ 1 ] =
                 {
                     type = 'dropdown',
-                    name = 'Icon Position',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_ICON_POS ] ),
                     choices = iconside,
                     getFunc = function() return self._root:GetSetting( PSBT_AREAS.NOTIFICATION ).icon end,
                     setFunc = function( side )
@@ -340,7 +428,7 @@ function PSBT_Options:InitializeControlPanel()
                 [ 2 ] =
                 {
                     type = 'dropdown',
-                    name = 'Direction',
+                    name = GetString( _G[ PSBT_STRINGS.SCROLL_DIRECTION ] ),
                     choices = direction,
                     getFunc = function() return self._root:GetSetting( PSBT_AREAS.NOTIFICATION ).dir end,
                     setFunc = function( direction )
@@ -358,5 +446,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.OPTIONS, PSBT_Options:New( psbt ), kVersion )
+        psbt:RegisterModule( PSBT_MODULES.OPTIONS, PSBT_Options, kVersion )
     end )

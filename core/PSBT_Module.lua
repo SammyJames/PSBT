@@ -12,12 +12,16 @@ function ModuleProto:Initialize( root )
     self._root = root
 end
 
+function ModuleProto:Shutdown()
+    self._root = nil
+end
+
 function ModuleProto:RegisterForEvent( event, callback )
-    self._root:RegisterForEvent( event, callback )
+    self._root:RegisterForEvent( event, self, callback )
 end
 
 function ModuleProto:UnregisterForEvent( event, callback )
-    self._root:UnregisterForEvent( event, callback )
+    self._root:UnregisterForEvent( event, self, callback )
 end
 
 function ModuleProto:OnUpdate( frametime )

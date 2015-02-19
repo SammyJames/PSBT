@@ -10,6 +10,7 @@ PSBT =
     ModuleProto     = nil,
     DebugMode       = false,
     _modules        = {},
+    _loadedModules  = {},
     _areas          = {},
     _events         = {},
 }

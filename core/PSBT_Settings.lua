@@ -2,16 +2,16 @@ local PSBT                   = PSBT
 local ModuleProto            = PSBT.ModuleProto
 local PSBT_Settings          = ModuleProto:Subclass()
 local CBM                    = CALLBACK_MANAGER
-local PSBT_MODULES           = PSBT_MODULES
-local PSBT_EVENTS            = PSBT_EVENTS
-local PSBT_AREAS             = PSBT_AREAS
-local PSBT_ICON_SIDE         = PSBT_ICON_SIDE
-local PSBT_SCROLL_DIRECTIONS = PSBT_SCROLL_DIRECTIONS
+local PSBT_MODULES           = PSBT.MODULES
+local PSBT_EVENTS            = PSBT.EVENTS
+local PSBT_AREAS             = PSBT.AREAS
+local PSBT_ICON_SIDE         = PSBT.ICON_SIDE
+local PSBT_SCROLL_DIRECTIONS = PSBT.SCROLL_DIRECTIONS
 local ZO_SavedVars           = ZO_SavedVars
 local RIGHT                  = RIGHT
 local LEFT                   = LEFT
 local CENTER                 = CENTER
-local kVersion               = 3.1  
+local kVersion               = 3.2  
 
 local defaults = 
 {
@@ -86,7 +86,15 @@ local defaults =
         icon    = PSBT_ICON_SIDE.LEFT,
         dir     = PSBT_SCROLL_DIRECTIONS.UP,
         arc     = 0
-    }
+    },
+
+    [ PSBT_MODULES.COOLDOWNS ]  = true,
+    [ PSBT_MODULES.COMBAT ]     = true,
+    [ PSBT_MODULES.AURAS ]      = true,
+    [ PSBT_MODULES.XP ]         = true,
+    [ PSBT_MODULES.LOW ]        = true,
+    [ PSBT_MODULES.ULTIMATE ]   = true,
+    [ PSBT_MODULES.DEBUG ]      = false,
 }
 
 function PSBT_Settings:Initialize( ... )
@@ -110,5 +118,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.SETTINGS, PSBT_Settings:New( psbt ), kVersion )
+        psbt:RegisterModule( PSBT_MODULES.SETTINGS, PSBT_Settings, kVersion )
     end)

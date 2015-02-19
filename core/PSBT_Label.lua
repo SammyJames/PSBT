@@ -3,8 +3,8 @@ local ZO_Object     = ZO_Object
 local Label         = ZO_Object:Subclass()
 
 local CENTER                    = CENTER
-local PSBT_SCROLL_DIRECTIONS    = PSBT_SCROLL_DIRECTIONS
-local PSBT_ICON_SIDE            = PSBT_ICON_SIDE
+local PSBT_SCROLL_DIRECTIONS    = PSBT.SCROLL_DIRECTIONS
+local PSBT_ICON_SIDE            = PSBT.ICON_SIDE
 local unpack                    = unpack
 
 function Label:New( ... )

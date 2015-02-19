@@ -32,6 +32,7 @@ core/PSBT_Media.lua
 core/PSBT_Constants.lua
 
 ## loc
+localization/EN.lua
 localization/$(language).lua
 
 ## helpers

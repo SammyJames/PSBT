@@ -7,10 +7,10 @@ local CBM                   = CALLBACK_MANAGER
 
 local threshold             = 0.33
 
-local PSBT_AREAS            = PSBT_AREAS
-local PSBT_MODULES          = PSBT_MODULES
-local PSBT_EVENTS           = PSBT_EVENTS
-local PSBT_STRINGS          = PSBT_STRINGS
+local PSBT_AREAS            = PSBT.AREAS
+local PSBT_MODULES          = PSBT.MODULES
+local PSBT_EVENTS           = PSBT.EVENTS
+local PSBT_STRINGS          = PSBT.STRINGS
 
 local POWERTYPE_HEALTH      = POWERTYPE_HEALTH
 local POWERTYPE_MAGICKA     = POWERTYPE_MAGICKA
@@ -34,7 +34,13 @@ function PSBT_LowSomething:Initialize( ... )
     self._pools[ POWERTYPE_STAMINA ]       = 0
     self._pools[ POWERTYPE_MOUNT_STAMINA ] = 0
 
-    self:RegisterForEvent( EVENT_POWER_UPDATE, function( ... ) self:OnPowerUpdate( ... ) end )
+    self:RegisterForEvent( EVENT_POWER_UPDATE, 'OnPowerUpdate' )
+end
+
+function PSBT_LowSomething:Shutdown()
+    self:UnregisterForEvent( EVENT_POWER_UPDATE, 'OnPowerUpdate' )
+
+    ModuleProto.Shutdown( self )
 end
 
 function PSBT_LowSomething:OnPowerUpdate( unit, powerPoolIndex, powerType, powerPool, powerPoolMax )
@@ -73,5 +79,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.LOW, PSBT_LowSomething:New( psbt ), kVersion )
+        psbt:RegisterModule( PSBT_MODULES.LOW, PSBT_LowSomething, kVersion )
     end)

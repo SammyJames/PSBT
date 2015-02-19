@@ -8,8 +8,8 @@ local tremove       = table.remove
 local NUM_STICKY    = 4
 local CENTER        = CENTER
 local TOP           = TOP
-local PSBT_EVENTS               = PSBT_EVENTS
-local PSBT_SCROLL_DIRECTIONS    = PSBT_SCROLL_DIRECTIONS
+local PSBT_EVENTS               = PSBT.EVENTS
+local PSBT_SCROLL_DIRECTIONS    = PSBT.SCROLL_DIRECTIONS
 
 function ScrollArea:New( ... )
     local result = ZO_Object.New( self )

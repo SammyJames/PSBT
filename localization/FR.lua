@@ -1,7 +1,7 @@
 local CBM           = CALLBACK_MANAGER
 local CreateString  = ZO_CreateStringId
-local PSBT_EVENTS   = PSBT_EVENTS
-local PSBT_STRINGS  = PSBT_STRINGS
+local PSBT_EVENTS   = PSBT.EVENTS
+local PSBT_STRINGS  = PSBT.STRINGS
 
 --[[
 FALL_DAMAGE         = 'SI_PSBT_EVENT_FALL_DAMAGE',

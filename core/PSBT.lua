@@ -8,10 +8,10 @@ if ( not LMP ) then return end
 
 local PSBT              = PSBT
 local CBM               = CALLBACK_MANAGER
-local PSBT_AREAS        = PSBT_AREAS
-local PSBT_EVENTS       = PSBT_EVENTS
-local PSBT_MODULES      = PSBT_MODULES
-local PSBT_SETTINGS     = PSBT_SETTINGS
+local PSBT_AREAS        = PSBT.AREAS
+local PSBT_EVENTS       = PSBT.EVENTS
+local PSBT_MODULES      = PSBT.MODULES
+local PSBT_SETTINGS     = PSBT.SETTINGS
 local tinsert           = table.insert
 local tremove           = table.remove
 local _
@@ -44,6 +44,10 @@ function PSBT:OnLoaded( addon )
     self._fadeIn    = self.FadeProto:New( 1.0, 0.0 )
     self._fadeOut   = self.FadeProto:New( 0.0, 1,0 )
 
+
+    self:CreateModule( PSBT_MODULES.SETTINGS )
+    self:CreateModule( PSBT_MODULES.OPTIONS )
+
     self._areas[ PSBT_AREAS.INCOMING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.INCOMING,     self:GetSetting( PSBT_AREAS.INCOMING ), self._fadeIn, self._fadeOut )
     self._areas[ PSBT_AREAS.OUTGOING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.OUTGOING,     self:GetSetting( PSBT_AREAS.OUTGOING ), self._fadeIn, self._fadeOut )
     self._areas[ PSBT_AREAS.STATIC ]       = self.ScrollAreaProto:New( self.control, PSBT_AREAS.STATIC,       self:GetSetting( PSBT_AREAS.STATIC ), self._fadeIn, self._fadeOut )
@@ -52,13 +56,34 @@ function PSBT:OnLoaded( addon )
     CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
     CBM:RegisterCallback( PSBT_EVENTS.DEMO, function() self:TriggerFakeEvents() end )
     self.control:SetHandler( 'OnUpdate', function( _, frameTime ) self:OnUpdate( frameTime ) end )
+
+    for k,v in pairs( PSBT_MODULES ) do
+        if ( k ~= 'SETTINGS' and k ~= 'OPTIONS' ) then
+              if ( self:GetSetting( v ) ) then
+                self:CreateModule( v ) 
+            end
+        end
+    end
+
 end
 
 function PSBT:OnUpdate( frameTime )
     self.LabelFactory:OnUpdate( frameTime )
 
-    for k,v in pairs( self._modules ) do
+    for k,v in pairs( self._loadedModules ) do
         v:OnUpdate( frameTime )
+    end
+end
+
+function PSBT:ToggleModule( InModule )
+    local enabled = self:GetSetting( InModule )
+    -- do fancy stuff here
+    local mod = self:GetModule( InModule )
+    if ( enabled and mod == nil ) then
+        self:CreateModule( InModule )
+    elseif( not enabled and mod ~= nil ) then
+        mod:Shutdown()
+        self._loadedModules[ InModule ] = nil
     end
 end
 
@@ -78,12 +103,20 @@ function PSBT:SetConfigurationMode( mode )
     end
 end
 
+function PSBT:CreateModule( InModule )
+    local proto = self._modules[ InModule ]
+
+    if ( proto ~= nil ) then
+        self._loadedModules[ InModule ] = proto:New( self )
+    end
+end
+
 function PSBT:RegisterModule( identity, class, version )
     if ( not version ) then
         version = -1
     end
 
-    if ( self._modules[ identity ] and ( version < self._modules[ identity ].__version or 0 ) ) then
+    if ( self._modules[ identity ] and ( version < ( self._modules[ identity ].__version or 0 ) ) ) then
         return
     end
 
@@ -92,11 +125,11 @@ function PSBT:RegisterModule( identity, class, version )
 end
 
 function PSBT:GetModule( identity )
-    if ( not self._modules[ identity ] ) then
+    if ( not self._loadedModules[ identity ] ) then
         return nil
     end
 
-    return self._modules[ identity ]
+    return self._loadedModules[ identity ]
 end
 
 function PSBT:GetSetting( name )
@@ -124,12 +157,12 @@ function PSBT:TriggerFakeEvents()
     self:NewEvent( PSBT_AREAS.NOTIFICATION, true, [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
 end
 
-function PSBT:RegisterForEvent( event, callback )
+function PSBT:RegisterForEvent( event, scope, callback )
     if ( not self._events[ event ] ) then
         self._events[ event ] = {}
     end
 
-    tinsert( self._events[ event ], callback )
+    tinsert( self._events[ event ], { [ 'scope' ] = scope, [ 'func' ] = callback } )
 
     self.control:RegisterForEvent( event, function( ... ) self:OnEvent( ... ) end )
 end
@@ -141,11 +174,11 @@ function PSBT:OnEvent( event, ... )
 
     local callbacks = self._events[ event ]
     for _,v in pairs( callbacks ) do
-        v( ... )
+        v.scope[ v.func ]( v.scope, ... )
     end
 end
 
-function PSBT:UnregisterForEvent( event, callback )
+function PSBT:UnregisterForEvent( event, scope, callback )
     if ( not self._events[ event ] ) then
         return
     end
@@ -153,7 +186,8 @@ function PSBT:UnregisterForEvent( event, callback )
     local callbacks = self._events[ event ]
     local i = 1
     while( i <= #callbacks ) do
-        if ( callbacks[ i ] == callback ) then
+        local listener = callbacks[ i ]
+        if ( listener.scope == scope and listener.func == callback ) then
             tremove( callbacks, i )
         else
             i = i + 1

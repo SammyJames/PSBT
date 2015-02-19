@@ -16,8 +16,11 @@ local COMBAT_UNIT_TYPE_PLAYER       = COMBAT_UNIT_TYPE_PLAYER
 local COMBAT_UNIT_TYPE_PLAYER_PET   = COMBAT_UNIT_TYPE_PLAYER_PET
 local COMBAT_UNIT_TYPE_NONE         = COMBAT_UNIT_TYPE_NONE
 
-local PSBT_AREAS            = PSBT_AREAS
-local PSBT_EVENTS           = PSBT_EVENTS
+local PSBT_AREAS            = PSBT.AREAS
+local PSBT_EVENTS           = PSBT.EVENTS
+local PSBT_STRINGS          = PSBT.STRINGS
+local PSBT_MODULES          = PSBT.MODULES
+local PSBT_SETTINGS         = PSBT.SETTINGS
 
 local zo_strformat          = zo_strformat
 local GetString             = GetString
@@ -93,9 +96,20 @@ function PSBT_Combat:Initialize( ... )
     self:RefreshAbilityIcons()
     self:Initialize_Text()
 
-    self:RegisterForEvent( EVENT_COMBAT_EVENT,          function( ... ) self:OnCombatEvent( ... )    end )
-    self:RegisterForEvent( EVENT_SKILLS_FULL_UPDATE,    function() self:RefreshAbilityIcons()        end )
-    self:RegisterForEvent( EVENT_SKILL_POINTS_CHANGED,  function() self:RefreshAbilityIcons()        end )
+    self:RegisterForEvent( EVENT_COMBAT_EVENT,          'OnCombatEvent' )
+    self:RegisterForEvent( EVENT_SKILLS_FULL_UPDATE,    'RefreshAbilityIcons' )
+    self:RegisterForEvent( EVENT_SKILL_POINTS_CHANGED,  'RefreshAbilityIcons' )
+end
+
+function PSBT_Combat:Shutdown()
+    self._text = nil
+    self._buffer = nil
+
+    self:UnregisterForEvent( EVENT_COMBAT_EVENT,          'OnCombatEvent' )
+    self:UnregisterForEvent( EVENT_SKILLS_FULL_UPDATE,    'RefreshAbilityIcons' )
+    self:UnregisterForEvent( EVENT_SKILL_POINTS_CHANGED,  'RefreshAbilityIcons' )
+
+    ModuleProto.Shutdown( self )
 end
 
 function PSBT_Combat:Initialize_Text()
@@ -287,5 +301,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.COMBAT, PSBT_Combat:New( psbt ), kVerison )
+        psbt:RegisterModule( PSBT_MODULES.COMBAT, PSBT_Combat, kVerison )
     end)

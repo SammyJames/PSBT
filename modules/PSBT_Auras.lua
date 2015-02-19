@@ -7,19 +7,26 @@ local kVerison = 1.0
 local EFFECT_RESULT_FADED   = EFFECT_RESULT_FADED
 local EFFECT_RESULT_GAINED  = EFFECT_RESULT_GAINED
 
-local PSBT_EVENTS           = PSBT_EVENTS
-local PSBT_AREAS            = PSBT_AREAS
-local PSBT_MODULES          = PSBT_MODULES
-local PSBT_STRINGS          = PSBT_STRINGS
+local PSBT_EVENTS           = PSBT.EVENTS
+local PSBT_AREAS            = PSBT.AREAS
+local PSBT_MODULES          = PSBT.MODULES
+local PSBT_STRINGS          = PSBT.STRINGS
 local zo_strformat          = zo_strformat
 
 function PSBT_Auras:Initialize( ... )  
     ModuleProto.Initialize( self, ... )
 
-    self:RegisterForEvent( EVENT_EFFECT_CHANGED, function( ... ) self:OnEffectChanged( ... ) end )
+    self:RegisterForEvent( EVENT_EFFECT_CHANGED, 'OnEffectChanged' )
 
     self._gained = GetString( _G[ PSBT_STRINGS.AURA_GAINED ] )
     self._fades = GetString( _G[ PSBT_STRINGS.AURA_FADES ] )
+end
+
+function PSBT_Auras:Shutdown()
+    self:UnregisterForEvent( EVENT_EFFECT_CHANGED, 'OnEffectChanged' )
+
+    -- do this after you unregister events
+    ModuleProto.Shutdown( self )
 end
 
 function PSBT_Auras:OnEffectChanged( changeType, effectSlot, effectName, unitTag, beginTime, endTime, stackCount, iconName, buffType, effectType, abilityType, statusEffectType )
@@ -48,5 +55,5 @@ end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
     function( psbt )
-        psbt:RegisterModule( PSBT_MODULES.AURAS, PSBT_Auras:New( psbt ), kVerison )
+        psbt:RegisterModule( PSBT_MODULES.AURAS, PSBT_Auras, kVerison )
     end)

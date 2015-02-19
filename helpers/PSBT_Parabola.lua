@@ -2,7 +2,7 @@ local PSBT                  = PSBT
 local AnimationPool         = PSBT.AnimPoolProto
 local Parabola              = AnimationPool:Subclass()
 
-local PSBT_SCROLL_DIRECTIONS = PSBT_SCROLL_DIRECTIONS
+local PSBT_SCROLL_DIRECTIONS = PSBT.SCROLL_DIRECTIONS
 
 local function _DOWN( height, progress )
     return height * progress
