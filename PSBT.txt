@@ -1,4 +1,5 @@
-## Title: PSBT - By Pawkette
+## Title: PSBT
+## Author: |cFF66CCPawkette|r
 ## APIVersion: 100010
 ## OptionalDependsOn: LibStub LibMediaProvider-1.0 LibAddonMenu-2.0 LibAnimation-1.0
 ## SavedVariables: PSBT_DB
