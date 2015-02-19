@@ -17,11 +17,11 @@ function PSBT_Experience:Initialize( ... )
 
     self._currentExperience = GetUnitXP( 'player' )
 
-    self:RegisterForEvent( EVENT_EXPERIENCE_UPDATE, function( ... ) self:OnXPUpdated( ... ) end )
+    self:RegisterForEvent( EVENT_EXPERIENCE_UPDATE, 'OnXPUpdated' )
 end
 
 function PSBT_Experience:Shutdown()
-    self:UnregisterForEvent( EVENT_EXPERIENCE_UPDATE, function( ... ) self:OnXPUpdated( ... ) end )
+    self:UnregisterForEvent( EVENT_EXPERIENCE_UPDATE, 'OnXPUpdated' )
 
     ModuleProto.Shutdown( self )
 end
