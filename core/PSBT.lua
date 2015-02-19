@@ -12,6 +12,7 @@ local PSBT_AREAS        = PSBT.AREAS
 local PSBT_EVENTS       = PSBT.EVENTS
 local PSBT_MODULES      = PSBT.MODULES
 local PSBT_SETTINGS     = PSBT.SETTINGS
+local PSBT_STRINGS      = PSBT.STRINGS
 local tinsert           = table.insert
 local tremove           = table.remove
 local _
@@ -48,10 +49,10 @@ function PSBT:OnLoaded( addon )
     self:CreateModule( PSBT_MODULES.SETTINGS )
     self:CreateModule( PSBT_MODULES.OPTIONS )
 
-    self._areas[ PSBT_AREAS.INCOMING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.INCOMING,     self:GetSetting( PSBT_AREAS.INCOMING ), self._fadeIn, self._fadeOut )
-    self._areas[ PSBT_AREAS.OUTGOING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.OUTGOING,     self:GetSetting( PSBT_AREAS.OUTGOING ), self._fadeIn, self._fadeOut )
-    self._areas[ PSBT_AREAS.STATIC ]       = self.ScrollAreaProto:New( self.control, PSBT_AREAS.STATIC,       self:GetSetting( PSBT_AREAS.STATIC ), self._fadeIn, self._fadeOut )
-    self._areas[ PSBT_AREAS.NOTIFICATION ] = self.ScrollAreaProto:New( self.control, PSBT_AREAS.NOTIFICATION, self:GetSetting( PSBT_AREAS.NOTIFICATION ), self._fadeIn, self._fadeOut )
+    self._areas[ PSBT_AREAS.INCOMING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.INCOMING,     self:GetSetting( PSBT_AREAS.INCOMING ), self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_INCOMING ] ) )
+    self._areas[ PSBT_AREAS.OUTGOING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.OUTGOING,     self:GetSetting( PSBT_AREAS.OUTGOING ), self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_OUTGOING ] ) )
+    self._areas[ PSBT_AREAS.STATIC ]       = self.ScrollAreaProto:New( self.control, PSBT_AREAS.STATIC,       self:GetSetting( PSBT_AREAS.STATIC ), self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_STATIC ] ) )
+    self._areas[ PSBT_AREAS.NOTIFICATION ] = self.ScrollAreaProto:New( self.control, PSBT_AREAS.NOTIFICATION, self:GetSetting( PSBT_AREAS.NOTIFICATION ), self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_NOTIFICATION ] ) )
 
     CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
     CBM:RegisterCallback( PSBT_EVENTS.DEMO, function() self:TriggerFakeEvents() end )

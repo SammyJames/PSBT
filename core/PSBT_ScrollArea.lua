@@ -17,11 +17,12 @@ function ScrollArea:New( ... )
     return result
 end
 
-function ScrollArea:Initialize( super, areaName, settings, fadeIn, fadeOut )
+function ScrollArea:Initialize( super, areaName, settings, fadeIn, fadeOut, displayName )
     self.name           = areaName
     self.control        = super:GetNamedChild( areaName )
     self.background     = self.control:GetNamedChild( '_BG' )
     self.label          = self.control:GetNamedChild( '_Name' )
+    self.label:SetText( displayName )
     self._newSticky     = false
     self._height        = self.control:GetHeight()
     self._sticky        = {}
