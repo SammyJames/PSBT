@@ -47,41 +47,45 @@ end
 
 local static_events =
 {
-    [ ACTION_RESULT_CANT_SEE_TARGET ] = true,
-    [ ACTION_RESULT_KILLING_BLOW ] = true,
-    [ ACTION_RESULT_CANNOT_USE ] = true,
-    [ ACTION_RESULT_BUSY ] = true,
-    [ ACTION_RESULT_FALLING ] = true,
+    [ ACTION_RESULT_CANT_SEE_TARGET ]   = true,
+    [ ACTION_RESULT_KILLING_BLOW ]      = true,
+    [ ACTION_RESULT_CANNOT_USE ]        = true,
+    [ ACTION_RESULT_BUSY ]              = true,
+    [ ACTION_RESULT_FALLING ]           = true,
 }
 
 local critical_events = 
 {
+    [ ACTION_RESULT_CRITICAL_DAMAGE ]   = true,
     [ ACTION_RESULT_DOT_TICK_CRITICAL ] = true,
-    [ ACTION_RESULT_CRITICAL_DAMAGE ] = true,
-    [ ACTION_RESULT_CRITICAL_HEAL ] = true,
+    [ ACTION_RESULT_CRITICAL_HEAL ]     = true,
     [ ACTION_RESULT_HOT_TICK_CRITICAL ] = true,
-    [ ACTION_RESULT_INTERRUPT ] = true,
-    [ ACTION_RESULT_BLOCKED ] = true,
-    [ ACTION_RESULT_BLOCKED_DAMAGE ] = true,
-    [ ACTION_RESULT_ABSORBED ] = true,
-    [ ACTION_RESULT_RESIST ] = true,
+    [ ACTION_RESULT_INTERRUPT ]         = true,
+    [ ACTION_RESULT_BLOCKED ]           = true,
+    [ ACTION_RESULT_BLOCKED_DAMAGE ]    = true,
+    [ ACTION_RESULT_ABSORBED ]          = true,
+    [ ACTION_RESULT_RESIST ]            = true,
+    [ ACTION_RESULT_DODGED ]            = true,
+    [ ACTION_RESULT_MISS ]              = true,
+    [ ACTION_RESULT_PARRIED ]           = true,
+    [ ACTION_RESULT_DEFENDED ]          = true,
 }
 
 local damage_events =
 {
-    [ ACTION_RESULT_CRITICAL_DAMAGE ] = true,
-    [ ACTION_RESULT_DAMAGE ] = true,
-    [ ACTION_RESULT_DAMAGE_SHIELDED ] = true,
-    [ ACTION_RESULT_DOT_TICK ] = true,
     [ ACTION_RESULT_DOT_TICK_CRITICAL ] = true,
-    [ ACTION_RESULT_FALL_DAMAGE ] = true,
+    [ ACTION_RESULT_CRITICAL_DAMAGE ]   = true,
+    [ ACTION_RESULT_DAMAGE ]            = true,
+    [ ACTION_RESULT_DAMAGE_SHIELDED ]   = true,
+    [ ACTION_RESULT_DOT_TICK ]          = true,
+    [ ACTION_RESULT_FALL_DAMAGE ]       = true,
 }
 
 local healing_events =
 {
-    [ ACTION_RESULT_CRITICAL_HEAL ] = true,
-    [ ACTION_RESULT_HEAL ] = true,
-    [ ACTION_RESULT_HOT_TICK ] = true,
+    [ ACTION_RESULT_CRITICAL_HEAL ]     = true,
+    [ ACTION_RESULT_HEAL ]              = true,
+    [ ACTION_RESULT_HOT_TICK ]          = true,
     [ ACTION_RESULT_HOT_TICK_CRITICAL ] = true,
 }
 
@@ -262,7 +266,6 @@ function PSBT_Combat:ProcessStackedEvents( stacking, frameTime )
     end
 end
 
---integer result, bool isError, string abilityName, integer abilityGraphic, integer abilityActionSlotType, string sourceName, integer sourceType, string targetName, integer targetType, integer hitValue, integer powerType, integer damageType, bool log
 function PSBT_Combat:DispatchEvent( result, combatEvent )
     local textFormat = self._text[ result ]
     if ( not textFormat ) then

@@ -35,7 +35,7 @@ function PSBT_Options:InitializeControlPanel()
             type = 'panel', 
             name = 'PSBT', 
             author = '|cFF66CCPawkette|r', 
-            version = '100011', 
+            version = '1.6', 
             slashCommand = '/psbt', 
             registerForRefresh = true,
             registerForDefaults = true 
