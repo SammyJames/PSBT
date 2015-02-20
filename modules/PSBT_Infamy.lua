@@ -9,12 +9,20 @@ local PSBT_MODULES          = PSBT.MODULES
 local PSBT_AREAS            = PSBT.AREAS
 local PSBT_STRINGS          = PSBT.STRINGS
 
+local ZO_PreHook            = ZO_PreHook
+
 function PSBT_Infamy:Initialize( ... )  
     ModuleProto.Initialize( self, ... )
 
     self._Format = GetString( _G[ PSBT_STRINGS.INFAMY ] )
 
     self:RegisterForEvent( EVENT_JUSTICE_INFAMY_UPDATED, 'OnInfamyUpdated' )
+    self:RegisterForEvent( EVENT_PLAYER_ACTIVATED, 'OnPlayerActivated' )
+
+    if ( HUD_INFAMY_METER ) then
+        HUD_INFAMY_METER.control:UnregisterForEvent( EVENT_JUSTICE_INFAMY_UPDATED )
+    end
+    ZO_PreHook( HUD_INFAMY_METER, 'OnInfamyUpdated', function( ... ) return true end )
 end
 
 function PSBT_Infamy:Shutdown()
@@ -23,6 +31,10 @@ function PSBT_Infamy:Shutdown()
     -- do this after you unregister events
     ModuleProto.Shutdown( self )
 end
+
+function PSBT_Infamy:OnPlayerActivated()
+    self:OnInfamyUpdated( 0, GetInfamy(), GetInfamyLevel( 0 ), GetInfamyLevel( GetInfamy() ) )
+end 
 
 function PSBT_Infamy:OnInfamyUpdated( OldInfamy, NewInfamy, OldLevel, NewLevel )
     if ( NewLevel ~= OldLevel ) then

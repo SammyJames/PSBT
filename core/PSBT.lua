@@ -109,6 +109,8 @@ function PSBT:CreateModule( InModule )
 
     if ( proto ~= nil ) then
         self._loadedModules[ InModule ] = proto:New( self )
+    else
+        print( 'Hey, we don\'t have = %s', InModule )
     end
 end
 
