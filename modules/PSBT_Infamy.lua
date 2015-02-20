@@ -9,8 +9,6 @@ local PSBT_MODULES          = PSBT.MODULES
 local PSBT_AREAS            = PSBT.AREAS
 local PSBT_STRINGS          = PSBT.STRINGS
 
-local ZO_PreHook            = ZO_PreHook
-
 function PSBT_Infamy:Initialize( ... )  
     ModuleProto.Initialize( self, ... )
 
@@ -20,13 +18,30 @@ function PSBT_Infamy:Initialize( ... )
     self:RegisterForEvent( EVENT_PLAYER_ACTIVATED, 'OnPlayerActivated' )
 
     if ( HUD_INFAMY_METER ) then
-        HUD_INFAMY_METER.control:UnregisterForEvent( EVENT_JUSTICE_INFAMY_UPDATED )
+        HUD_INFAMY_METER.control:SetHidden( true )
+
+        self._OldUpdate = HUD_INFAMY_METER[ 'OnInfamyUpdated' ]
+        self._OldRequestHidden = HUD_INFAMY_METER[ 'RequestHidden' ]
+
+        HUD_INFAMY_METER[ 'OnInfamyUpdated' ] = function( ... ) end
+        HUD_INFAMY_METER[ 'RequestHidden' ] = function( ... ) end
     end
-    ZO_PreHook( HUD_INFAMY_METER, 'OnInfamyUpdated', function( ... ) return true end )
+    
 end
 
 function PSBT_Infamy:Shutdown()
+    if ( HUD_INFAMY_METER ) then
+        HUD_INFAMY_METER.control:SetHidden( false )
+
+        HUD_INFAMY_METER[ 'OnInfamyUpdated' ] = self._OldUpdate
+        self._OldUpdate = nil
+
+        HUD_INFAMY_METER[ 'RequestHidden' ] = self._OldRequestHidden
+        self._OldRequestHidden = nil
+    end
+
     self:UnregisterForEvent( EVENT_JUSTICE_INFAMY_UPDATED, 'OnInfamyUpdated' )
+    self:UnregisterForEvent( EVENT_PLAYER_ACTIVATED, 'OnPlayerActivated' )
 
     -- do this after you unregister events
     ModuleProto.Shutdown( self )
