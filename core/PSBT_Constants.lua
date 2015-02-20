@@ -11,6 +11,7 @@ PSBT.MODULES =
     LOW                 = 'lowsomething',
     ULTIMATE            = 'ultimate',
     DEBUG               = 'debug',
+    INFAMY              = 'infamy',
 }
 
 PSBT.AREAS = 
@@ -73,6 +74,7 @@ PSBT.STRINGS =
     AURA_FADES          = 'SI_PSBT_EVENT_AURA_FADES',
     ENERGIZE            = 'SI_PSBT_EVENT_ENERGIZE',
     DRAIN               = 'SI_PSBT_EVENT_DRAIN',
+    INFAMY              = 'SI_PSBT_EVENT_INFAMY',
 
     -- options in general
     HEADER_GENERAL      = 'SI_PSBT_HEADER_GENERAL',
@@ -107,6 +109,7 @@ PSBT.STRINGS =
     MODULE_LOW          = 'SI_PSBT_MODULE_LOW',
     MODULE_ULTIMATE     = 'SI_PSBT_MODULE_ULTIMATE',
     MODULE_DEBUG        = 'SI_PSBT_MODULE_DEBUG',
+    MODULE_INFAMY       = 'SI_PSBT_MODULE_INFAMY',
 
     --- THESE DON'T REQUIRE LOCALIZATION
     ABSORED             = 'SI_SCT_EVENT_ABSORED',

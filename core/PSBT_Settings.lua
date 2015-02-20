@@ -95,25 +95,28 @@ local defaults =
     [ PSBT_MODULES.LOW ]        = true,
     [ PSBT_MODULES.ULTIMATE ]   = true,
     [ PSBT_MODULES.DEBUG ]      = false,
+    [ PSBT_MODULES.INFAMY ]     = true,
 }
 
 function PSBT_Settings:Initialize( ... )
     ModuleProto.Initialize( self, ... )
 
-    self.db      = ZO_SavedVars:New( 'PSBT_DB', kVersion, nil, defaults )
-    self.profile = self.db:GetInterfaceForCharacter( GetDisplayName(), GetUnitName( 'player' ) )
+    local DispalyName = GetDisplayName()
+    local CharacterName = GetUnitName( 'player' ) 
+
+    self.db = ZO_SavedVars:New( 'PSBT_DB', kVersion, nil, defaults, DispalyName, CharacterName )
 end
 
 function PSBT_Settings:GetSetting( identity )
-    if ( not self.profile[ identity ] ) then
+    if ( not self.db[ identity ] ) then
         return nil
     end
 
-    return self.profile[ identity ]
+    return self.db[ identity ]
 end
 
 function PSBT_Settings:SetSetting( identity, value )
-    self.profile[ identity ] = value
+    self.db[ identity ] = value
 end
 
 CBM:RegisterCallback( PSBT_EVENTS.LOADED, 

@@ -1,6 +1,6 @@
 ## Title: PSBT
 ## Author: |cFF66CCPawkette|r
-## APIVersion: 100010
+## APIVersion: 100011
 ## OptionalDependsOn: LibStub LibMediaProvider-1.0 LibAddonMenu-2.0 LibAnimation-1.0
 ## SavedVariables: PSBT_DB
 
@@ -54,6 +54,7 @@ modules/PSBT_Experience.lua
 modules/PSBT_LowSomething.lua
 modules/PSBT_Ultimate.lua
 modules/PSBT_Debug.lua
+modules/PSBT_Infamy.lua
 
 ## core
 core/PSBT_Label.lua

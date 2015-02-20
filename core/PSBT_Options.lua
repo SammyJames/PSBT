@@ -35,7 +35,7 @@ function PSBT_Options:InitializeControlPanel()
             type = 'panel', 
             name = 'PSBT', 
             author = '|cFF66CCPawkette|r', 
-            version = '100010', 
+            version = '100011', 
             slashCommand = '/psbt', 
             registerForRefresh = true,
             registerForDefaults = true 
@@ -147,6 +147,16 @@ function PSBT_Options:InitializeControlPanel()
                         end,
                 },
                 [ 7 ] = 
+                {
+                    type = 'checkbox',
+                    name = GetString( _G[ PSBT_STRINGS.MODULE_INFAMY ] ),
+                    getFunc = function() return self._root:GetSetting( PSBT_MODULES.INFAMY ) end,
+                    setFunc = function( toggle )
+                        self._root:SetSetting( PSBT_MODULES.INFAMY, toggle )
+                        self._root:ToggleModule( PSBT_MODULES.INFAMY )
+                        end,
+                },
+                [ 8 ] = 
                 {
                     type = 'checkbox',
                     name = GetString( _G[ PSBT_STRINGS.MODULE_DEBUG ] ),

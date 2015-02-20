@@ -48,6 +48,7 @@ CreateString( PSBT_STRINGS.AURA_GAINED,     '<<1>> gained' )
 CreateString( PSBT_STRINGS.AURA_FADES,      '<<1>> fades' )
 CreateString( PSBT_STRINGS.ENERGIZE,        '+<<1>> (<<2>>)' )
 CreateString( PSBT_STRINGS.DRAIN,           '-<<1>> (<<2>>)' )
+CreateString( PSBT_STRINGS.INFAMY,          '<<1>> Infamy' )
 -- options and stuff
 CreateString( PSBT_STRINGS.HEADER_GENERAL,  'General' )
 CreateString( PSBT_STRINGS.HEADER_MODULES,  'Modules' )
@@ -78,6 +79,7 @@ CreateString( PSBT_STRINGS.MODULE_AURAS,    'Auras' )
 CreateString( PSBT_STRINGS.MODULE_XP,       'Experience' )
 CreateString( PSBT_STRINGS.MODULE_LOW,      'Low Warnings' )
 CreateString( PSBT_STRINGS.MODULE_ULTIMATE, 'Ultimate' )
+CreateString( PSBT_STRINGS.MODULE_INFAMY,   'Infamy' )
 
 -- areas
 CreateString( PSBT_STRINGS.AREA_INCOMING,   'Incoming' )
