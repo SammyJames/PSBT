@@ -40,6 +40,7 @@ helpers/PSBT_AnimationPool.lua
 helpers/PSBT_Parabola.lua
 helpers/PSBT_Fade.lua
 helpers/PSBT_Sticky.lua
+helpers/PSBT_Translate.lua
 
 ## core modules
 core/PSBT_Module.lua
@@ -53,6 +54,7 @@ modules/PSBT_Cooldowns.lua
 modules/PSBT_Experience.lua
 modules/PSBT_LowSomething.lua
 modules/PSBT_Ultimate.lua
+modules/PSBT_Skills.lua
 modules/PSBT_Debug.lua
 
 ## core

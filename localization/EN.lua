@@ -78,6 +78,7 @@ CreateString( PSBT_STRINGS.MODULE_AURAS,    'Auras' )
 CreateString( PSBT_STRINGS.MODULE_XP,       'Experience' )
 CreateString( PSBT_STRINGS.MODULE_LOW,      'Low Warnings' )
 CreateString( PSBT_STRINGS.MODULE_ULTIMATE, 'Ultimate' )
+CreateString( PSBT_STRINGS.MODULE_SKILLS,   'Skills' )
 
 -- areas
 CreateString( PSBT_STRINGS.AREA_INCOMING,   'Incoming' )

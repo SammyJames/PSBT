@@ -11,6 +11,7 @@ PSBT.MODULES =
     LOW                 = 'lowsomething',
     ULTIMATE            = 'ultimate',
     DEBUG               = 'debug',
+    SKILLS              = 'skills',
 }
 
 PSBT.AREAS = 
@@ -107,6 +108,7 @@ PSBT.STRINGS =
     MODULE_LOW          = 'SI_PSBT_MODULE_LOW',
     MODULE_ULTIMATE     = 'SI_PSBT_MODULE_ULTIMATE',
     MODULE_DEBUG        = 'SI_PSBT_MODULE_DEBUG',
+    MODULE_SKILLS       = 'SI_PSBT_MODULE_SKILLS',
 
     --- THESE DON'T REQUIRE LOCALIZATION
     ABSORED             = 'SI_SCT_EVENT_ABSORED',

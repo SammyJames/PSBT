@@ -95,6 +95,7 @@ local defaults =
     [ PSBT_MODULES.LOW ]        = true,
     [ PSBT_MODULES.ULTIMATE ]   = true,
     [ PSBT_MODULES.DEBUG ]      = false,
+    [ PSBT_MODULES.SKILLS ]     = true,
 }
 
 function PSBT_Settings:Initialize( ... )

@@ -19,24 +19,32 @@
 
             <Controls>
                 <Control name="$(parent)_Notifications">
-                    <Dimensions x="500" y="60" />
+                    <Dimensions x="500" y="100" />
                     <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="450" />
                     <Controls>
                         <Texture name="$(parent)_BG" inherits="ZO_ThinListBgStrip" />
                         <Label name="$(parent)_Name" inherits="ZO_WindowTitle" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS" text="Notifications" >
                             <AnchorFill/>
                         </Label>
+                        <Control name="$(parent)_Sticky">
+                            <Dimensions x="500" y="100" />
+                            <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="0" />
+                        </Control>
                     </Controls>
                 </Control> 
 
                 <Control name="$(parent)_Static">
-                    <Dimensions x="500" y="60" />
+                    <Dimensions x="500" y="100" />
                     <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="-300" />
                     <Controls>
                         <Texture name="$(parent)_BG" inherits="ZO_ThinListBgStrip" />
                         <Label name="$(parent)_Name" inherits="ZO_WindowTitle" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS" text="Static" >
                             <AnchorFill/>
                         </Label>
+                        <Control name="$(parent)_Sticky">
+                            <Dimensions x="500" y="100" />
+                            <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="0" />
+                        </Control>
                     </Controls>
                 </Control> 
 
@@ -48,6 +56,10 @@
                         <Label name="$(parent)_Name" inherits="ZO_WindowTitle" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS" text="Incoming" >
                             <AnchorFill/>
                         </Label>
+                        <Control name="$(parent)_Sticky">
+                            <Dimensions x="300" y="100" />
+                            <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="0" />
+                        </Control>
                     </Controls>
                 </Control> 
 
@@ -59,6 +71,10 @@
                         <Label name="$(parent)_Name" inherits="ZO_WindowTitle" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS" text="Outgoing" >
                             <AnchorFill/>
                         </Label>
+                        <Control name="$(parent)_Sticky">
+                            <Dimensions x="300" y="100" />
+                            <Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetX="0" offsetY="0" />
+                        </Control>
                     </Controls>
                 </Control> 
             </Controls>

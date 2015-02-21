@@ -49,10 +49,10 @@ function PSBT:OnLoaded( addon )
     self:CreateModule( PSBT_MODULES.SETTINGS )
     self:CreateModule( PSBT_MODULES.OPTIONS )
 
-    self._areas[ PSBT_AREAS.INCOMING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.INCOMING,     self:GetSetting( PSBT_AREAS.INCOMING ), self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_INCOMING ] ) )
-    self._areas[ PSBT_AREAS.OUTGOING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.OUTGOING,     self:GetSetting( PSBT_AREAS.OUTGOING ), self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_OUTGOING ] ) )
-    self._areas[ PSBT_AREAS.STATIC ]       = self.ScrollAreaProto:New( self.control, PSBT_AREAS.STATIC,       self:GetSetting( PSBT_AREAS.STATIC ), self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_STATIC ] ) )
-    self._areas[ PSBT_AREAS.NOTIFICATION ] = self.ScrollAreaProto:New( self.control, PSBT_AREAS.NOTIFICATION, self:GetSetting( PSBT_AREAS.NOTIFICATION ), self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_NOTIFICATION ] ) )
+    self._areas[ PSBT_AREAS.INCOMING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.INCOMING,     self:GetSetting( PSBT_AREAS.INCOMING ),       self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_INCOMING ] ) )
+    self._areas[ PSBT_AREAS.OUTGOING ]     = self.ScrollAreaProto:New( self.control, PSBT_AREAS.OUTGOING,     self:GetSetting( PSBT_AREAS.OUTGOING ),       self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_OUTGOING ] ) )
+    self._areas[ PSBT_AREAS.STATIC ]       = self.ScrollAreaProto:New( self.control, PSBT_AREAS.STATIC,       self:GetSetting( PSBT_AREAS.STATIC ),         self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_STATIC ] ) )
+    self._areas[ PSBT_AREAS.NOTIFICATION ] = self.ScrollAreaProto:New( self.control, PSBT_AREAS.NOTIFICATION, self:GetSetting( PSBT_AREAS.NOTIFICATION ),   self._fadeIn, self._fadeOut, GetString( _G[ PSBT_STRINGS.AREA_NOTIFICATION ] ) )
 
     CBM:RegisterCallback( PSBT_EVENTS.CONFIG, function( ... ) self:SetConfigurationMode( ... ) end )
     CBM:RegisterCallback( PSBT_EVENTS.DEMO, function() self:TriggerFakeEvents() end )
@@ -152,8 +152,8 @@ function PSBT:SetSetting( name, value )
 end
 
 function PSBT:TriggerFakeEvents()
-    self:NewEvent( PSBT_AREAS.INCOMING,     ( math.random( 1, 2 ) == 2 ), [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
-    self:NewEvent( PSBT_AREAS.OUTGOING,     ( math.random( 1, 2) == 2 ), [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
+    self:NewEvent( PSBT_AREAS.INCOMING,     ( math.random( 1, 5 ) == 1 ), [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
+    self:NewEvent( PSBT_AREAS.OUTGOING,     ( math.random( 1, 5 ) == 1 ), [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
     self:NewEvent( PSBT_AREAS.STATIC,       true, [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
     self:NewEvent( PSBT_AREAS.NOTIFICATION, true, [[/esoui/art/icons/icon_missing.dds]], tostring( math.ceil( math.random( 1, 100 ) ) ) )
 end

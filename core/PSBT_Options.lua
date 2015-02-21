@@ -149,6 +149,16 @@ function PSBT_Options:InitializeControlPanel()
                 [ 7 ] = 
                 {
                     type = 'checkbox',
+                    name = GetString( _G[ PSBT_STRINGS.MODULE_SKILLS ] ),
+                    getFunc = function() return self._root:GetSetting( PSBT_MODULES.SKILLS ) end,
+                    setFunc = function( toggle )
+                        self._root:SetSetting( PSBT_MODULES.SKILLS, toggle )
+                        self._root:ToggleModule( PSBT_MODULES.SKILLS )
+                        end,
+                },
+                [ 8 ] = 
+                {
+                    type = 'checkbox',
                     name = GetString( _G[ PSBT_STRINGS.MODULE_DEBUG ] ),
                     getFunc = function() return self._root:GetSetting( PSBT_MODULES.DEBUG ) end,
                     setFunc = function( toggle )

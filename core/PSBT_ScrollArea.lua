@@ -6,10 +6,14 @@ local CBM           = CALLBACK_MANAGER
 local tinsert       = table.insert
 local tremove       = table.remove
 local NUM_STICKY    = 4
+local NUM_STANDARD  = 25
+local STANDARD_INTERVAL = 0.5
 local CENTER        = CENTER
 local TOP           = TOP
+local BOTTOM        = BOTTOM
 local PSBT_EVENTS               = PSBT.EVENTS
 local PSBT_SCROLL_DIRECTIONS    = PSBT.SCROLL_DIRECTIONS
+local PSBT_AREAS                = PSBT.AREAS
 
 function ScrollArea:New( ... )
     local result = ZO_Object.New( self )
@@ -22,6 +26,7 @@ function ScrollArea:Initialize( super, areaName, settings, fadeIn, fadeOut, disp
     self.control        = super:GetNamedChild( areaName )
     self.background     = self.control:GetNamedChild( '_BG' )
     self.label          = self.control:GetNamedChild( '_Name' )
+    self.sticky         = self.control:GetNamedChild( '_Sticky' ) 
     self.label:SetText( displayName )
     self._newSticky     = false
     self._height        = self.control:GetHeight()
@@ -31,6 +36,8 @@ function ScrollArea:Initialize( super, areaName, settings, fadeIn, fadeOut, disp
     self._pendingNormal = {}
     self._fadeIn        = fadeIn
     self._fadeOut       = fadeOut
+    self._waitTill      = 0
+    self._stickyPool    = PSBT.TranslateProto:New( 200 )
 
     self:SetSettings( settings )
     self:SetConfigurationMode( false )
@@ -61,13 +68,23 @@ function ScrollArea:GetAnchorOffsets()
     return point, relPoint, offsX, offsY
 end
 
+function ScrollArea:GetAnchorPoint()
+    if ( self.name == PSBT_AREAS.INCOMING or self.name == PSBT_AREAS.OUTGOING ) then
+        return TOP
+    else
+        return ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) and TOP or BOTTOM
+    end
+end
+
 function ScrollArea:AnchorChild( control, sticky )
     local rel = CENTER
     local from = CENTER
     if ( not sticky ) then
-        rel = TOP
+        rel = self:GetAnchorPoint()
     end
-    control:SetAnchor( from, self.control, rel, 0, 0 )
+
+    control:SetAnchor( from, sticky and self.sticky or self.control, rel, 0, 0 )
+    control:SetAlpha( 0.0 )
 end
 
 function ScrollArea:Push( entry, sticky )
@@ -85,15 +102,19 @@ end
 function ScrollArea:SetSettings( settings )
     self._iconSide       = settings.icon
     self._direction      = settings.dir
-    self._parabola       = PSBT.ParabolaProto:New( self.control:GetHeight(), settings.arc, 50, self._direction )
+    if ( self.name == PSBT_AREAS.INCOMING or self.name == PSBT_AREAS.OUTGOING ) then
+        self._animation = PSBT.ParabolaProto:New( self.control:GetHeight(), settings.arc, 50, self._direction )
+    else 
+        self._animation = PSBT.TranslateProto:New( 3000 )
+    end
     self:Position( settings )
 end
 
-function ScrollArea:OnUpdate( frameTime ) 
-    if ( not #self._sticky and 
-         not #self._normal and 
-         not #self._pendingNormal and
-         not #self._pendingSticky ) then
+function ScrollArea:OnUpdate( frameTime )
+    if ( not #self._sticky and
+        not #self._normal and
+        not #self._pendingNormal and
+        not #self._pendingSticky ) then
         return
     end
 
@@ -104,7 +125,7 @@ function ScrollArea:OnUpdate( frameTime )
         self._newSticky = true
     end
 
-    if ( #self._pendingNormal and #self._normal < 25 ) then
+    if ( frameTime >= self._waitTill and #self._pendingNormal and #self._normal < NUM_STANDARD ) then
         local newEntry = tremove( self._pendingNormal, 1 )
         if ( newEntry ) then
             newEntry:SetExpire( frameTime + 3 )
@@ -113,6 +134,12 @@ function ScrollArea:OnUpdate( frameTime )
             anim:Play()
 
             tinsert( self._normal, newEntry )
+
+            if ( #self._pendingNormal > 0 ) then
+                self._waitTill = frameTime + STANDARD_INTERVAL
+            else
+                self._waitTill = 0
+            end
         end
     end
 
@@ -143,7 +170,8 @@ function ScrollArea:OnUpdate( frameTime )
             tremove( self._normal, i )
         else
             if ( not entry:IsMoving() ) then
-                local anim = self._parabola:Apply( entry.control )
+
+                local anim = self:Apply( self._animation, entry.control )
                 anim:Play()
                 entry:SetMoving( true )
             end
@@ -151,9 +179,9 @@ function ScrollArea:OnUpdate( frameTime )
         end
     end
 
-      
+
     i = 1
-    local top = 0  
+    local top = 0
 
     while ( i <= #self._sticky ) do
         entry = self._sticky[ i ]
@@ -165,7 +193,9 @@ function ScrollArea:OnUpdate( frameTime )
             self._newSticky = true
         else
             if ( self._newSticky ) then
-                entry.control:SetAnchor( CENTER, self.control, CENTER, 0, top )
+                local anim = self:Apply( self._stickyPool, entry.control, top )
+                anim:Play()
+                --entry.control:SetAnchor( CENTER, self.control, CENTER, 0, top )
 
                 if ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) then
                     top = top - entry:GetHeight()
@@ -180,4 +210,18 @@ function ScrollArea:OnUpdate( frameTime )
     self._newSticky = false
 end
 
+function ScrollArea:Apply( Pool, Control, NewY )
+    if ( NewY == nil ) then
+        NewY = ( self._direction == PSBT_SCROLL_DIRECTIONS.UP ) and self.control:GetHeight() or -1.0 * self.control:GetHeight()
+    end
+
+    local _, _, _, _, offsX, offsY = Control:GetAnchor( 0 )
+
+    local From = { X = offsX or 0, Y = offsY or 0 }
+    local To = { X = offsX, Y = NewY }
+
+    return Pool:Apply( Control, From, To )
+end
+
 PSBT.ScrollAreaProto = ScrollArea
+
