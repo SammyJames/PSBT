@@ -48,7 +48,7 @@ function PSBT_LowSomething:OnPowerUpdate( unit, powerPoolIndex, powerType, power
         return
     end
 
-    if ( powerPool == 0 ) then 
+    if ( powerPool == 0 ) then
         return
     end
 
@@ -58,12 +58,12 @@ function PSBT_LowSomething:OnPowerUpdate( unit, powerPoolIndex, powerType, power
 
     local newValue = powerPool / powerPoolMax
 
-    if ( self._pools[ powerType ] < threshold 
-        or newValue > self._pools[ powerType ] 
-        or newValue > threshold ) then 
+    if ( self._pools[ powerType ] < threshold
+        or newValue > self._pools[ powerType ]
+        or newValue > threshold ) then
 
         self._pools[ powerType ] = newValue
-        return 
+        return
     end
 
     self._pools[ powerType ] = newValue
@@ -77,7 +77,8 @@ function PSBT_LowSomething:OnPowerUpdate( unit, powerPoolIndex, powerType, power
     self:NewEvent( PSBT_AREAS.STATIC, true, nil, string )
 end
 
-CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
+CBM:RegisterCallback( PSBT_EVENTS.LOADED,
     function( psbt )
         psbt:RegisterModule( PSBT_MODULES.LOW, PSBT_LowSomething, kVersion )
     end)
+

@@ -20,7 +20,7 @@ end
 
 function Sticky:Apply( control, from, to )
     local result = AnimationPool.Apply( self, control )
-    local timeline = result.timeline  
+    local timeline = result.timeline
 
     local translate = timeline:GetFirstAnimation()
     translate:SetStartOffsetX( from.x )
@@ -32,3 +32,4 @@ function Sticky:Apply( control, from, to )
 end
 
 PSBT.StickyProto = Sticky
+

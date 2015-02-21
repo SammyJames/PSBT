@@ -12,3 +12,5 @@ LMP:Register( LMP.MediaType.FONT, 'Talisman',       [[psbt/fonts/talisman.ttf]] 
 LMP:Register( LMP.MediaType.FONT, 'Transformers',   [[psbt/fonts/transformers.ttf]] )
 LMP:Register( LMP.MediaType.FONT, 'Yellowjacket',   [[psbt/fonts/yellowjacket.ttf]] )
 LMP:Register( LMP.MediaType.FONT, 'SF Laundromatic',[[psbt/fonts/SFLaundromatic.ttf]])
+
+

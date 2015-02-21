@@ -89,11 +89,11 @@ function ScrollArea:SetSettings( settings )
     self:Position( settings )
 end
 
-function ScrollArea:OnUpdate( frameTime ) 
-    if ( not #self._sticky and 
-         not #self._normal and 
-         not #self._pendingNormal and
-         not #self._pendingSticky ) then
+function ScrollArea:OnUpdate( frameTime )
+    if ( not #self._sticky and
+        not #self._normal and
+        not #self._pendingNormal and
+        not #self._pendingSticky ) then
         return
     end
 
@@ -151,9 +151,9 @@ function ScrollArea:OnUpdate( frameTime )
         end
     end
 
-      
+
     i = 1
-    local top = 0  
+    local top = 0
 
     while ( i <= #self._sticky ) do
         entry = self._sticky[ i ]
@@ -181,3 +181,5 @@ function ScrollArea:OnUpdate( frameTime )
 end
 
 PSBT.ScrollAreaProto = ScrollArea
+
+

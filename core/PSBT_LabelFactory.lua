@@ -30,3 +30,5 @@ function LabelFactory:OnUpdate( frameTime )
 end
 
 PSBT.LabelFactory = LabelFactory:New()
+
+

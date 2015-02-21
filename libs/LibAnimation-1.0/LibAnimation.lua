@@ -118,7 +118,7 @@ function LibAnimation:Backward()
 end
 
 function LibAnimation:SetUserData( data )
-    self._udata = data 
+    self._udata = data
 end
 
 function LibAnimation:GetUserData()
@@ -176,7 +176,7 @@ end
 -- @tparam number startHeight
 -- @tparam number width target width
 -- @tparam number height target height
--- @tparam number duration 
+-- @tparam number duration
 -- @tparam number delay (optional)
 -- @tparam function fn easing function (optional)
 function LibAnimation:ResizeToFrom( startWidth, startHeight, width, height, duration, delay, fn )
@@ -189,7 +189,7 @@ end
 --- Create a new size animation
 -- @tparam number width target width
 -- @tparam number height target height
--- @tparam number duration 
+-- @tparam number duration
 -- @tparam number delay (optional)
 -- @tparam function fn easing function (optional)
 function LibAnimation:ResizeTo( width, height, duration, delay, fn )
@@ -246,3 +246,4 @@ end
     anim:SetDuration( duration or 1 )
     anim:SetEasingFunction( fn or defaultEase )
 end]]
+

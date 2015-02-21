@@ -13,7 +13,7 @@ local PSBT_MODULES          = PSBT.MODULES
 local PSBT_STRINGS          = PSBT.STRINGS
 local zo_strformat          = zo_strformat
 
-function PSBT_Auras:Initialize( ... )  
+function PSBT_Auras:Initialize( ... )
     ModuleProto.Initialize( self, ... )
 
     self:RegisterForEvent( EVENT_EFFECT_CHANGED, 'OnEffectChanged' )
@@ -53,7 +53,9 @@ function PSBT_Auras:Remove( name, iconName )
     self:NewEvent( PSBT_AREAS.NOTIFICATION, true, iconName, zo_strformat( self._fades, name ) )
 end
 
-CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
+CBM:RegisterCallback( PSBT_EVENTS.LOADED,
     function( psbt )
         psbt:RegisterModule( PSBT_MODULES.AURAS, PSBT_Auras, kVerison )
     end)
+
+

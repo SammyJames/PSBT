@@ -44,12 +44,12 @@ function PSBT_Ultimate:OnPowerUpdate( unit, powerPoolIndex, powerType, powerPool
         return
     end
 
-    if ( not self._texture ) then
+    if ( not self._texture or self._texture == nil or self._texture == '' ) then
         return
     end
 
     if ( powerType ~= POWERTYPE_ULTIMATE ) then
-        return 
+        return
     end
 
     if ( powerPool > self._current ) then
@@ -64,7 +64,7 @@ function PSBT_Ultimate:OnPowerUpdate( unit, powerPoolIndex, powerType, powerPool
         self._ready = powerPool >= self._needed
     end
 
-    self._current = powerPool 
+    self._current = powerPool
 end
 
 function PSBT_Ultimate:UpdateUltimateMin()
@@ -72,7 +72,8 @@ function PSBT_Ultimate:UpdateUltimateMin()
     self._texture = GetSlotTexture( ACTION_BAR_ULTIMATE_SLOT_INDEX + 1 )
 end
 
-CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
+CBM:RegisterCallback( PSBT_EVENTS.LOADED,
     function( psbt )
         psbt:RegisterModule( PSBT_MODULES.ULTIMATE, PSBT_Ultimate, kVerison )
     end )
+

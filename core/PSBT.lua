@@ -31,7 +31,7 @@ function PSBT:FormatFont( font )
         fmt = fmt .. '|%s'
     end
 
-    return fmt:format( LMP:Fetch( LMP.MediaType.FONT, face ), size, decoration ) 
+    return fmt:format( LMP:Fetch( LMP.MediaType.FONT, face ), size, decoration )
 end
 
 function PSBT:OnLoaded( addon )
@@ -60,8 +60,8 @@ function PSBT:OnLoaded( addon )
 
     for k,v in pairs( PSBT_MODULES ) do
         if ( k ~= 'SETTINGS' and k ~= 'OPTIONS' ) then
-              if ( self:GetSetting( v ) ) then
-                self:CreateModule( v ) 
+            if ( self:GetSetting( v ) ) then
+                self:CreateModule( v )
             end
         end
     end
@@ -144,12 +144,12 @@ function PSBT:SetSetting( name, value )
     local settings = self:GetModule( PSBT_MODULES.SETTINGS )
     settings:SetSetting( name, value )
 
-    if ( name == PSBT_AREAS.INCOMING or 
-         name == PSBT_AREAS.OUTGOING or
-         name == PSBT_AREAS.STATIC or 
-         name == PSBT_AREAS.NOTIFICATION ) then
-    
-        self._areas[ name ]:SetSettings( value )    
+    if ( name == PSBT_AREAS.INCOMING or
+        name == PSBT_AREAS.OUTGOING or
+        name == PSBT_AREAS.STATIC or
+        name == PSBT_AREAS.NOTIFICATION ) then
+
+        self._areas[ name ]:SetSettings( value )
     end
 end
 
@@ -170,7 +170,7 @@ function PSBT:RegisterForEvent( event, scope, callback )
     self.control:RegisterForEvent( event, function( ... ) self:OnEvent( ... ) end )
 end
 
-function PSBT:OnEvent( event, ... ) 
+function PSBT:OnEvent( event, ... )
     if ( not self._events[ event ] ) then
         return
     end
@@ -205,7 +205,7 @@ end
 function PSBT:NewEvent( scrollArea, sticky, icon, text, color )
     local entry = self.LabelFactory:AcquireObject()
     local area = self._areas[ scrollArea ]
-    if ( not area ) then 
+    if ( not area ) then
         return
     end
 
@@ -222,9 +222,11 @@ function PSBT:NewEvent( scrollArea, sticky, icon, text, color )
     end
 
     entry:SetExpire( -1 )
-    entry:SetText( text ) 
+    entry:SetText( text )
     entry:SetTexture( icon )
     entry:SetColor( color )
 
     area:Push( entry, sticky, direction )
 end
+
+

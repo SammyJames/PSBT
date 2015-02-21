@@ -18,11 +18,11 @@ local defaultMedia = LMP.DefaultMedia
 local mediaList = LMP.MediaList
 local mediaTable = LMP.MediaTable
 LMP.MediaType = {
-	BACKGROUND = "background",	-- background textures
-	BORDER = "border",			-- border textures
-	FONT = "font",				-- fonts
-	STATUSBAR = "statusbar",	-- statusbar textures
-	SOUND = "sound",			-- sound files
+    BACKGROUND = "background",	-- background textures
+    BORDER = "border",			-- border textures
+    FONT = "font",				-- fonts
+    STATUSBAR = "statusbar",	-- statusbar textures
+    SOUND = "sound",			-- sound files
 }
 
 --DEFAULT UI MEDIA--
@@ -88,78 +88,79 @@ LMP.MediaTable.sound["Blacksmith Improve"]		= SOUNDS.BLACKSMITH_IMPROVE_TOOLTIP_
 LMP.DefaultMedia.sound = "None"
 
 local function rebuildMediaList(mediatype)
-	local mtable = mediaTable[mediatype]
-	if not mtable then return end
-	if not mediaList[mediatype] then mediaList[mediatype] = {} end
-	local mlist = mediaList[mediatype]
-	-- list can only get larger, so simply overwrite it
-	local i = 0
-	for k in pairs(mtable) do
-		i = i + 1
-		mlist[i] = k
-	end
-	tsort(mlist)
+    local mtable = mediaTable[mediatype]
+    if not mtable then return end
+    if not mediaList[mediatype] then mediaList[mediatype] = {} end
+    local mlist = mediaList[mediatype]
+    -- list can only get larger, so simply overwrite it
+    local i = 0
+    for k in pairs(mtable) do
+        i = i + 1
+        mlist[i] = k
+    end
+    tsort(mlist)
 end
 
 function LMP:Register(mediatype, key, data)
-	if type(mediatype) ~= "string" then
-		error(MAJOR..":Register(mediatype, key, data) - mediatype must be string, got "..type(mediatype))
-	end
-	if type(key) ~= "string" then
-		error(MAJOR..":Register(mediatype, key, data) - key must be string, got "..type(key))
-	end
-	mediatype = mediatype:lower()
-	if not mediaTable[mediatype] then
-		mediaTable[mediatype] = {}
-	end
-	
-	local mtable = mediaTable[mediatype]
-	if mtable[key] then
-		return false
-	end
-	mtable[key] = data
-	rebuildMediaList(mediatype)
-	cm:FireCallbacks("LibMediaProvider_Registered", mediatype, key)
-	return true
+    if type(mediatype) ~= "string" then
+        error(MAJOR..":Register(mediatype, key, data) - mediatype must be string, got "..type(mediatype))
+    end
+    if type(key) ~= "string" then
+        error(MAJOR..":Register(mediatype, key, data) - key must be string, got "..type(key))
+    end
+    mediatype = mediatype:lower()
+    if not mediaTable[mediatype] then
+        mediaTable[mediatype] = {}
+    end
+
+    local mtable = mediaTable[mediatype]
+    if mtable[key] then
+        return false
+    end
+    mtable[key] = data
+    rebuildMediaList(mediatype)
+    cm:FireCallbacks("LibMediaProvider_Registered", mediatype, key)
+    return true
 end
 
 function LMP:Fetch(mediatype, key)
-	local mtt = mediaTable[mediatype]
-	local result = mtt and mtt[key]
-	return result ~= "" and result or nil
+    local mtt = mediaTable[mediatype]
+    local result = mtt and mtt[key]
+    return result ~= "" and result or nil
 end
 
 function LMP:IsValid(mediatype, key)
-	return mediaTable[mediatype] and (not key or mediaTable[mediatype][key]) and true or false
+    return mediaTable[mediatype] and (not key or mediaTable[mediatype][key]) and true or false
 end
 
 function LMP:HashTable(mediatype)
-	return mediaTable[mediatype]
+    return mediaTable[mediatype]
 end
 
 --Will this work with ESO's dropdowns?
 --Does something else need to be done here?
 function LMP:List(mediatype)
-	if not mediaTable[mediatype] then
-		return nil
-	end
-	if not mediaList[mediatype] then
-		rebuildMediaList(mediatype)
-	end
-	return mediaList[mediatype]
+    if not mediaTable[mediatype] then
+        return nil
+    end
+    if not mediaList[mediatype] then
+        rebuildMediaList(mediatype)
+    end
+    return mediaList[mediatype]
 end
 
 function LMP:GetDefault(mediatype)
-	return defaultMedia[mediatype]
+    return defaultMedia[mediatype]
 end
 
 function LMP:SetDefault(mediatype, key)
-	if mediaTable[mediatype] and mediaTable[mediatype][key] and not defaultMedia[mediatype] then
-		defaultMedia[mediatype] = key
-		return true
-	else
-		return false
-	end
+    if mediaTable[mediatype] and mediaTable[mediatype][key] and not defaultMedia[mediatype] then
+        defaultMedia[mediatype] = key
+        return true
+    else
+        return false
+    end
 end
+
 
 

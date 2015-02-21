@@ -8,7 +8,7 @@ local function _DOWN( height, progress )
     return height * progress
 end
 
-local function _UP( height, progress )   
+local function _UP( height, progress )
     return height - _DOWN( height, progress )
 end
 
@@ -33,7 +33,7 @@ function Parabola:Initialize( height, width, points, direction )
     for i=1,points do
         self._parabolaPoints[ i ] = { x = 0, y = 0 }
         self._parabolaPoints[ i ].y = fn( height, i / points )
-        
+
         local y = self._parabolaPoints[ i ].y - midpoint
         self._parabolaPoints[ i ].x = ( y * y ) / fourA
     end
@@ -47,7 +47,7 @@ function Parabola:Create()
     local point = nil
     local duration = 3000 / #points
 
-    for i=1,#points do 
+    for i=1,#points do
         point = points[ i ]
         anim:TranslateToFrom( x, y, point.x, point.y, duration, (i - 1) * duration )
 
@@ -59,3 +59,4 @@ function Parabola:Create()
 end
 
 PSBT.ParabolaProto = Parabola
+

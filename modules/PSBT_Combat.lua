@@ -24,13 +24,13 @@ local PSBT_SETTINGS         = PSBT.SETTINGS
 
 local zo_strformat          = zo_strformat
 local GetString             = GetString
-local select                = select          
+local select                = select
 local kVerison              = 1.0
 local NonContiguousCount    = NonContiguousCount
 
 local function IsPlayerType( targetType )
     return targetType == COMBAT_UNIT_TYPE_PLAYER or
-           targetType == COMBAT_UNIT_TYPE_PLAYER_PET
+        targetType == COMBAT_UNIT_TYPE_PLAYER_PET
 end
 
 local function IsPlayer( targetType, targetName )
@@ -46,48 +46,48 @@ local function IsPlayer( targetType, targetName )
 end
 
 local static_events =
-{
-    [ ACTION_RESULT_CANT_SEE_TARGET ]   = true,
-    [ ACTION_RESULT_KILLING_BLOW ]      = true,
-    [ ACTION_RESULT_CANNOT_USE ]        = true,
-    [ ACTION_RESULT_BUSY ]              = true,
-    [ ACTION_RESULT_FALLING ]           = true,
-}
+    {
+        [ ACTION_RESULT_CANT_SEE_TARGET ]   = true,
+        [ ACTION_RESULT_KILLING_BLOW ]      = true,
+        [ ACTION_RESULT_CANNOT_USE ]        = true,
+        [ ACTION_RESULT_BUSY ]              = true,
+        [ ACTION_RESULT_FALLING ]           = true,
+    }
 
-local critical_events = 
-{
-    [ ACTION_RESULT_CRITICAL_DAMAGE ]   = true,
-    [ ACTION_RESULT_DOT_TICK_CRITICAL ] = true,
-    [ ACTION_RESULT_CRITICAL_HEAL ]     = true,
-    [ ACTION_RESULT_HOT_TICK_CRITICAL ] = true,
-    [ ACTION_RESULT_INTERRUPT ]         = true,
-    [ ACTION_RESULT_BLOCKED ]           = true,
-    [ ACTION_RESULT_BLOCKED_DAMAGE ]    = true,
-    [ ACTION_RESULT_ABSORBED ]          = true,
-    [ ACTION_RESULT_RESIST ]            = true,
-    [ ACTION_RESULT_DODGED ]            = true,
-    [ ACTION_RESULT_MISS ]              = true,
-    [ ACTION_RESULT_PARRIED ]           = true,
-    [ ACTION_RESULT_DEFENDED ]          = true,
-}
+local critical_events =
+    {
+        [ ACTION_RESULT_CRITICAL_DAMAGE ]   = true,
+        [ ACTION_RESULT_DOT_TICK_CRITICAL ] = true,
+        [ ACTION_RESULT_CRITICAL_HEAL ]     = true,
+        [ ACTION_RESULT_HOT_TICK_CRITICAL ] = true,
+        [ ACTION_RESULT_INTERRUPT ]         = true,
+        [ ACTION_RESULT_BLOCKED ]           = true,
+        [ ACTION_RESULT_BLOCKED_DAMAGE ]    = true,
+        [ ACTION_RESULT_ABSORBED ]          = true,
+        [ ACTION_RESULT_RESIST ]            = true,
+        [ ACTION_RESULT_DODGED ]            = true,
+        [ ACTION_RESULT_MISS ]              = true,
+        [ ACTION_RESULT_PARRIED ]           = true,
+        [ ACTION_RESULT_DEFENDED ]          = true,
+    }
 
 local damage_events =
-{
-    [ ACTION_RESULT_DOT_TICK_CRITICAL ] = true,
-    [ ACTION_RESULT_CRITICAL_DAMAGE ]   = true,
-    [ ACTION_RESULT_DAMAGE ]            = true,
-    [ ACTION_RESULT_DAMAGE_SHIELDED ]   = true,
-    [ ACTION_RESULT_DOT_TICK ]          = true,
-    [ ACTION_RESULT_FALL_DAMAGE ]       = true,
-}
+    {
+        [ ACTION_RESULT_DOT_TICK_CRITICAL ] = true,
+        [ ACTION_RESULT_CRITICAL_DAMAGE ]   = true,
+        [ ACTION_RESULT_DAMAGE ]            = true,
+        [ ACTION_RESULT_DAMAGE_SHIELDED ]   = true,
+        [ ACTION_RESULT_DOT_TICK ]          = true,
+        [ ACTION_RESULT_FALL_DAMAGE ]       = true,
+    }
 
 local healing_events =
-{
-    [ ACTION_RESULT_CRITICAL_HEAL ]     = true,
-    [ ACTION_RESULT_HEAL ]              = true,
-    [ ACTION_RESULT_HOT_TICK ]          = true,
-    [ ACTION_RESULT_HOT_TICK_CRITICAL ] = true,
-}
+    {
+        [ ACTION_RESULT_CRITICAL_HEAL ]     = true,
+        [ ACTION_RESULT_HEAL ]              = true,
+        [ ACTION_RESULT_HOT_TICK ]          = true,
+        [ ACTION_RESULT_HOT_TICK_CRITICAL ] = true,
+    }
 
 
 function PSBT_Combat:Initialize( ... )
@@ -117,40 +117,40 @@ function PSBT_Combat:Shutdown()
 end
 
 function PSBT_Combat:Initialize_Text()
-    self._text = 
-    {
-        [ ACTION_RESULT_ABSORBED ]          = GetString( _G[ PSBT_STRINGS.ABSORED ] ),
-        [ ACTION_RESULT_BLADETURN ]         = GetString( _G[ PSBT_STRINGS.BLADE_TURN ] ),
-        [ ACTION_RESULT_BLOCKED ]           = GetString( _G[ PSBT_STRINGS.BLOCK ] ),
-        [ ACTION_RESULT_BLOCKED_DAMAGE ]    = GetString( _G[ PSBT_STRINGS.BLOCK_DAMAGE ] ),
-        [ ACTION_RESULT_DAMAGE_SHIELDED ]   = GetString( _G[ PSBT_STRINGS.SHIELDED ] ),
-        [ ACTION_RESULT_CANT_SEE_TARGET ]   = GetString( _G[ PSBT_STRINGS.CANNOT_SEE ] ),
-        [ ACTION_RESULT_CRITICAL_DAMAGE ]   = GetString( _G[ PSBT_STRINGS.DAMAGE_CRIT ] ),
-        [ ACTION_RESULT_CRITICAL_HEAL ]     = GetString( _G[ PSBT_STRINGS.HEALING_CRIT ] ),
-        [ ACTION_RESULT_DAMAGE ]            = GetString( _G[ PSBT_STRINGS.DAMAGE ] ),
-        [ ACTION_RESULT_DEFENDED ]          = GetString( _G[ PSBT_STRINGS.DEFENDED ] ),
-        [ ACTION_RESULT_DOT_TICK ]          = GetString( _G[ PSBT_STRINGS.DAMAGE ] ),
-        [ ACTION_RESULT_DOT_TICK_CRITICAL ] = GetString( _G[ PSBT_STRINGS.DAMAGE_CRIT ] ),
-        [ ACTION_RESULT_HEAL ]              = GetString( _G[ PSBT_STRINGS.HEALING ] ),
-        [ ACTION_RESULT_HOT_TICK ]          = GetString( _G[ PSBT_STRINGS.HEALING ] ),
-        [ ACTION_RESULT_HOT_TICK_CRITICAL ] = GetString( _G[ PSBT_STRINGS.HEALING_CRIT ] ),
-        [ ACTION_RESULT_DODGED ]            = GetString( _G[ PSBT_STRINGS.DODGE ] ),
-        [ ACTION_RESULT_MISS ]              = GetString( _G[ PSBT_STRINGS.MISS ] ),
-        [ ACTION_RESULT_PARRIED ]           = GetString( _G[ PSBT_STRINGS.PARRY ] ),
-        [ ACTION_RESULT_RESIST ]            = GetString( _G[ PSBT_STRINGS.RESIST ] ),
-        [ ACTION_RESULT_PARTIAL_RESIST ]    = GetString( _G[ PSBT_STRINGS.RESIST_PARTIAL ] ),
-        [ ACTION_RESULT_FALL_DAMAGE ]       = GetString( _G[ PSBT_STRINGS.FALL_DAMAGE ] ),
-        [ ACTION_RESULT_KILLING_BLOW ]      = GetString( _G[ PSBT_STRINGS.KILLING_BLOW ] ),
-        [ ACTION_RESULT_BUSY ]              = GetString( _G[ PSBT_STRINGS.BUSY ] ),
-        [ ACTION_RESULT_FALLING ]           = GetString( _G[ PSBT_STRINGS.FALLING ] ),
-        [ ACTION_RESULT_DISORIENTED ]       = GetString( _G[ PSBT_STRINGS.DISORIENTED ] ),
-        [ ACTION_RESULT_DISARMED ]          = GetString( _G[ PSBT_STRINGS.DISARMED ] ),
-        [ ACTION_RESULT_FEARED ]            = GetString( _G[ PSBT_STRINGS.FEARED ] ),
-        [ ACTION_RESULT_IMMUNE ]            = GetString( _G[ PSBT_STRINGS.IMMUNE ] ),
-        [ ACTION_RESULT_INTERRUPT ]         = GetString( _G[ PSBT_STRINGS.INTERRUPT ] ),
-        [ ACTION_RESULT_INTERCEPTED ]       = GetString( _G[ PSBT_STRINGS.INTERCEPTED ] ),
-        [ ACTION_RESULT_POWER_ENERGIZE ]    = GetString( _G[ PSBT_STRINGS.ENERGIZE ] ),
-    }
+    self._text =
+        {
+            [ ACTION_RESULT_ABSORBED ]          = GetString( _G[ PSBT_STRINGS.ABSORED ] ),
+            [ ACTION_RESULT_BLADETURN ]         = GetString( _G[ PSBT_STRINGS.BLADE_TURN ] ),
+            [ ACTION_RESULT_BLOCKED ]           = GetString( _G[ PSBT_STRINGS.BLOCK ] ),
+            [ ACTION_RESULT_BLOCKED_DAMAGE ]    = GetString( _G[ PSBT_STRINGS.BLOCK_DAMAGE ] ),
+            [ ACTION_RESULT_DAMAGE_SHIELDED ]   = GetString( _G[ PSBT_STRINGS.SHIELDED ] ),
+            [ ACTION_RESULT_CANT_SEE_TARGET ]   = GetString( _G[ PSBT_STRINGS.CANNOT_SEE ] ),
+            [ ACTION_RESULT_CRITICAL_DAMAGE ]   = GetString( _G[ PSBT_STRINGS.DAMAGE_CRIT ] ),
+            [ ACTION_RESULT_CRITICAL_HEAL ]     = GetString( _G[ PSBT_STRINGS.HEALING_CRIT ] ),
+            [ ACTION_RESULT_DAMAGE ]            = GetString( _G[ PSBT_STRINGS.DAMAGE ] ),
+            [ ACTION_RESULT_DEFENDED ]          = GetString( _G[ PSBT_STRINGS.DEFENDED ] ),
+            [ ACTION_RESULT_DOT_TICK ]          = GetString( _G[ PSBT_STRINGS.DAMAGE ] ),
+            [ ACTION_RESULT_DOT_TICK_CRITICAL ] = GetString( _G[ PSBT_STRINGS.DAMAGE_CRIT ] ),
+            [ ACTION_RESULT_HEAL ]              = GetString( _G[ PSBT_STRINGS.HEALING ] ),
+            [ ACTION_RESULT_HOT_TICK ]          = GetString( _G[ PSBT_STRINGS.HEALING ] ),
+            [ ACTION_RESULT_HOT_TICK_CRITICAL ] = GetString( _G[ PSBT_STRINGS.HEALING_CRIT ] ),
+            [ ACTION_RESULT_DODGED ]            = GetString( _G[ PSBT_STRINGS.DODGE ] ),
+            [ ACTION_RESULT_MISS ]              = GetString( _G[ PSBT_STRINGS.MISS ] ),
+            [ ACTION_RESULT_PARRIED ]           = GetString( _G[ PSBT_STRINGS.PARRY ] ),
+            [ ACTION_RESULT_RESIST ]            = GetString( _G[ PSBT_STRINGS.RESIST ] ),
+            [ ACTION_RESULT_PARTIAL_RESIST ]    = GetString( _G[ PSBT_STRINGS.RESIST_PARTIAL ] ),
+            [ ACTION_RESULT_FALL_DAMAGE ]       = GetString( _G[ PSBT_STRINGS.FALL_DAMAGE ] ),
+            [ ACTION_RESULT_KILLING_BLOW ]      = GetString( _G[ PSBT_STRINGS.KILLING_BLOW ] ),
+            [ ACTION_RESULT_BUSY ]              = GetString( _G[ PSBT_STRINGS.BUSY ] ),
+            [ ACTION_RESULT_FALLING ]           = GetString( _G[ PSBT_STRINGS.FALLING ] ),
+            [ ACTION_RESULT_DISORIENTED ]       = GetString( _G[ PSBT_STRINGS.DISORIENTED ] ),
+            [ ACTION_RESULT_DISARMED ]          = GetString( _G[ PSBT_STRINGS.DISARMED ] ),
+            [ ACTION_RESULT_FEARED ]            = GetString( _G[ PSBT_STRINGS.FEARED ] ),
+            [ ACTION_RESULT_IMMUNE ]            = GetString( _G[ PSBT_STRINGS.IMMUNE ] ),
+            [ ACTION_RESULT_INTERRUPT ]         = GetString( _G[ PSBT_STRINGS.INTERRUPT ] ),
+            [ ACTION_RESULT_INTERCEPTED ]       = GetString( _G[ PSBT_STRINGS.INTERCEPTED ] ),
+            [ ACTION_RESULT_POWER_ENERGIZE ]    = GetString( _G[ PSBT_STRINGS.ENERGIZE ] ),
+        }
 end
 
 function PSBT_Combat:RefreshAbilityIcons()
@@ -162,26 +162,26 @@ end
 
 function PSBT_Combat:OnCombatEvent( ... )
     local result = select( 1, ... )
-    if ( not self._text[ result ] ) then 
+    if ( not self._text[ result ] ) then
         return
     end
 
     local args = { ... }
 
     -- did we get hit or do something?
-    if ( IsPlayer( args[ 7 ], args[ 6 ] ) 
-      or IsPlayer( args[ 9 ], args[ 8 ] ) ) then
-    
+    if ( IsPlayer( args[ 7 ], args[ 6 ] )
+        or IsPlayer( args[ 9 ], args[ 8 ] ) ) then
+
         if ( self._free ) then
             local argCount = #args
             for i = 1, argCount do
                 self._free[ i ] = args[ i ]
             end
-            
+
             for i = #self._free, argCount + 1, -1 do
                 self._free[ i ] = nil
             end
-            
+
             self._free = self._buffer:Add( self._free )
         else
             self._free = self._buffer:Add( args )
@@ -205,19 +205,19 @@ function PSBT_Combat:StackEvent( result, _, abilityName, _, _, sourceName, sourc
     end
 
     if ( not stack[ result ][ abilityName ] ) then
-        stack[result][ abilityName ] = 
-        { 
-            lastTick    = 0, 
-            result      = result,
-            abilityName = abilityName,
-            sourceName  = sourceName, 
-            sourceType  = sourceType, 
-            targetName  = targetName, 
-            targetType  = targetType, 
-            hitValue    = 0, 
-            powerType   = powerType, 
-            damageType  = damageType 
-        }
+        stack[result][ abilityName ] =
+            {
+                lastTick    = 0,
+                result      = result,
+                abilityName = abilityName,
+                sourceName  = sourceName,
+                sourceType  = sourceType,
+                targetName  = targetName,
+                targetType  = targetType,
+                hitValue    = 0,
+                powerType   = powerType,
+                damageType  = damageType
+            }
     end
 
     local entry     = stack[result][ abilityName ]
@@ -235,9 +235,9 @@ function PSBT_Combat:OnUpdate()
     for i = self._index, endPoint do
         local entry = self._buffer:At( i )
         if ( entry ) then
-            self:StackEvent( unpack( entry ) ) 
+            self:StackEvent( unpack( entry ) )
         end
-    end 
+    end
 
     if ( endPoint >= bufferSize ) then
         self._buffer:Clear()
@@ -282,7 +282,7 @@ function PSBT_Combat:DispatchEvent( result, combatEvent )
         if ( IsPlayer( combatEvent.targetType, combatEvent.targetName ) ) then
             area = PSBT_AREAS.INCOMING
         elseif ( IsPlayer( combatEvent.sourceType, combatEvent.sourceName ) ) then
-            area = PSBT_AREAS.OUTGOING 
+            area = PSBT_AREAS.OUTGOING
         end
     end
 
@@ -292,7 +292,7 @@ function PSBT_Combat:DispatchEvent( result, combatEvent )
         color = PSBT_SETTINGS.damage_color
     end
 
-    if ( result == ACTION_RESULT_POWER_ENERGIZE or result == ACTION_RESULT_POWER_DRAIN ) then
+    if ( ( result == ACTION_RESULT_POWER_ENERGIZE or result == ACTION_RESULT_POWER_DRAIN ) and ( combatEvent.powerType ~= POWERTYPE_ULTIMATE ) ) then
         local mechanicName = GetString( 'SI_COMBATMECHANICTYPE', combatEvent.powerType )
         text = zo_strformat( textFormat, combatEvent.hitValue, mechanicName )
     else
@@ -302,7 +302,15 @@ function PSBT_Combat:DispatchEvent( result, combatEvent )
     self:NewEvent( area, crit, icon, text, self._root:GetSetting( color ) )
 end
 
-CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
+CBM:RegisterCallback( PSBT_EVENTS.LOADED,
     function( psbt )
         psbt:RegisterModule( PSBT_MODULES.COMBAT, PSBT_Combat, kVerison )
     end)
+
+
+
+
+
+
+
+

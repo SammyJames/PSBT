@@ -11,98 +11,98 @@ local ZO_SavedVars           = ZO_SavedVars
 local RIGHT                  = RIGHT
 local LEFT                   = LEFT
 local CENTER                 = CENTER
-local kVersion               = 3.2  
+local kVersion               = 3.2
 
-local defaults = 
-{
-    normal_font = 
+local defaults =
     {
-        face = 'Cooline',
-        size = 14, 
-        deco = 'shadow'
-    },
+        normal_font =
+        {
+            face = 'Cooline',
+            size = 14,
+            deco = 'shadow'
+        },
 
-    sticky_font = 
-    {
-        face = 'Adventure',
-        size = 18,
-        deco = 'shadow'
-    },
+        sticky_font =
+        {
+            face = 'Adventure',
+            size = 18,
+            deco = 'shadow'
+        },
 
-    damage_color = 
-    { 
-        255, 255, 255, 1 
-    },
-    
-    healing_color = 
-    { 
-        255, 255, 255, 1 
-    },
-    
-    normal_color = 
-    { 
-        255, 255, 255, 1
-    },
+        damage_color =
+        {
+            255, 255, 255, 1
+        },
 
-    [ PSBT_AREAS.INCOMING ] = 
-    { 
-        to      = RIGHT,  
-        from    = CENTER, 
-        x       = -300,  
-        y       = 150,
-        icon    = PSBT_ICON_SIDE.LEFT,
-        dir     = PSBT_SCROLL_DIRECTIONS.UP,
-        arc     = 150
-    },
-    
-    [ PSBT_AREAS.OUTGOING ] = 
-    { 
-        to      = LEFT,   
-        from    = CENTER, 
-        x       = 300,   
-        y       = 150,
-        icon    = PSBT_ICON_SIDE.LEFT,
-        dir     = PSBT_SCROLL_DIRECTIONS.DOWN,
-        arc     = -150
-    },
+        healing_color =
+        {
+            255, 255, 255, 1
+        },
 
-    [ PSBT_AREAS.STATIC ] = 
-    { 
-        to      = CENTER, 
-        from    = CENTER, 
-        x       = 0,
-        y       = -300,
-        icon    = PSBT_ICON_SIDE.LEFT,
-        dir     = PSBT_SCROLL_DIRECTIONS.DOWN,
-        arc     = 0
-    },
+        normal_color =
+        {
+            255, 255, 255, 1
+        },
 
-    [ PSBT_AREAS.NOTIFICATION ] = 
-    { 
-        to      = CENTER, 
-        from    = CENTER, 
-        x       = 0,
-        y       = 450,
-        icon    = PSBT_ICON_SIDE.LEFT,
-        dir     = PSBT_SCROLL_DIRECTIONS.UP,
-        arc     = 0
-    },
+        [ PSBT_AREAS.INCOMING ] =
+        {
+            to      = RIGHT,
+            from    = CENTER,
+            x       = -300,
+            y       = 150,
+            icon    = PSBT_ICON_SIDE.LEFT,
+            dir     = PSBT_SCROLL_DIRECTIONS.UP,
+            arc     = 150
+        },
 
-    [ PSBT_MODULES.COOLDOWNS ]  = true,
-    [ PSBT_MODULES.COMBAT ]     = true,
-    [ PSBT_MODULES.AURAS ]      = true,
-    [ PSBT_MODULES.XP ]         = true,
-    [ PSBT_MODULES.LOW ]        = true,
-    [ PSBT_MODULES.ULTIMATE ]   = true,
-    [ PSBT_MODULES.DEBUG ]      = false,
-    [ PSBT_MODULES.INFAMY ]     = true,
-}
+        [ PSBT_AREAS.OUTGOING ] =
+        {
+            to      = LEFT,
+            from    = CENTER,
+            x       = 300,
+            y       = 150,
+            icon    = PSBT_ICON_SIDE.LEFT,
+            dir     = PSBT_SCROLL_DIRECTIONS.DOWN,
+            arc     = -150
+        },
+
+        [ PSBT_AREAS.STATIC ] =
+        {
+            to      = CENTER,
+            from    = CENTER,
+            x       = 0,
+            y       = -300,
+            icon    = PSBT_ICON_SIDE.LEFT,
+            dir     = PSBT_SCROLL_DIRECTIONS.DOWN,
+            arc     = 0
+        },
+
+        [ PSBT_AREAS.NOTIFICATION ] =
+        {
+            to      = CENTER,
+            from    = CENTER,
+            x       = 0,
+            y       = 450,
+            icon    = PSBT_ICON_SIDE.LEFT,
+            dir     = PSBT_SCROLL_DIRECTIONS.UP,
+            arc     = 0
+        },
+
+        [ PSBT_MODULES.COOLDOWNS ]  = true,
+        [ PSBT_MODULES.COMBAT ]     = true,
+        [ PSBT_MODULES.AURAS ]      = true,
+        [ PSBT_MODULES.XP ]         = true,
+        [ PSBT_MODULES.LOW ]        = true,
+        [ PSBT_MODULES.ULTIMATE ]   = true,
+        [ PSBT_MODULES.DEBUG ]      = false,
+        [ PSBT_MODULES.INFAMY ]     = true,
+    }
 
 function PSBT_Settings:Initialize( ... )
     ModuleProto.Initialize( self, ... )
 
     local DispalyName = GetDisplayName()
-    local CharacterName = GetUnitName( 'player' ) 
+    local CharacterName = GetUnitName( 'player' )
 
     self.db = ZO_SavedVars:New( 'PSBT_DB', kVersion, nil, defaults, DispalyName, CharacterName )
 end
@@ -119,7 +119,12 @@ function PSBT_Settings:SetSetting( identity, value )
     self.db[ identity ] = value
 end
 
-CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
+CBM:RegisterCallback( PSBT_EVENTS.LOADED,
     function( psbt )
         psbt:RegisterModule( PSBT_MODULES.SETTINGS, PSBT_Settings, kVersion )
     end)
+
+
+
+
+

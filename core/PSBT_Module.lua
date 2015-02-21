@@ -25,7 +25,7 @@ function ModuleProto:UnregisterForEvent( event, callback )
 end
 
 function ModuleProto:OnUpdate( frametime )
-    -- stub, implement if needed
+-- stub, implement if needed
 end
 
 function ModuleProto:NewEvent( scrollArea, sticky, icon, text, color )
@@ -33,3 +33,5 @@ function ModuleProto:NewEvent( scrollArea, sticky, icon, text, color )
 end
 
 PSBT.ModuleProto = ModuleProto
+
+

@@ -17,7 +17,7 @@ end
 
 function PSBT_Cooldowns:Shutdown()
     self:UnregisterForEvent( EVENT_ABILITY_COOLDOWN_UPDATED, 'OnAbilityCooldownUpdated' )
-    self:UnregisterForEvent( EVENT_ACTION_UPDATE_COOLDOWNS, 'OnActionCooldownUpdate' ) 
+    self:UnregisterForEvent( EVENT_ACTION_UPDATE_COOLDOWNS, 'OnActionCooldownUpdate' )
 
     ModuleProto.Shutdown( self )
 end
@@ -28,7 +28,8 @@ end
 function PSBT_Cooldowns:OnActionCooldownUpdate()
 end
 
-CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
+CBM:RegisterCallback( PSBT_EVENTS.LOADED,
     function( psbt )
         psbt:RegisterModule( PSBT_MODULES.COOLDOWNS, PSBT_Cooldowns, kVerison )
     end )
+

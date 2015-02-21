@@ -29,7 +29,7 @@ function PSBT_Experience:OnXPUpdated( _, _, previousExperience, currentExperienc
 end
 
 
-CBM:RegisterCallback( PSBT_EVENTS.LOADED, 
+CBM:RegisterCallback( PSBT_EVENTS.LOADED,
     function( psbt )
         psbt:RegisterModule( PSBT_MODULES.XP, PSBT_Experience, kVersion )
-    end)
+    end )
